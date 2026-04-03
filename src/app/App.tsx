@@ -28,16 +28,20 @@ const PROTOTYPE_META: Record<TimeUxVariant, { title: string; blurb: string }> = 
     title: '1 Baseline',
     blurb: 'Dry temp, dryness, and time with small labels under Time when timed or sensor estimate applies.',
   },
+  baselineNoSensorEstimate: {
+    title: '2 Baseline (no sensor estimate)',
+    blurb: 'Same three tiles, but the app cannot show a sensor-based minute guess; only Timed dry minutes or a dash.',
+  },
   timedBanner: {
-    title: '2 Timed banner',
+    title: '3 Timed banner',
     blurb: 'After you pick controls, a note explains when timed dry is active.',
   },
   segmented: {
-    title: '3 Sensor Dry vs Timed Dry',
+    title: '4 Sensor Dry vs Timed Dry',
     blurb: 'Segment toggles Sensor Dry or Timed Dry, then the row shows dryness or time. Time fills in after you pick minutes.',
   },
   expandableTiming: {
-    title: '4 Sensor Dry vs Timed Dry',
+    title: '5 Sensor Dry vs Timed Dry',
     blurb: 'Mode switches between Sensor Dry and Timed Dry; switching to Timed Dry opens the minute picker like screen 3.',
   },
 };
@@ -422,14 +426,20 @@ function ModeCard({ label, active, onClick, icon }: { label: string; active: boo
   );
 }
 
-const PROTOTYPE_ORDER: TimeUxVariant[] = ['baseline', 'timedBanner', 'segmented', 'expandableTiming'];
+const PROTOTYPE_ORDER: TimeUxVariant[] = [
+  'baseline',
+  'baselineNoSensorEstimate',
+  'timedBanner',
+  'segmented',
+  'expandableTiming',
+];
 
 export default function App() {
   return (
     <div className="flex-1 min-h-0 w-full min-w-0 overflow-x-auto overflow-y-hidden bg-gray-100 box-border">
       <div
         className="mx-auto grid h-full min-h-0 shrink-0 gap-6 sm:gap-8 p-4 sm:p-8 box-border"
-        style={{ gridTemplateColumns: 'repeat(4, 360px)' }}
+        style={{ gridTemplateColumns: 'repeat(5, 360px)' }}
       >
         {PROTOTYPE_ORDER.map(variant => (
           <div key={variant} className="flex min-h-0 h-full flex-col gap-2">

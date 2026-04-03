@@ -12,6 +12,7 @@ import {
 
 export type TimeUxVariant =
   | 'baseline'
+  | 'baselineNoSensorEstimate'
   | 'segmented'
   | 'timedBanner'
   | 'expandableTiming';
@@ -184,6 +185,26 @@ export function DryControlsSection({
           {tempCard}
           {drynessCard()}
           {timeCard({ wheelTitle: 'Time' })}
+        </div>
+      </>
+    );
+  }
+
+  /** Baseline layout but UI cannot show sensor-derived minutes (no estimate, no Est. label). */
+  if (variant === 'baselineNoSensorEstimate') {
+    const wheelDefault = state.time ?? timedDryOptions[0] ?? 45;
+    return (
+      <>
+        {dryHeading}
+        <div className="flex gap-[10px]">
+          {tempCard}
+          {drynessCard()}
+          <DrySelectorCard
+            label="Time"
+            value={state.time !== null ? `${state.time} min` : '-'}
+            sublabel={state.time !== null ? 'Timed dry' : undefined}
+            onClick={() => openWheelPicker('Time', timedDryOptions, wheelDefault, selectTime)}
+          />
         </div>
       </>
     );
