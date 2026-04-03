@@ -1,6 +1,6 @@
 import { ArrowLeft, Heart, Settings, Info, ChevronDown, ChevronRight, X, Droplet, Sun, Shirt } from 'lucide-react';
 import { useState, useCallback, useEffect } from 'react';
-import washerImage from 'figma:asset/882fc1211b98545cb3035491bd8c9a8fcee7b5ea.png';
+import washerImage from '../imports/ComboCC/158356eed04099aa3d6c70763cd639a6f7aa97e9.png';
 import {
   type Mode,
   type Cycle,
