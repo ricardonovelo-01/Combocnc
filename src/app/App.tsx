@@ -34,11 +34,11 @@ const PROTOTYPE_META: Record<TimeUxVariant, { title: string; blurb: string }> = 
   },
   segmented: {
     title: '3 Sensor vs timed',
-    blurb: 'The note under the tiles matches the mode you selected (sensor or timed).',
+    blurb: 'Toggle picks the row: dryness or time, not both. The note matches that mode.',
   },
   expandableTiming: {
     title: '4 Optional timed',
-    blurb: 'A switch above the row flips between sensor dry (dryness) and timed dry (minutes).',
+    blurb: 'Mode control above the row matches the selector tiles; same gray fill as values.',
   },
 };
 

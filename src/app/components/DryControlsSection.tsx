@@ -111,6 +111,14 @@ export function DryControlsSection({
     if (timedActive) setTimedRowVisible(true);
   }, [timedActive]);
 
+  /** Segmented: which side of the row is shown (sensor = dryness, timed = time), independent until time is set */
+  const [segmentedMode, setSegmentedMode] = useState<'sensor' | 'timed'>(() =>
+    state.time !== null ? 'timed' : 'sensor',
+  );
+  useEffect(() => {
+    if (state.time !== null) setSegmentedMode('timed');
+  }, [state.time]);
+
   const dryHeading = mode === 'WASH_DRY' && (
     <p className="capitalize font-['Avenir:Heavy',sans-serif] text-[16px] text-[#1a1a1a]">Dry</p>
   );
@@ -182,24 +190,31 @@ export function DryControlsSection({
   }
 
   if (variant === 'segmented') {
+    const sensorSelected = segmentedMode === 'sensor';
     return (
       <>
         {dryHeading}
         <div className="rounded-[8px] bg-[#f2f2f2] p-1 flex gap-1">
           <button
             type="button"
-            onClick={goSensorDry}
+            onClick={() => {
+              goSensorDry();
+              setSegmentedMode('sensor');
+            }}
             className={`flex-1 rounded-[6px] py-2.5 text-[13px] font-['Avenir:Heavy',sans-serif] transition-colors ${
-              !timedActive ? 'bg-white text-[#1a1a1a] shadow-sm' : 'text-[#737373]'
+              sensorSelected ? 'bg-white text-[#1a1a1a] shadow-sm' : 'text-[#737373]'
             }`}
           >
             Sensor dry
           </button>
           <button
             type="button"
-            onClick={openTimedDryWheel}
+            onClick={() => {
+              setSegmentedMode('timed');
+              openTimedDryWheel();
+            }}
             className={`flex-1 rounded-[6px] py-2.5 text-[13px] font-['Avenir:Heavy',sans-serif] transition-colors ${
-              timedActive ? 'bg-white text-[#1a1a1a] shadow-sm' : 'text-[#737373]'
+              !sensorSelected ? 'bg-white text-[#1a1a1a] shadow-sm' : 'text-[#737373]'
             }`}
           >
             Timed dry
@@ -207,12 +222,14 @@ export function DryControlsSection({
         </div>
         <div className="flex gap-[10px]">
           {tempCard}
-          {drynessCard()}
-          {timeCard({
-            sublabel: timedActive ? 'Timed dry' : estFromSensor !== null ? 'Est. (sensor)' : undefined,
-          })}
+          {sensorSelected && drynessCard()}
+          {!sensorSelected &&
+            timeCard({
+              wheelTitle: 'Time',
+              sublabel: timedActive ? 'Timed dry' : estFromSensor !== null ? 'Est. (sensor)' : undefined,
+            })}
         </div>
-        {timedActive ? (
+        {!sensorSelected ? (
           <div className="rounded-[10px] border border-[#e5e5e5] bg-[#fafafa] px-3 py-2.5">
             <p className="font-['Avenir:Heavy',sans-serif] text-[13px] text-[#1a1a1a]">Timed dry</p>
             <p className="font-['Avenir:Roman',sans-serif] text-[12px] text-[#525252] leading-snug mt-0.5">
@@ -264,33 +281,27 @@ export function DryControlsSection({
   return (
     <>
       {dryHeading}
-      <div className="flex flex-col gap-2">
+      <div className="w-full">
+        <p className="mb-2 font-['Avenir:Medium',sans-serif] text-[14px] text-[#404040]">Mode</p>
         {!timePath ? (
           <button
             type="button"
             onClick={switchToTimed}
-            className="flex w-full items-center justify-center gap-2 rounded-[8px] bg-[#1a1a1a] px-4 py-3.5 font-['Avenir:Heavy',sans-serif] text-[14px] text-white shadow-sm active:opacity-90"
+            className="flex min-h-[48px] w-full items-center justify-center gap-2 rounded-[8px] bg-[#f5f5f5] px-3 py-2 font-['Avenir:Heavy',sans-serif] text-[15px] text-[#1a1a1a] active:bg-[#ebebeb]"
           >
-            <Clock className="size-[18px] shrink-0" strokeWidth={2} aria-hidden />
+            <Clock className="size-[18px] shrink-0 text-[#404040]" strokeWidth={2} aria-hidden />
             Switch to timed dry
           </button>
         ) : (
           <button
             type="button"
             onClick={switchToSensor}
-            className="flex w-full items-center justify-center gap-2 rounded-[8px] border border-[#d4d4d4] bg-white px-4 py-3.5 font-['Avenir:Heavy',sans-serif] text-[14px] text-[#1a1a1a] shadow-sm active:bg-[#fafafa]"
+            className="flex min-h-[48px] w-full items-center justify-center gap-2 rounded-[8px] bg-[#f5f5f5] px-3 py-2 font-['Avenir:Heavy',sans-serif] text-[15px] text-[#1a1a1a] active:bg-[#ebebeb]"
           >
-            <Droplets className="size-[18px] shrink-0" strokeWidth={2} aria-hidden />
+            <Droplets className="size-[18px] shrink-0 text-[#404040]" strokeWidth={2} aria-hidden />
             Switch to sensor dry
           </button>
         )}
-        <p className="text-center font-['Avenir:Roman',sans-serif] text-[11px] leading-snug text-[#737373]">
-          {!timePath
-            ? 'Temperature and dryness below follow moisture sensing.'
-            : timedActive
-              ? 'Time below is fixed minutes. Moisture sensing is off for this load.'
-              : 'Tap time to set minutes. Dryness returns when you switch back.'}
-        </p>
       </div>
       <div className="flex gap-[10px]">
         {tempCard}
