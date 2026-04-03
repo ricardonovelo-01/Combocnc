@@ -458,7 +458,7 @@ export default function App() {
 
   return (
     <div className="flex-1 min-h-0 w-full min-w-0 overflow-x-auto overflow-y-auto bg-gray-100 box-border">
-      <div className="mx-auto flex min-h-0 w-max max-w-full flex-col gap-6 p-4 sm:p-8 sm:gap-8 box-border">
+      <div className="mx-auto flex min-h-0 w-max max-w-full flex-row flex-wrap items-start gap-6 p-4 sm:p-8 sm:gap-8 box-border">
         <div
           className="grid shrink-0 gap-6 sm:gap-8"
           style={{ gridTemplateColumns: 'repeat(2, 360px)' }}
@@ -468,12 +468,12 @@ export default function App() {
           ))}
         </div>
 
-        <div className="flex w-full max-w-[calc(360px*2+1.5rem)] justify-center shrink-0">
+        <div className="flex shrink-0 flex-col gap-6 sm:gap-8">
           <button
             type="button"
             onClick={() => setOtherOpen(o => !o)}
             aria-expanded={otherOpen}
-            className="flex w-full max-w-md items-center justify-center gap-2 rounded-[12px] border border-[#d4d4d4] bg-white px-4 py-3 shadow-sm transition-colors hover:bg-[#fafafa]"
+            className="flex w-full items-center justify-center gap-2 rounded-[12px] border border-[#d4d4d4] bg-white px-4 py-3 shadow-sm transition-colors hover:bg-[#fafafa]"
           >
             <span className="font-['Avenir:Heavy',sans-serif] text-[13px] text-[#1a1a1a]">
               Other explorations
@@ -487,18 +487,18 @@ export default function App() {
               {otherOpen ? 'Hide' : 'Show'} 3 more
             </span>
           </button>
-        </div>
 
-        {otherOpen && (
-          <div
-            className="grid shrink-0 gap-6 sm:gap-8 pb-4"
-            style={{ gridTemplateColumns: 'repeat(3, 360px)' }}
-          >
-            {OTHER_PROTOTYPES.map(variant => (
-              <PrototypeColumn key={variant} variant={variant} />
-            ))}
-          </div>
-        )}
+          {otherOpen && (
+            <div
+              className="grid shrink-0 gap-6 sm:gap-8"
+              style={{ gridTemplateColumns: 'repeat(3, 360px)' }}
+            >
+              {OTHER_PROTOTYPES.map(variant => (
+                <PrototypeColumn key={variant} variant={variant} />
+              ))}
+            </div>
+          )}
+        </div>
       </div>
     </div>
   );
