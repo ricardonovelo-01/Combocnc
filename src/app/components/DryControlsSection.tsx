@@ -11,7 +11,6 @@ import {
 } from './laundry-state';
 
 export type TimeUxVariant =
-  | 'baselinePlain'
   | 'baseline'
   | 'segmented'
   | 'timedBanner'
@@ -151,7 +150,7 @@ export function DryControlsSection({
     />
   );
 
-  const timeCard = (opts?: { sublabel?: string; wheelTitle?: string; omitSublabel?: boolean }) => (
+  const timeCard = (opts?: { sublabel?: string; wheelTitle?: string }) => (
     <DrySelectorCard
       label="Time"
       value={
@@ -162,27 +161,12 @@ export function DryControlsSection({
             : '-'
       }
       sublabel={
-        opts?.omitSublabel
-          ? undefined
-          : (opts?.sublabel ??
-            (state.time !== null ? 'Timed dry' : estFromSensor !== null ? 'Est. (sensor)' : undefined))
+        opts?.sublabel ??
+        (state.time !== null ? 'Timed dry' : estFromSensor !== null ? 'Est. (sensor)' : undefined)
       }
       onClick={() => pickTimeWheel(opts?.wheelTitle ?? 'Timed dry')}
     />
   );
-
-  if (variant === 'baselinePlain') {
-    return (
-      <>
-        {dryHeading}
-        <div className="flex gap-[10px]">
-          {tempCard}
-          {drynessCard()}
-          {timeCard({ wheelTitle: 'Time', omitSublabel: true })}
-        </div>
-      </>
-    );
-  }
 
   if (variant === 'baseline') {
     return (

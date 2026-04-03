@@ -24,24 +24,20 @@ import {
 import { DryControlsSection, type TimeUxVariant } from './components/DryControlsSection';
 
 const PROTOTYPE_META: Record<TimeUxVariant, { title: string; blurb: string }> = {
-  baselinePlain: {
-    title: '1 Baseline',
-    blurb: 'Same three tiles as the next screen; Time shows minutes only, no Timed dry or Est. lines.',
-  },
   baseline: {
-    title: '2 Baseline + hints',
+    title: '1 Baseline',
     blurb: 'Dry temp, dryness, and time with small labels under Time when timed or sensor estimate applies.',
   },
   timedBanner: {
-    title: '3 Timed banner',
+    title: '2 Timed banner',
     blurb: 'After you pick controls, a note explains when timed dry is active.',
   },
   segmented: {
-    title: '4 Sensor vs timed',
+    title: '3 Sensor vs timed',
     blurb: 'The note under the tiles matches the mode you selected (sensor or timed).',
   },
   expandableTiming: {
-    title: '5 Optional timed',
+    title: '4 Optional timed',
     blurb: 'A switch above the row flips between sensor dry (dryness) and timed dry (minutes).',
   },
 };
@@ -426,20 +422,14 @@ function ModeCard({ label, active, onClick, icon }: { label: string; active: boo
   );
 }
 
-const PROTOTYPE_ORDER: TimeUxVariant[] = [
-  'baselinePlain',
-  'baseline',
-  'timedBanner',
-  'segmented',
-  'expandableTiming',
-];
+const PROTOTYPE_ORDER: TimeUxVariant[] = ['baseline', 'timedBanner', 'segmented', 'expandableTiming'];
 
 export default function App() {
   return (
     <div className="flex-1 min-h-0 w-full min-w-0 overflow-x-auto overflow-y-hidden bg-gray-100 box-border">
       <div
         className="mx-auto grid h-full min-h-0 shrink-0 gap-6 sm:gap-8 p-4 sm:p-8 box-border"
-        style={{ gridTemplateColumns: 'repeat(5, 360px)' }}
+        style={{ gridTemplateColumns: 'repeat(4, 360px)' }}
       >
         {PROTOTYPE_ORDER.map(variant => (
           <div key={variant} className="flex min-h-0 h-full flex-col gap-2">
