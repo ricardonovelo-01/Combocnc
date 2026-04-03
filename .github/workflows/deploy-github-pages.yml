@@ -40,10 +40,6 @@ jobs:
   deploy:
     needs: build
     runs-on: ubuntu-latest
-    # Explicit job permissions avoid deploy failures in some repo settings
-    permissions:
-      pages: write
-      id-token: write
     environment:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}

@@ -1,0 +1,15 @@
+---
+description: After making code or config changes the user cares about, commit and push to origin.
+alwaysApply: true
+---
+
+# Git: commit and push
+
+When you finish a task that changes source files, workflows, or project config (and the user has not asked to skip version control):
+
+1. **Commit** with a short, clear message describing what changed and why.
+2. **Push** to `origin` on the current branch (typically `main`).
+
+If there is nothing to commit, do not push. If push fails (auth, conflicts), report the error and what is needed to fix it.
+
+Do not leave fixes only in the working tree when the user expects them on the remote.

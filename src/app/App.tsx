@@ -409,7 +409,7 @@ function ModeCard({ label, active, onClick, icon }: { label: string; active: boo
 
 export default function App() {
   return (
-    <div className="size-full flex justify-center items-start bg-gray-100 gap-8 p-8 overflow-x-auto flex-wrap">
+    <div className="min-h-dvh w-full flex justify-center items-stretch bg-gray-100 gap-8 p-8 overflow-x-auto flex-wrap box-border">
       <LaundryControlApp />
       <LaundryControlApp />
       <LaundryControlApp />
@@ -492,7 +492,7 @@ function LaundryControlApp() {
   const imageOpacity = Math.max(0.3, 1 - scrollY / 200);
 
   return (
-    <div className="relative w-full max-w-[430px] bg-white min-h-[932px] h-[932px] flex flex-col overflow-hidden shadow-2xl rounded-[20px]">
+    <div className="relative w-full max-w-[430px] bg-white h-[calc(100dvh-4rem)] min-h-0 max-h-[calc(100dvh-4rem)] flex flex-col overflow-hidden shadow-2xl rounded-[20px] shrink-0">
       {/* Status Bar */}
       <div className="absolute top-0 left-0 right-0 z-40 bg-white">
         <div className="h-[44px] px-6 flex items-center justify-between">
