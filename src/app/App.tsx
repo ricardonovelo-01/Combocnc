@@ -458,7 +458,7 @@ export default function App() {
 
   return (
     <div className="flex-1 min-h-0 w-full min-w-0 overflow-x-auto overflow-y-auto bg-gray-100 box-border">
-      <div className="mx-auto flex min-h-0 w-max max-w-full flex-row flex-wrap items-start gap-6 p-4 sm:p-8 sm:gap-8 box-border">
+      <div className="mx-auto flex min-h-0 w-max flex-row flex-nowrap items-start gap-6 p-4 sm:p-8 sm:gap-8 box-border">
         <div
           className="grid shrink-0 gap-6 sm:gap-8"
           style={{ gridTemplateColumns: 'repeat(2, 360px)' }}
