@@ -218,7 +218,7 @@ function PickerModal({ title, options, value, onSelect, onClose }: {
   return (
     <div className="absolute inset-0 z-50 flex items-end justify-center" onClick={handleClose}>
       <div className={`absolute inset-0 bg-black/30 ${isClosing ? 'animate-fade-out' : 'animate-fade-in'}`} />
-      <div className={`relative bg-white w-full max-w-[430px] rounded-t-[20px] pb-8 ${isClosing ? 'animate-slide-down' : 'animate-slide-up'}`}
+      <div className={`relative bg-white w-full max-w-[390px] rounded-t-[20px] pb-8 ${isClosing ? 'animate-slide-down' : 'animate-slide-up'}`}
         onClick={e => e.stopPropagation()}>
         <div className="flex items-center justify-between px-4 py-4 border-b border-gray-100">
           <p className="font-['Avenir:Heavy',sans-serif] text-[16px]">{title}</p>
@@ -280,7 +280,7 @@ function WheelPicker({ title, options, value, onSelect, onClose }: {
   return (
     <div className="absolute inset-0 z-50 flex items-end justify-center" onClick={handleClose}>
       <div className={`absolute inset-0 bg-black/30 ${isClosing ? 'animate-fade-out' : 'animate-fade-in'}`} />
-      <div className={`relative bg-white w-full max-w-[430px] rounded-t-[20px] pb-8 ${isClosing ? 'animate-slide-down' : 'animate-slide-up'}`}
+      <div className={`relative bg-white w-full max-w-[390px] rounded-t-[20px] pb-8 ${isClosing ? 'animate-slide-down' : 'animate-slide-up'}`}
         onClick={e => e.stopPropagation()}>
         {/* Header */}
         <div className="flex items-center justify-between px-4 py-4 border-b border-gray-100">
@@ -409,7 +409,7 @@ function ModeCard({ label, active, onClick, icon }: { label: string; active: boo
 
 export default function App() {
   return (
-    <div className="flex-1 min-h-0 w-full flex justify-center items-stretch bg-sky-500 p-4 sm:p-8 overflow-hidden box-border">
+    <div className="flex-1 min-h-0 w-full flex justify-center items-stretch bg-gray-100 p-4 sm:p-8 overflow-hidden box-border">
       <LaundryControlApp />
     </div>
   );
@@ -490,7 +490,7 @@ function LaundryControlApp() {
   const imageOpacity = Math.max(0.3, 1 - scrollY / 200);
 
   return (
-    <div className="relative h-full min-h-0 w-full max-w-[430px] bg-white flex flex-col overflow-hidden shadow-2xl rounded-[20px] shrink-0">
+    <div className="relative h-full min-h-0 w-full max-w-[390px] bg-white flex flex-col overflow-hidden shadow-2xl rounded-[20px] shrink-0">
       {/* Status Bar */}
       <div className="absolute top-0 left-0 right-0 z-40 bg-white">
         <div className="h-[44px] px-6 flex items-center justify-between">
