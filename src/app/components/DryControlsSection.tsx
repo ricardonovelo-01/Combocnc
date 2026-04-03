@@ -272,7 +272,6 @@ export function DryControlsSection({
     <>
       {dryHeading}
       <div className="w-full">
-        <p className="mb-2 font-['Avenir:Medium',sans-serif] text-[14px] text-[#404040]">Mode</p>
         {!timePath ? (
           <button
             type="button"
