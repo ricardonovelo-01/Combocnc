@@ -221,7 +221,7 @@ export function DryControlsSection({
         )}
         <div className="flex gap-[10px]">
           {tempCard}
-          {drynessCard({ disabled: timedActive, sublabel: timedActive ? 'Not used' : undefined })}
+          {drynessCard()}
           {timeCard({
             sublabel: timedActive ? 'Timed dry' : estFromSensor !== null ? 'Est. (sensor)' : undefined,
           })}
@@ -238,23 +238,13 @@ export function DryControlsSection({
           <div className="rounded-[10px] border border-amber-200/80 bg-amber-50 px-3 py-2.5">
             <p className="font-['Avenir:Heavy',sans-serif] text-[13px] text-amber-950">Timed dry is on</p>
             <p className="font-['Avenir:Roman',sans-serif] text-[12px] text-amber-900/90 leading-snug mt-0.5">
-              You’re no longer using a sensor-based dry. The dryer will run for the minutes you set.
+              You’re no longer using a sensor-based dry. The dryer will run for the minutes you set. Adjust dryness or time below anytime.
             </p>
-            <button
-              type="button"
-              onClick={goSensorDry}
-              className="mt-2.5 w-full rounded-[8px] border border-amber-200/90 bg-white py-2.5 font-['Avenir:Heavy',sans-serif] text-[13px] text-amber-950 shadow-sm"
-            >
-              Use sensor dry instead
-            </button>
           </div>
         )}
         <div className="flex gap-[10px]">
           {tempCard}
-          {drynessCard({
-            disabled: timedActive,
-            sublabel: timedActive ? 'Sensor off' : undefined,
-          })}
+          {drynessCard()}
           {timeCard()}
         </div>
       </>
@@ -304,18 +294,8 @@ export function DryControlsSection({
       {timedActive && (
         <div className="rounded-[10px] border border-amber-200/80 bg-amber-50 px-3 py-2.5">
           <p className="font-['Avenir:Roman',sans-serif] text-[12px] text-amber-900/90 leading-snug">
-            Timed dry is active. You can switch back to moisture sensing anytime.
+            Timed dry is active. Use dryness and time in the row above—same control pattern as baseline.
           </p>
-          <button
-            type="button"
-            onClick={() => {
-              goSensorDry();
-              setTimedRowVisible(false);
-            }}
-            className="mt-2.5 w-full rounded-[8px] border border-amber-200/90 bg-white py-2.5 font-['Avenir:Heavy',sans-serif] text-[13px] text-amber-950 shadow-sm"
-          >
-            Use sensor dry instead
-          </button>
         </div>
       )}
     </>
