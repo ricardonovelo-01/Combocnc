@@ -223,27 +223,14 @@ export function DryControlsSection({
         <div className="flex gap-[10px]">
           {tempCard}
           {sensorSelected && drynessCard()}
-          {!sensorSelected &&
-            timeCard({
-              wheelTitle: 'Time',
-              sublabel: timedActive ? 'Timed dry' : estFromSensor !== null ? 'Est. (sensor)' : undefined,
-            })}
+          {!sensorSelected && (
+            <DrySelectorCard
+              label="Time"
+              value={state.time !== null ? `${state.time} min` : '-'}
+              onClick={() => pickTimeWheel('Time')}
+            />
+          )}
         </div>
-        {!sensorSelected ? (
-          <div className="rounded-[10px] border border-[#e5e5e5] bg-[#fafafa] px-3 py-2.5">
-            <p className="font-['Avenir:Heavy',sans-serif] text-[13px] text-[#1a1a1a]">Timed dry</p>
-            <p className="font-['Avenir:Roman',sans-serif] text-[12px] text-[#525252] leading-snug mt-0.5">
-              Moisture sensing is off for this load. The dryer runs for the minutes you choose.
-            </p>
-          </div>
-        ) : (
-          <div className="rounded-[10px] border border-[#e5e5e5] bg-[#fafafa] px-3 py-2.5">
-            <p className="font-['Avenir:Heavy',sans-serif] text-[13px] text-[#1a1a1a]">Sensor dry</p>
-            <p className="font-['Avenir:Roman',sans-serif] text-[12px] text-[#525252] leading-snug mt-0.5">
-              The dryer uses moisture sensing and your dryness setting to decide when to stop.
-            </p>
-          </div>
-        )}
       </>
     );
   }
@@ -309,14 +296,7 @@ export function DryControlsSection({
         {timePath && (
           <DrySelectorCard
             label="Time"
-            value={
-              state.time !== null
-                ? `${state.time} min`
-                : estFromSensor !== null
-                  ? `${estFromSensor} min`
-                  : '-'
-            }
-            sublabel={state.time !== null ? 'Timed dry' : estFromSensor !== null ? 'Est. (sensor)' : undefined}
+            value={state.time !== null ? `${state.time} min` : '-'}
             onClick={() => pickTimeWheel('Time')}
           />
         )}

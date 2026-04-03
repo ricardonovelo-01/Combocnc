@@ -34,11 +34,11 @@ const PROTOTYPE_META: Record<TimeUxVariant, { title: string; blurb: string }> = 
   },
   segmented: {
     title: '3 Sensor vs timed',
-    blurb: 'Toggle picks the row: dryness or time, not both. The note matches that mode.',
+    blurb: 'Toggle picks dryness or time. Time stays empty until you set minutes (no sensor estimate there).',
   },
   expandableTiming: {
     title: '4 Optional timed',
-    blurb: 'Mode control above the row matches the selector tiles; same gray fill as values.',
+    blurb: 'Mode switch then temp plus dryness or time. In timed mode, time is always fixed minutes.',
   },
 };
 
