@@ -475,8 +475,10 @@ export default function App() {
             aria-expanded={otherOpen}
             className="flex h-full min-h-0 flex-1 flex-col items-center justify-center gap-4 rounded-[12px] border border-[#d4d4d4] bg-white px-3 py-6 shadow-sm transition-colors hover:bg-[#fafafa]"
           >
-            <span className="font-['Avenir:Heavy',sans-serif] text-[12px] leading-tight text-[#1a1a1a] text-center [writing-mode:vertical-rl]">
-              Other explorations
+            <span className="font-['Avenir:Heavy',sans-serif] text-[12px] leading-tight text-[#1a1a1a] text-center">
+              Other
+              <br />
+              explorations
             </span>
             {otherOpen ? (
               <ChevronLeft size={18} className="text-[#404040]" aria-hidden />
