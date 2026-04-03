@@ -410,18 +410,25 @@ function ModeCard({ label, active, onClick, icon }: { label: string; active: boo
   );
 }
 
+const PROTOTYPE_ORDER: TimeUxVariant[] = ['baseline', 'timedBanner', 'segmented', 'expandableTiming'];
+
 export default function App() {
   return (
     <div className="flex-1 min-h-0 w-full min-w-0 overflow-x-auto overflow-y-hidden bg-gray-100 box-border">
-      {/* Explicit 3×360px grid so prototypes never shrink into one column; scroll horizontally on narrow viewports */}
       <div
         className="mx-auto grid h-full min-h-0 shrink-0 gap-6 sm:gap-8 p-4 sm:p-8 box-border"
         style={{ gridTemplateColumns: 'repeat(4, 360px)' }}
       >
-        <LaundryControlApp variant="baseline" />
-        <LaundryControlApp variant="timedBanner" />
-        <LaundryControlApp variant="segmented" />
-        <LaundryControlApp variant="expandableTiming" />
+        {PROTOTYPE_ORDER.map(variant => (
+          <div key={variant} className="flex min-h-0 h-full flex-col gap-2">
+            <p className="shrink-0 text-center font-['Avenir:Medium',sans-serif] text-[12px] text-[#525252]">
+              {PROTOTYPE_CAPTIONS[variant]}
+            </p>
+            <div className="min-h-0 flex-1">
+              <LaundryControlApp variant={variant} />
+            </div>
+          </div>
+        ))}
       </div>
     </div>
   );
@@ -551,9 +558,6 @@ function LaundryControlApp({ variant }: { variant: TimeUxVariant }) {
           </div>
           <div className="px-4 flex flex-col gap-2">
             <p className="font-['Avenir:Heavy',sans-serif] text-[20px] text-[#1a1a1a] leading-[1.4]">Combo</p>
-            <p className="font-['Avenir:Medium',sans-serif] text-[10px] text-[#a3a3a3] text-center leading-tight">
-              {PROTOTYPE_CAPTIONS[variant]}
-            </p>
             <div className="flex items-center gap-1">
               <span className="bg-[#dff0e8] text-[#0f7e00] text-[12px] font-['Avenir:Roman',sans-serif] px-2 py-0.5 rounded-full flex items-center gap-1">
                 Remote Start On
