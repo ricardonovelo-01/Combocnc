@@ -409,8 +409,7 @@ function ModeCard({ label, active, onClick, icon }: { label: string; active: boo
 
 export default function App() {
   return (
-    <div className="size-full flex justify-center items-start bg-gray-100 gap-8 p-8 overflow-x-auto flex-wrap">
-      <LaundryControlApp />
+    <div className="size-full flex justify-center items-start bg-gray-100 gap-8 p-8 overflow-x-auto">
       <LaundryControlApp />
       <LaundryControlApp />
     </div>
