@@ -24,21 +24,21 @@ import {
 import { DryControlsSection, type TimeUxVariant } from './components/DryControlsSection';
 
 const PROTOTYPE_META: Record<TimeUxVariant, { title: string; blurb: string }> = {
+  segmented: {
+    title: '1 Sensor Dry vs Timed Dry',
+    blurb: 'Segment toggles Sensor Dry or Timed Dry, then the row shows dryness or time. Time fills in after you pick minutes.',
+  },
   baselineNoSensorEstimate: {
-    title: '1 Baseline (no sensor estimate)',
+    title: '2 Baseline (no sensor estimate)',
     blurb: 'Same three tiles; Time never shows a sensor minute guess, only Timed dry minutes or a dash.',
   },
   timedBanner: {
-    title: '2 Timed banner (no estimate)',
-    blurb: 'Same Time rules as screen 1, plus a note when Timed dry is on.',
+    title: '3 Timed banner (no estimate)',
+    blurb: 'Same Time rules as screen 2, plus a note when Timed dry is on.',
   },
   baseline: {
-    title: '3 Baseline',
+    title: '4 Baseline',
     blurb: 'Dry temp, dryness, and time with Est. (sensor) when a minute guess exists, plus Timed dry label when set.',
-  },
-  segmented: {
-    title: '4 Sensor Dry vs Timed Dry',
-    blurb: 'Segment toggles Sensor Dry or Timed Dry, then the row shows dryness or time. Time fills in after you pick minutes.',
   },
   expandableTiming: {
     title: '5 Sensor Dry vs Timed Dry',
@@ -427,10 +427,10 @@ function ModeCard({ label, active, onClick, icon }: { label: string; active: boo
 }
 
 const PROTOTYPE_ORDER: TimeUxVariant[] = [
+  'segmented',
   'baselineNoSensorEstimate',
   'timedBanner',
   'baseline',
-  'segmented',
   'expandableTiming',
 ];
 
