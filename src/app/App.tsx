@@ -25,8 +25,8 @@ import { DryControlsSection, type TimeUxVariant } from './components/DryControls
 
 const PROTOTYPE_CAPTIONS: Record<TimeUxVariant, string> = {
   baseline: '1 · Baseline',
-  segmented: '2 · Sensor vs timed',
-  timedBanner: '3 · Timed banner',
+  timedBanner: '2 · Timed banner',
+  segmented: '3 · Sensor vs timed',
   expandableTiming: '4 · Optional timed',
 };
 
@@ -419,8 +419,8 @@ export default function App() {
         style={{ gridTemplateColumns: 'repeat(4, 360px)' }}
       >
         <LaundryControlApp variant="baseline" />
-        <LaundryControlApp variant="segmented" />
         <LaundryControlApp variant="timedBanner" />
+        <LaundryControlApp variant="segmented" />
         <LaundryControlApp variant="expandableTiming" />
       </div>
     </div>
