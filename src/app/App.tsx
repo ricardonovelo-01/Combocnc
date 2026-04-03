@@ -29,15 +29,15 @@ const PROTOTYPE_META: Record<TimeUxVariant, { title: string; blurb: string }> = 
     blurb: 'Segment toggles Sensor Dry or Timed Dry, then the row shows dryness or time. Time fills in after you pick minutes.',
   },
   baselineNoSensorEstimate: {
-    title: '3 Baseline (no sensor estimate)',
-    blurb: 'Same three tiles; Time never shows a sensor minute guess, only Timed dry minutes or a dash.',
+    title: '3 Same as 2, without alert',
+    blurb: 'Same as column 2, without the timed-dry banner. Time never shows a sensor minute guess—only Timed dry minutes or a dash.',
   },
   timedBanner: {
-    title: '2 Timed banner (no estimate)',
-    blurb: 'Same Time rules as the no-estimate baseline (Other explorations), plus a note when Timed dry is on.',
+    title: '2 Timed banner',
+    blurb: 'Same Time rules as column 3, plus an alert when Timed dry is on.',
   },
   baseline: {
-    title: '4 Baseline',
+    title: '4 With sensor estimate',
     blurb: 'Dry temp, dryness, and time with Est. (sensor) when a minute guess exists, plus Timed dry label when set.',
   },
   expandableTiming: {
