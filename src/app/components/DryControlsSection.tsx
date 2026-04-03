@@ -127,7 +127,7 @@ export function DryControlsSection({
   const tempCard = (
     <DrySelectorCard
       label="Temperature"
-      value={dryTempOptions.length > 0 ? state.dryTemp : ''}
+      value={dryTempOptions.length > 0 ? state.dryTemp : '-'}
       disabled={dryTempOptions.length === 0}
       onClick={() =>
         dryTempOptions.length > 0 &&
@@ -144,7 +144,7 @@ export function DryControlsSection({
   const drynessCard = (opts?: { disabled?: boolean; sublabel?: string }) => (
     <DrySelectorCard
       label="Dryness"
-      value={drynessOptions.length === 0 ? '' : state.dryness === 'OFF' ? '-' : drynessLabel(state.dryness)}
+      value={drynessOptions.length === 0 ? '-' : state.dryness === 'OFF' ? '-' : drynessLabel(state.dryness)}
       disabled={drynessOptions.length === 0 || opts?.disabled}
       sublabel={opts?.sublabel}
       onClick={() =>
@@ -163,17 +163,24 @@ export function DryControlsSection({
     <DrySelectorCard
       label="Time"
       value={
-        state.time !== null
-          ? `${state.time} min`
-          : estFromSensor !== null
-            ? `${estFromSensor} min`
-            : '-'
+        timedDryOptions.length === 0
+          ? '-'
+          : state.time !== null
+            ? `${state.time} min`
+            : estFromSensor !== null
+              ? `${estFromSensor} min`
+              : '-'
       }
+      disabled={timedDryOptions.length === 0}
       sublabel={
-        opts?.sublabel ??
-        (state.time !== null ? 'Timed dry' : estFromSensor !== null ? 'Est. (sensor)' : undefined)
+        timedDryOptions.length === 0
+          ? undefined
+          : opts?.sublabel ??
+            (state.time !== null ? 'Timed dry' : estFromSensor !== null ? 'Est. (sensor)' : undefined)
       }
-      onClick={() => pickTimeWheel(opts?.wheelTitle ?? 'Timed Dry')}
+      onClick={() =>
+        timedDryOptions.length > 0 && pickTimeWheel(opts?.wheelTitle ?? 'Timed Dry')
+      }
     />
   );
 
@@ -181,9 +188,19 @@ export function DryControlsSection({
   const timeTileNoSensorEstimate = (
     <DrySelectorCard
       label="Time"
-      value={state.time !== null ? `${state.time} min` : '-'}
-      sublabel={state.time !== null ? 'Timed dry' : undefined}
+      value={
+        timedDryOptions.length === 0
+          ? '-'
+          : state.time !== null
+            ? `${state.time} min`
+            : '-'
+      }
+      disabled={timedDryOptions.length === 0}
+      sublabel={
+        timedDryOptions.length === 0 ? undefined : state.time !== null ? 'Timed dry' : undefined
+      }
       onClick={() =>
+        timedDryOptions.length > 0 &&
         openWheelPicker(
           'Time',
           timedDryOptions,
@@ -243,7 +260,7 @@ export function DryControlsSection({
             type="button"
             onClick={() => {
               setSegmentedMode('timed');
-              openTimedDryWheel();
+              if (timedDryOptions.length > 0) openTimedDryWheel();
             }}
             className={`flex-1 rounded-[6px] py-2.5 text-[13px] font-['Avenir:Heavy',sans-serif] transition-colors ${
               !sensorSelected ? 'bg-white text-[#1a1a1a] shadow-sm' : 'text-[#737373]'
@@ -258,8 +275,17 @@ export function DryControlsSection({
           {!sensorSelected && (
             <DrySelectorCard
               label="Time"
-              value={state.time !== null ? `${state.time} min` : '-'}
-              onClick={() => pickTimeWheel('Timed Dry')}
+              value={
+                timedDryOptions.length === 0
+                  ? '-'
+                  : state.time !== null
+                    ? `${state.time} min`
+                    : '-'
+              }
+              disabled={timedDryOptions.length === 0}
+              onClick={() =>
+                timedDryOptions.length > 0 && pickTimeWheel('Timed Dry')
+              }
             />
           )}
         </div>
@@ -293,7 +319,7 @@ export function DryControlsSection({
 
   const switchToTimed = () => {
     setTimedRowVisible(true);
-    openTimedDryWheel();
+    if (timedDryOptions.length > 0) openTimedDryWheel();
   };
   const switchToSensor = () => {
     if (timedActive) goSensorDry();
@@ -330,8 +356,17 @@ export function DryControlsSection({
         {timePath && (
           <DrySelectorCard
             label="Time"
-            value={state.time !== null ? `${state.time} min` : '-'}
-            onClick={() => pickTimeWheel('Timed Dry')}
+            value={
+              timedDryOptions.length === 0
+                ? '-'
+                : state.time !== null
+                  ? `${state.time} min`
+                  : '-'
+            }
+            disabled={timedDryOptions.length === 0}
+            onClick={() =>
+              timedDryOptions.length > 0 && pickTimeWheel('Timed Dry')
+            }
           />
         )}
       </div>

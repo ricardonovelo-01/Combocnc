@@ -403,7 +403,7 @@ function SelectorCard({ label, value, onClick, disabled }: { label: string; valu
       <p className="font-['Avenir:Medium',sans-serif] text-[14px] text-[#404040]">{label}</p>
       <button onClick={disabled ? undefined : onClick}
         disabled={disabled}
-        className={`h-[48px] w-full flex items-center justify-center rounded-[8px] bg-[#f5f5f5] ${disabled ? 'cursor-not-allowed' : ''}`}>
+        className={`h-[48px] w-full flex items-center justify-center rounded-[8px] bg-[#f5f5f5] ${disabled ? 'cursor-not-allowed opacity-60' : ''}`}>
         <span className="font-['Avenir:Medium',sans-serif] text-[15px] text-[#1a1a1a]">{value}</span>
       </button>
     </div>
@@ -713,13 +713,17 @@ function LaundryControlApp({ variant }: { variant: TimeUxVariant }) {
                 )}
                 <div className="flex gap-[10px]">
                   <SelectorCard label="Temperature" 
-                    value={getFilteredWashTempOptions(state.cycle).length > 0 ? state.washTemp : ''}
+                    value={getFilteredWashTempOptions(state.cycle).length > 0 ? state.washTemp : '-'}
                     disabled={getFilteredWashTempOptions(state.cycle).length === 0}
                     onClick={() => getFilteredWashTempOptions(state.cycle).length > 0 && openPicker('Temperature', getFilteredWashTempOptions(state.cycle).map(v => ({ value: v, label: v })), state.washTemp, v => update({ washTemp: v as WashTemp }))} />
-                  <SelectorCard label="Spin" value={state.spin}
-                    onClick={() => openPicker('Spin', getFilteredSpinOptions(state.cycle).map(v => ({ value: v, label: v })), state.spin, v => update({ spin: v as SpinLevel }))} />
-                  <SelectorCard label="Soil" value={state.soil}
-                    onClick={() => openPicker('Soil', getFilteredSoilOptions(state.cycle).map(v => ({ value: v, label: v })), state.soil, v => update({ soil: v as SoilLevel }))} />
+                  <SelectorCard label="Spin"
+                    value={getFilteredSpinOptions(state.cycle).length > 0 ? state.spin : '-'}
+                    disabled={getFilteredSpinOptions(state.cycle).length === 0}
+                    onClick={() => getFilteredSpinOptions(state.cycle).length > 0 && openPicker('Spin', getFilteredSpinOptions(state.cycle).map(v => ({ value: v, label: v })), state.spin, v => update({ spin: v as SpinLevel }))} />
+                  <SelectorCard label="Soil"
+                    value={getFilteredSoilOptions(state.cycle).length > 0 ? state.soil : '-'}
+                    disabled={getFilteredSoilOptions(state.cycle).length === 0}
+                    onClick={() => getFilteredSoilOptions(state.cycle).length > 0 && openPicker('Soil', getFilteredSoilOptions(state.cycle).map(v => ({ value: v, label: v })), state.soil, v => update({ soil: v as SoilLevel }))} />
                 </div>
                 <ToggleRow label="Pre Wash" on={state.preWash} onChange={v => update({ preWash: v })} />
                 <ToggleRow label="Pre Soak" on={state.preSoak} onChange={v => update({ preSoak: v })} />
