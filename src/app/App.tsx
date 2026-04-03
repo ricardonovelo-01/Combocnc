@@ -42,7 +42,7 @@ const PROTOTYPE_META: Record<TimeUxVariant, { title: string; blurb: string }> = 
   },
   expandableTiming: {
     title: '5 Optional timed',
-    blurb: 'Segment picks sensor vs timed; the row shows dryness or time, with one short hint below.',
+    blurb: 'A switch above the row flips between sensor dry (dryness) and timed dry (minutes).',
   },
 };
 

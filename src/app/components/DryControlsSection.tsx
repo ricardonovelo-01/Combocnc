@@ -1,3 +1,4 @@
+import { Clock, Droplets } from 'lucide-react';
 import { useEffect, useState } from 'react';
 import type { Cycle, Dryness, DryTemp, LaundryState, Mode } from './laundry-state';
 import {
@@ -267,48 +268,46 @@ export function DryControlsSection({
     );
   }
 
-  /* expandableTiming: choose path first, then one end control (dryness XOR time) */
+  /* expandableTiming: switch above tiles; dryness OR time, never both */
   const timePath = timedRowVisible || timedActive;
 
-  const selectSensorPath = () => {
+  const switchToTimed = () => setTimedRowVisible(true);
+  const switchToSensor = () => {
     if (timedActive) goSensorDry();
     setTimedRowVisible(false);
-  };
-
-  const selectTimedPath = () => {
-    setTimedRowVisible(true);
   };
 
   return (
     <>
       {dryHeading}
-      {dryHeading && (
-        <p className="-mt-1 mb-2 font-['Avenir:Roman',sans-serif] text-[12px] leading-snug text-[#737373]">
-          Choose how the dry ends: moisture sensing or fixed minutes. Only one applies at a time.
+      <div className="flex flex-col gap-2">
+        {!timePath ? (
+          <button
+            type="button"
+            onClick={switchToTimed}
+            className="flex w-full items-center justify-center gap-2 rounded-[8px] bg-[#1a1a1a] px-4 py-3.5 font-['Avenir:Heavy',sans-serif] text-[14px] text-white shadow-sm active:opacity-90"
+          >
+            <Clock className="size-[18px] shrink-0" strokeWidth={2} aria-hidden />
+            Switch to timed dry
+          </button>
+        ) : (
+          <button
+            type="button"
+            onClick={switchToSensor}
+            className="flex w-full items-center justify-center gap-2 rounded-[8px] border border-[#d4d4d4] bg-white px-4 py-3.5 font-['Avenir:Heavy',sans-serif] text-[14px] text-[#1a1a1a] shadow-sm active:bg-[#fafafa]"
+          >
+            <Droplets className="size-[18px] shrink-0" strokeWidth={2} aria-hidden />
+            Switch to sensor dry
+          </button>
+        )}
+        <p className="text-center font-['Avenir:Roman',sans-serif] text-[11px] leading-snug text-[#737373]">
+          {!timePath
+            ? 'Temperature and dryness below follow moisture sensing.'
+            : timedActive
+              ? 'Time below is fixed minutes. Moisture sensing is off for this load.'
+              : 'Tap time to set minutes. Dryness returns when you switch back.'}
         </p>
-      )}
-
-      <div className="mb-3 rounded-[8px] bg-[#f2f2f2] p-1 flex gap-1">
-        <button
-          type="button"
-          onClick={selectSensorPath}
-          className={`flex-1 rounded-[6px] py-2.5 text-[13px] font-['Avenir:Heavy',sans-serif] transition-colors ${
-            !timePath ? 'bg-white text-[#1a1a1a] shadow-sm' : 'text-[#737373]'
-          }`}
-        >
-          Sensor dry
-        </button>
-        <button
-          type="button"
-          onClick={selectTimedPath}
-          className={`flex-1 rounded-[6px] py-2.5 text-[13px] font-['Avenir:Heavy',sans-serif] transition-colors ${
-            timePath ? 'bg-white text-[#1a1a1a] shadow-sm' : 'text-[#737373]'
-          }`}
-        >
-          Timed dry
-        </button>
       </div>
-
       <div className="flex gap-[10px]">
         {tempCard}
         {!timePath && drynessCard()}
@@ -327,14 +326,6 @@ export function DryControlsSection({
           />
         )}
       </div>
-
-      <p className="mt-2 font-['Avenir:Roman',sans-serif] text-[11px] leading-relaxed text-[#737373]">
-        {!timePath
-          ? 'Dryness sets the target feel. Switch to Timed dry when you want a set number of minutes instead.'
-          : timedActive
-            ? 'Running on your minute value. Moisture sensing is off. Switch to Sensor dry above to use dryness again.'
-            : 'Tap Time to set minutes. Dryness is hidden while you stay on this path.'}
-      </p>
     </>
   );
 }
