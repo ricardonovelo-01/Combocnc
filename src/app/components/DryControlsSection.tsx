@@ -103,7 +103,7 @@ export function DryControlsSection({
   const openTimedDryWheel = () => {
     const current =
       state.time ?? getTimeForDryness(cycle, state.dryness) ?? timedDryOptions[0] ?? 45;
-    openWheelPicker('Timed dry', timedDryOptions, current, selectTime);
+    openWheelPicker('Timed Dry', timedDryOptions, current, selectTime);
   };
 
   const [timedRowVisible, setTimedRowVisible] = useState(timedActive);
@@ -172,7 +172,7 @@ export function DryControlsSection({
         opts?.sublabel ??
         (state.time !== null ? 'Timed dry' : estFromSensor !== null ? 'Est. (sensor)' : undefined)
       }
-      onClick={() => pickTimeWheel(opts?.wheelTitle ?? 'Timed dry')}
+      onClick={() => pickTimeWheel(opts?.wheelTitle ?? 'Timed Dry')}
     />
   );
 
@@ -205,7 +205,7 @@ export function DryControlsSection({
               sensorSelected ? 'bg-white text-[#1a1a1a] shadow-sm' : 'text-[#737373]'
             }`}
           >
-            Sensor dry
+            Sensor Dry
           </button>
           <button
             type="button"
@@ -217,7 +217,7 @@ export function DryControlsSection({
               !sensorSelected ? 'bg-white text-[#1a1a1a] shadow-sm' : 'text-[#737373]'
             }`}
           >
-            Timed dry
+            Timed Dry
           </button>
         </div>
         <div className="flex gap-[10px]">
@@ -227,7 +227,7 @@ export function DryControlsSection({
             <DrySelectorCard
               label="Time"
               value={state.time !== null ? `${state.time} min` : '-'}
-              onClick={() => pickTimeWheel('Time')}
+              onClick={() => pickTimeWheel('Timed Dry')}
             />
           )}
         </div>
@@ -259,7 +259,10 @@ export function DryControlsSection({
   /* expandableTiming: switch above tiles; dryness OR time, never both */
   const timePath = timedRowVisible || timedActive;
 
-  const switchToTimed = () => setTimedRowVisible(true);
+  const switchToTimed = () => {
+    setTimedRowVisible(true);
+    openTimedDryWheel();
+  };
   const switchToSensor = () => {
     if (timedActive) goSensorDry();
     setTimedRowVisible(false);
@@ -277,7 +280,7 @@ export function DryControlsSection({
             className="flex min-h-[48px] w-full items-center justify-center gap-2 rounded-[8px] bg-[#f5f5f5] px-3 py-2 font-['Avenir:Heavy',sans-serif] text-[15px] text-[#1a1a1a] active:bg-[#ebebeb]"
           >
             <Clock className="size-[18px] shrink-0 text-[#404040]" strokeWidth={2} aria-hidden />
-            Switch to timed dry
+            Switch to Timed Dry
           </button>
         ) : (
           <button
@@ -286,7 +289,7 @@ export function DryControlsSection({
             className="flex min-h-[48px] w-full items-center justify-center gap-2 rounded-[8px] bg-[#f5f5f5] px-3 py-2 font-['Avenir:Heavy',sans-serif] text-[15px] text-[#1a1a1a] active:bg-[#ebebeb]"
           >
             <Droplets className="size-[18px] shrink-0 text-[#404040]" strokeWidth={2} aria-hidden />
-            Switch to sensor dry
+            Switch to Sensor Dry
           </button>
         )}
       </div>
@@ -297,7 +300,7 @@ export function DryControlsSection({
           <DrySelectorCard
             label="Time"
             value={state.time !== null ? `${state.time} min` : '-'}
-            onClick={() => pickTimeWheel('Time')}
+            onClick={() => pickTimeWheel('Timed Dry')}
           />
         )}
       </div>

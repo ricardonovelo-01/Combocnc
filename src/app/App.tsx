@@ -33,12 +33,12 @@ const PROTOTYPE_META: Record<TimeUxVariant, { title: string; blurb: string }> = 
     blurb: 'After you pick controls, a note explains when timed dry is active.',
   },
   segmented: {
-    title: '3 Sensor vs timed',
-    blurb: 'Toggle picks dryness or time. Time stays empty until you set minutes (no sensor estimate there).',
+    title: '3 Sensor Dry vs Timed Dry',
+    blurb: 'Segment toggles Sensor Dry or Timed Dry, then the row shows dryness or time. Time fills in after you pick minutes.',
   },
   expandableTiming: {
-    title: '4 Optional timed',
-    blurb: 'Mode switch then temp plus dryness or time. In timed mode, time is always fixed minutes.',
+    title: '4 Sensor Dry vs Timed Dry',
+    blurb: 'Mode switches between Sensor Dry and Timed Dry; switching to Timed Dry opens the minute picker like screen 3.',
   },
 };
 
