@@ -14,18 +14,22 @@ import {
   normalizeState,
   cyclesForMode,
   cycleLabel,
-  drynessLabel,
   getDefaultsForCycle,
   getFilteredWashTempOptions,
   getFilteredSpinOptions,
   getFilteredSoilOptions,
-  getFilteredDrynessOptions,
-  getFilteredDryTempOptions,
-  getFilteredTimedDryOptions,
-  getTimeForDryness,
   showWashSection,
   showDrySection,
 } from './components/laundry-state';
+import { DryControlsSection, type TimeUxVariant } from './components/DryControlsSection';
+
+const PROTOTYPE_CAPTIONS: Record<TimeUxVariant, string> = {
+  baseline: '1 · Baseline',
+  segmented: '2 · Sensor vs timed',
+  timedBanner: '3 · Timed banner',
+  consolidated: '4 · Combined dry',
+  expandableTiming: '5 · Optional timed',
+};
 
 // === Cycle Picker Full Screen ===
 function CyclePicker({ mode, currentCycle, onSelect, onClose }: {
@@ -413,17 +417,19 @@ export default function App() {
       {/* Explicit 3×360px grid so prototypes never shrink into one column; scroll horizontally on narrow viewports */}
       <div
         className="mx-auto grid h-full min-h-0 shrink-0 gap-6 sm:gap-8 p-4 sm:p-8 box-border"
-        style={{ gridTemplateColumns: 'repeat(3, 360px)' }}
+        style={{ gridTemplateColumns: 'repeat(5, 360px)' }}
       >
-        <LaundryControlApp />
-        <LaundryControlApp />
-        <LaundryControlApp />
+        <LaundryControlApp variant="baseline" />
+        <LaundryControlApp variant="segmented" />
+        <LaundryControlApp variant="timedBanner" />
+        <LaundryControlApp variant="consolidated" />
+        <LaundryControlApp variant="expandableTiming" />
       </div>
     </div>
   );
 }
 
-function LaundryControlApp() {
+function LaundryControlApp({ variant }: { variant: TimeUxVariant }) {
   const [state, setState] = useState<LaundryState>(initialState());
   const [picker, setPicker] = useState<{ title: string; options: { value: string; label: string }[]; current: string; onSelect: (v: string) => void } | null>(null);
   const [wheelPicker, setWheelPicker] = useState<{ title: string; options: number[]; current: number | null; onSelect: (v: number) => void } | null>(null);
@@ -547,6 +553,9 @@ function LaundryControlApp() {
           </div>
           <div className="px-4 flex flex-col gap-2">
             <p className="font-['Avenir:Heavy',sans-serif] text-[20px] text-[#1a1a1a] leading-[1.4]">Combo</p>
+            <p className="font-['Avenir:Medium',sans-serif] text-[10px] text-[#a3a3a3] text-center leading-tight">
+              {PROTOTYPE_CAPTIONS[variant]}
+            </p>
             <div className="flex items-center gap-1">
               <span className="bg-[#dff0e8] text-[#0f7e00] text-[12px] font-['Avenir:Roman',sans-serif] px-2 py-0.5 rounded-full flex items-center gap-1">
                 Remote Start On
@@ -638,55 +647,26 @@ function LaundryControlApp() {
               </>
             )}
 
-            {/* Dry Section */}
-            {showDry && (() => {
-              const dryTempOptions = getFilteredDryTempOptions(state.cycle);
-              const drynessOptions = getFilteredDrynessOptions(state.cycle);
-              const timedDryOptions = getFilteredTimedDryOptions(state.cycle);
-              
-              return (
-                <>
-                  {state.mode === 'WASH_DRY' && (
-                    <p className="capitalize font-['Avenir:Heavy',sans-serif] text-[16px] text-[#1a1a1a]">Dry</p>
-                  )}
-                  <div className="flex gap-[10px]">
-                    <SelectorCard 
-                      label="Temperature" 
-                      value={dryTempOptions.length > 0 ? state.dryTemp : ''}
-                      disabled={dryTempOptions.length === 0}
-                      onClick={() => dryTempOptions.length > 0 && openPicker('Dry Temperature', dryTempOptions.map(v => ({ value: v, label: v })), state.dryTemp, v => update({ dryTemp: v as DryTemp }))} 
-                    />
-                    <SelectorCard 
-                      label="Dryness" 
-                      value={drynessOptions.length === 0 ? '' : (state.dryness === 'OFF' ? '-' : drynessLabel(state.dryness))}
-                      disabled={drynessOptions.length === 0}
-                      onClick={() => drynessOptions.length > 0 && openPicker('Dryness', drynessOptions.map(v => ({ value: v, label: drynessLabel(v) })), state.dryness, v => selectDryness(v as Dryness))} 
-                    />
-                    <SelectorCard 
-                      label="Time" 
-                      value={
-                        state.time !== null 
-                          ? `${state.time} min` 
-                          : (() => {
-                              // If dryness is set, show its associated time
-                              const drynessTime = getTimeForDryness(state.cycle, state.dryness);
-                              return drynessTime !== null ? `${drynessTime} min` : '-';
-                            })()
-                      }
-                      onClick={() => {
-                        // Pass the current effective time (either custom time or dryness-associated time)
-                        const currentTime = state.time !== null ? state.time : getTimeForDryness(state.cycle, state.dryness);
-                        openWheelPicker('Time', timedDryOptions, currentTime, selectTime);
-                      }} 
-                    />
-                  </div>
-                  <ToggleRow label="Damp Signal" on={state.dampSignal} onChange={v => update({ dampSignal: v })} />
-                  {state.mode === 'WASH_DRY' && (
-                    <ToggleRow label="Delay Dry" on={state.delayDry} onChange={v => update({ delayDry: v })} />
-                  )}
-                </>
-              );
-            })()}
+            {/* Dry Section — variant explorations for sensor vs timed dry */}
+            {showDry && (
+              <>
+                <DryControlsSection
+                  variant={variant}
+                  mode={state.mode}
+                  state={state}
+                  cycle={state.cycle}
+                  update={update}
+                  openPicker={openPicker}
+                  openWheelPicker={openWheelPicker}
+                  selectDryness={selectDryness}
+                  selectTime={selectTime}
+                />
+                <ToggleRow label="Damp Signal" on={state.dampSignal} onChange={v => update({ dampSignal: v })} />
+                {state.mode === 'WASH_DRY' && (
+                  <ToggleRow label="Delay Dry" on={state.delayDry} onChange={v => update({ delayDry: v })} />
+                )}
+              </>
+            )}
 
             {/* Wrinkle Shield - Always visible in all modes */}
             <ToggleRow label="Wrinkle Shield" on={state.wrinkleShield} onChange={v => update({ wrinkleShield: v })} info />
