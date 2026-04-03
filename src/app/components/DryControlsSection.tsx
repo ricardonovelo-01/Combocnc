@@ -10,6 +10,7 @@ import {
 } from './laundry-state';
 
 export type TimeUxVariant =
+  | 'baselinePlain'
   | 'baseline'
   | 'segmented'
   | 'timedBanner'
@@ -149,7 +150,7 @@ export function DryControlsSection({
     />
   );
 
-  const timeCard = (opts?: { sublabel?: string; wheelTitle?: string }) => (
+  const timeCard = (opts?: { sublabel?: string; wheelTitle?: string; omitSublabel?: boolean }) => (
     <DrySelectorCard
       label="Time"
       value={
@@ -160,12 +161,27 @@ export function DryControlsSection({
             : '-'
       }
       sublabel={
-        opts?.sublabel ??
-        (state.time !== null ? 'Timed dry' : estFromSensor !== null ? 'Est. (sensor)' : undefined)
+        opts?.omitSublabel
+          ? undefined
+          : (opts?.sublabel ??
+            (state.time !== null ? 'Timed dry' : estFromSensor !== null ? 'Est. (sensor)' : undefined))
       }
       onClick={() => pickTimeWheel(opts?.wheelTitle ?? 'Timed dry')}
     />
   );
+
+  if (variant === 'baselinePlain') {
+    return (
+      <>
+        {dryHeading}
+        <div className="flex gap-[10px]">
+          {tempCard}
+          {drynessCard()}
+          {timeCard({ wheelTitle: 'Time', omitSublabel: true })}
+        </div>
+      </>
+    );
+  }
 
   if (variant === 'baseline') {
     return (
@@ -204,6 +220,13 @@ export function DryControlsSection({
             Timed dry
           </button>
         </div>
+        <div className="flex gap-[10px]">
+          {tempCard}
+          {drynessCard()}
+          {timeCard({
+            sublabel: timedActive ? 'Timed dry' : estFromSensor !== null ? 'Est. (sensor)' : undefined,
+          })}
+        </div>
         {timedActive && (
           <div className="rounded-[10px] border border-[#e5e5e5] bg-[#fafafa] px-3 py-2.5">
             <p className="font-['Avenir:Heavy',sans-serif] text-[13px] text-[#1a1a1a]">Timed dry</p>
@@ -217,13 +240,6 @@ export function DryControlsSection({
           <p className="font-['Avenir:Roman',sans-serif] text-[12px] text-[#525252] leading-snug mt-0.5">
             The dryer uses moisture sensing and your dryness setting to decide when to stop.
           </p>
-        </div>
-        <div className="flex gap-[10px]">
-          {tempCard}
-          {drynessCard()}
-          {timeCard({
-            sublabel: timedActive ? 'Timed dry' : estFromSensor !== null ? 'Est. (sensor)' : undefined,
-          })}
         </div>
       </>
     );

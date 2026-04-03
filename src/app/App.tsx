@@ -24,20 +24,24 @@ import {
 import { DryControlsSection, type TimeUxVariant } from './components/DryControlsSection';
 
 const PROTOTYPE_META: Record<TimeUxVariant, { title: string; blurb: string }> = {
-  baseline: {
+  baselinePlain: {
     title: '1 Baseline',
-    blurb: 'Dry temp, dryness, and time as three equal tiles.',
+    blurb: 'Same three tiles as the next screen; Time shows minutes only, no Timed dry or Est. lines.',
+  },
+  baseline: {
+    title: '2 Baseline + hints',
+    blurb: 'Dry temp, dryness, and time with small labels under Time when timed or sensor estimate applies.',
   },
   timedBanner: {
-    title: '2 Timed banner',
+    title: '3 Timed banner',
     blurb: 'After you pick controls, a note explains when timed dry is active.',
   },
   segmented: {
-    title: '3 Sensor vs timed',
-    blurb: 'Pick a dry mode first, then use the same tiles underneath.',
+    title: '4 Sensor vs timed',
+    blurb: 'Pick a dry mode first, then tiles; sensor and timed copy sits below the row.',
   },
   expandableTiming: {
-    title: '4 Optional timed',
+    title: '5 Optional timed',
     blurb: 'Time stays hidden until you ask for a fixed minute value.',
   },
 };
@@ -422,14 +426,20 @@ function ModeCard({ label, active, onClick, icon }: { label: string; active: boo
   );
 }
 
-const PROTOTYPE_ORDER: TimeUxVariant[] = ['baseline', 'timedBanner', 'segmented', 'expandableTiming'];
+const PROTOTYPE_ORDER: TimeUxVariant[] = [
+  'baselinePlain',
+  'baseline',
+  'timedBanner',
+  'segmented',
+  'expandableTiming',
+];
 
 export default function App() {
   return (
     <div className="flex-1 min-h-0 w-full min-w-0 overflow-x-auto overflow-y-hidden bg-gray-100 box-border">
       <div
         className="mx-auto grid h-full min-h-0 shrink-0 gap-6 sm:gap-8 p-4 sm:p-8 box-border"
-        style={{ gridTemplateColumns: 'repeat(4, 360px)' }}
+        style={{ gridTemplateColumns: 'repeat(5, 360px)' }}
       >
         {PROTOTYPE_ORDER.map(variant => (
           <div key={variant} className="flex min-h-0 h-full flex-col gap-2">
