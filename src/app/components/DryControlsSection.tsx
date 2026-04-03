@@ -177,6 +177,23 @@ export function DryControlsSection({
     />
   );
 
+  /** Time tile when the product cannot show sensor-derived minutes (baseline no-estimate + timed banner). */
+  const timeTileNoSensorEstimate = (
+    <DrySelectorCard
+      label="Time"
+      value={state.time !== null ? `${state.time} min` : '-'}
+      sublabel={state.time !== null ? 'Timed dry' : undefined}
+      onClick={() =>
+        openWheelPicker(
+          'Time',
+          timedDryOptions,
+          state.time ?? timedDryOptions[0] ?? 45,
+          selectTime,
+        )
+      }
+    />
+  );
+
   if (variant === 'baseline') {
     return (
       <>
@@ -192,19 +209,13 @@ export function DryControlsSection({
 
   /** Baseline layout but UI cannot show sensor-derived minutes (no estimate, no Est. label). */
   if (variant === 'baselineNoSensorEstimate') {
-    const wheelDefault = state.time ?? timedDryOptions[0] ?? 45;
     return (
       <>
         {dryHeading}
         <div className="flex gap-[10px]">
           {tempCard}
           {drynessCard()}
-          <DrySelectorCard
-            label="Time"
-            value={state.time !== null ? `${state.time} min` : '-'}
-            sublabel={state.time !== null ? 'Timed dry' : undefined}
-            onClick={() => openWheelPicker('Time', timedDryOptions, wheelDefault, selectTime)}
-          />
+          {timeTileNoSensorEstimate}
         </div>
       </>
     );
@@ -263,7 +274,7 @@ export function DryControlsSection({
         <div className="flex gap-[10px]">
           {tempCard}
           {drynessCard()}
-          {timeCard()}
+          {timeTileNoSensorEstimate}
         </div>
         {timedActive && (
           <div className="rounded-[10px] border border-[#e5e5e5] bg-[#fafafa] px-3 py-2.5">
