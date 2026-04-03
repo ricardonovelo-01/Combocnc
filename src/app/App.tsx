@@ -1,4 +1,4 @@
-import { ArrowLeft, Heart, Settings, Info, ChevronDown, ChevronRight, X, Droplet, Sun, Shirt } from 'lucide-react';
+import { ArrowLeft, Heart, Settings, Info, ChevronDown, ChevronUp, ChevronRight, X, Droplet, Sun, Shirt } from 'lucide-react';
 import { useState, useCallback, useEffect } from 'react';
 import washerImage from '../imports/ComboCC/158356eed04099aa3d6c70763cd639a6f7aa97e9.png';
 import {
@@ -29,12 +29,12 @@ const PROTOTYPE_META: Record<TimeUxVariant, { title: string; blurb: string }> = 
     blurb: 'Segment toggles Sensor Dry or Timed Dry, then the row shows dryness or time. Time fills in after you pick minutes.',
   },
   baselineNoSensorEstimate: {
-    title: '2 Baseline (no sensor estimate)',
+    title: '3 Baseline (no sensor estimate)',
     blurb: 'Same three tiles; Time never shows a sensor minute guess, only Timed dry minutes or a dash.',
   },
   timedBanner: {
-    title: '3 Timed banner (no estimate)',
-    blurb: 'Same Time rules as screen 2, plus a note when Timed dry is on.',
+    title: '2 Timed banner (no estimate)',
+    blurb: 'Same Time rules as the no-estimate baseline (Other explorations), plus a note when Timed dry is on.',
   },
   baseline: {
     title: '4 Baseline',
@@ -426,36 +426,79 @@ function ModeCard({ label, active, onClick, icon }: { label: string; active: boo
   );
 }
 
-const PROTOTYPE_ORDER: TimeUxVariant[] = [
-  'segmented',
+/** Primary gallery: column 1 + former #3 as column 2. */
+const PRIMARY_PROTOTYPES: TimeUxVariant[] = ['segmented', 'timedBanner'];
+
+/** Collapsible under “Other explorations”. */
+const OTHER_PROTOTYPES: TimeUxVariant[] = [
   'baselineNoSensorEstimate',
-  'timedBanner',
   'baseline',
   'expandableTiming',
 ];
 
-export default function App() {
+function PrototypeColumn({ variant }: { variant: TimeUxVariant }) {
+  const meta = PROTOTYPE_META[variant];
   return (
-    <div className="flex-1 min-h-0 w-full min-w-0 overflow-x-auto overflow-y-hidden bg-gray-100 box-border">
-      <div
-        className="mx-auto grid h-full min-h-0 shrink-0 gap-6 sm:gap-8 p-4 sm:p-8 box-border"
-        style={{ gridTemplateColumns: 'repeat(5, 360px)' }}
-      >
-        {PROTOTYPE_ORDER.map(variant => (
-          <div key={variant} className="flex min-h-0 h-full flex-col gap-2">
-            <div className="shrink-0 px-1 text-center">
-              <p className="font-['Avenir:Heavy',sans-serif] text-[12px] text-[#404040]">
-                {PROTOTYPE_META[variant].title}
-              </p>
-              <p className="mt-1 font-['Avenir:Roman',sans-serif] text-[11px] leading-snug text-[#737373]">
-                {PROTOTYPE_META[variant].blurb}
-              </p>
-            </div>
-            <div className="min-h-0 flex-1">
-              <LaundryControlApp variant={variant} />
-            </div>
+    <div className="flex h-[min(100vh-8rem,880px)] w-[360px] shrink-0 flex-col gap-2">
+      <div className="shrink-0 px-1 text-center">
+        <p className="font-['Avenir:Heavy',sans-serif] text-[12px] text-[#404040]">{meta.title}</p>
+        <p className="mt-1 font-['Avenir:Roman',sans-serif] text-[11px] leading-snug text-[#737373]">
+          {meta.blurb}
+        </p>
+      </div>
+      <div className="min-h-0 flex-1">
+        <LaundryControlApp variant={variant} />
+      </div>
+    </div>
+  );
+}
+
+export default function App() {
+  const [otherOpen, setOtherOpen] = useState(false);
+
+  return (
+    <div className="flex-1 min-h-0 w-full min-w-0 overflow-x-auto overflow-y-auto bg-gray-100 box-border">
+      <div className="mx-auto flex min-h-0 w-max max-w-full flex-col gap-6 p-4 sm:p-8 sm:gap-8 box-border">
+        <div
+          className="grid shrink-0 gap-6 sm:gap-8"
+          style={{ gridTemplateColumns: 'repeat(2, 360px)' }}
+        >
+          {PRIMARY_PROTOTYPES.map(variant => (
+            <PrototypeColumn key={variant} variant={variant} />
+          ))}
+        </div>
+
+        <div className="flex w-full max-w-[calc(360px*2+1.5rem)] justify-center shrink-0">
+          <button
+            type="button"
+            onClick={() => setOtherOpen(o => !o)}
+            aria-expanded={otherOpen}
+            className="flex w-full max-w-md items-center justify-center gap-2 rounded-[12px] border border-[#d4d4d4] bg-white px-4 py-3 shadow-sm transition-colors hover:bg-[#fafafa]"
+          >
+            <span className="font-['Avenir:Heavy',sans-serif] text-[13px] text-[#1a1a1a]">
+              Other explorations
+            </span>
+            {otherOpen ? (
+              <ChevronUp size={18} className="text-[#404040]" aria-hidden />
+            ) : (
+              <ChevronDown size={18} className="text-[#404040]" aria-hidden />
+            )}
+            <span className="font-['Avenir:Medium',sans-serif] text-[12px] text-[#737373]">
+              {otherOpen ? 'Hide' : 'Show'} 3 more
+            </span>
+          </button>
+        </div>
+
+        {otherOpen && (
+          <div
+            className="grid shrink-0 gap-6 sm:gap-8 pb-4"
+            style={{ gridTemplateColumns: 'repeat(3, 360px)' }}
+          >
+            {OTHER_PROTOTYPES.map(variant => (
+              <PrototypeColumn key={variant} variant={variant} />
+            ))}
           </div>
-        ))}
+        )}
       </div>
     </div>
   );
