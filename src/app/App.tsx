@@ -23,11 +23,23 @@ import {
 } from './components/laundry-state';
 import { DryControlsSection, type TimeUxVariant } from './components/DryControlsSection';
 
-const PROTOTYPE_CAPTIONS: Record<TimeUxVariant, string> = {
-  baseline: '1 · Baseline',
-  timedBanner: '2 · Timed banner',
-  segmented: '3 · Sensor vs timed',
-  expandableTiming: '4 · Optional timed',
+const PROTOTYPE_META: Record<TimeUxVariant, { title: string; blurb: string }> = {
+  baseline: {
+    title: '1 Baseline',
+    blurb: 'Dry temp, dryness, and time as three equal tiles.',
+  },
+  timedBanner: {
+    title: '2 Timed banner',
+    blurb: 'After you pick controls, a note explains when timed dry is active.',
+  },
+  segmented: {
+    title: '3 Sensor vs timed',
+    blurb: 'Pick a dry mode first, then use the same tiles underneath.',
+  },
+  expandableTiming: {
+    title: '4 Optional timed',
+    blurb: 'Time stays hidden until you ask for a fixed minute value.',
+  },
 };
 
 // === Cycle Picker Full Screen ===
@@ -421,9 +433,14 @@ export default function App() {
       >
         {PROTOTYPE_ORDER.map(variant => (
           <div key={variant} className="flex min-h-0 h-full flex-col gap-2">
-            <p className="shrink-0 text-center font-['Avenir:Medium',sans-serif] text-[12px] text-[#525252]">
-              {PROTOTYPE_CAPTIONS[variant]}
-            </p>
+            <div className="shrink-0 px-1 text-center">
+              <p className="font-['Avenir:Heavy',sans-serif] text-[12px] text-[#404040]">
+                {PROTOTYPE_META[variant].title}
+              </p>
+              <p className="mt-1 font-['Avenir:Roman',sans-serif] text-[11px] leading-snug text-[#737373]">
+                {PROTOTYPE_META[variant].blurb}
+              </p>
+            </div>
             <div className="min-h-0 flex-1">
               <LaundryControlApp variant={variant} />
             </div>
@@ -649,7 +666,7 @@ function LaundryControlApp({ variant }: { variant: TimeUxVariant }) {
               </>
             )}
 
-            {/* Dry Section — variant explorations for sensor vs timed dry */}
+            {/* Dry section: variant explorations */}
             {showDry && (
               <>
                 <DryControlsSection
