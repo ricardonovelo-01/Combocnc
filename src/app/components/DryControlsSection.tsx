@@ -13,7 +13,6 @@ export type TimeUxVariant =
   | 'baseline'
   | 'segmented'
   | 'timedBanner'
-  | 'consolidated'
   | 'expandableTiming';
 
 function DrySelectorCard({
@@ -93,10 +92,6 @@ export function DryControlsSection({
   const pickTimeWheel = (title: string) => {
     const currentTime = state.time !== null ? state.time : getTimeForDryness(cycle, state.dryness);
     openWheelPicker(title, timedDryOptions, currentTime, selectTime);
-  };
-
-  const clearTimedDry = () => {
-    update({ time: null });
   };
 
   const goSensorDry = () => {
@@ -189,11 +184,11 @@ export function DryControlsSection({
     return (
       <>
         {dryHeading}
-        <div className="mb-1 rounded-full bg-[#ececec] p-1 flex">
+        <div className="rounded-[8px] bg-[#f2f2f2] p-1 flex gap-1">
           <button
             type="button"
             onClick={goSensorDry}
-            className={`flex-1 rounded-full py-2 text-[13px] font-['Avenir:Heavy',sans-serif] transition-colors ${
+            className={`flex-1 rounded-[6px] py-2.5 text-[13px] font-['Avenir:Heavy',sans-serif] transition-colors ${
               !timedActive ? 'bg-white text-[#1a1a1a] shadow-sm' : 'text-[#737373]'
             }`}
           >
@@ -202,18 +197,28 @@ export function DryControlsSection({
           <button
             type="button"
             onClick={openTimedDryWheel}
-            className={`flex-1 rounded-full py-2 text-[13px] font-['Avenir:Heavy',sans-serif] transition-colors ${
+            className={`flex-1 rounded-[6px] py-2.5 text-[13px] font-['Avenir:Heavy',sans-serif] transition-colors ${
               timedActive ? 'bg-white text-[#1a1a1a] shadow-sm' : 'text-[#737373]'
             }`}
           >
             Timed dry
           </button>
         </div>
-        <p className="text-[11px] text-[#737373] leading-snug -mt-0.5 mb-1">
-          {timedActive
-            ? 'Moisture sensing is off — the dryer runs for a fixed time (timed dry).'
-            : 'Moisture sensing adjusts the run using dryness level.'}
-        </p>
+        {timedActive ? (
+          <div className="rounded-[10px] border border-amber-200/80 bg-amber-50 px-3 py-2.5">
+            <p className="font-['Avenir:Heavy',sans-serif] text-[13px] text-amber-950">Timed dry</p>
+            <p className="font-['Avenir:Roman',sans-serif] text-[12px] text-amber-900/90 leading-snug mt-0.5">
+              Moisture sensing is off for this load. The dryer runs for the minutes you choose.
+            </p>
+          </div>
+        ) : (
+          <div className="rounded-[10px] border border-[#e5e5e5] bg-[#fafafa] px-3 py-2.5">
+            <p className="font-['Avenir:Heavy',sans-serif] text-[13px] text-[#1a1a1a]">Sensor dry</p>
+            <p className="font-['Avenir:Roman',sans-serif] text-[12px] text-[#525252] leading-snug mt-0.5">
+              The dryer uses moisture sensing and your dryness setting to decide when to stop.
+            </p>
+          </div>
+        )}
         <div className="flex gap-[10px]">
           {tempCard}
           {drynessCard({ disabled: timedActive, sublabel: timedActive ? 'Not used' : undefined })}
@@ -235,6 +240,13 @@ export function DryControlsSection({
             <p className="font-['Avenir:Roman',sans-serif] text-[12px] text-amber-900/90 leading-snug mt-0.5">
               You’re no longer using a sensor-based dry. The dryer will run for the minutes you set.
             </p>
+            <button
+              type="button"
+              onClick={goSensorDry}
+              className="mt-2.5 w-full rounded-[8px] border border-amber-200/90 bg-white py-2.5 font-['Avenir:Heavy',sans-serif] text-[13px] text-amber-950 shadow-sm"
+            >
+              Use sensor dry instead
+            </button>
           </div>
         )}
         <div className="flex gap-[10px]">
@@ -244,65 +256,6 @@ export function DryControlsSection({
             sublabel: timedActive ? 'Sensor off' : undefined,
           })}
           {timeCard()}
-        </div>
-      </>
-    );
-  }
-
-  if (variant === 'consolidated') {
-    return (
-      <>
-        {dryHeading}
-        <div className="flex gap-[10px] items-stretch">
-          <div className="flex-1 min-w-0">{tempCard}</div>
-          <div className="flex-[2] min-w-0 flex flex-col gap-1.5">
-            <p className="font-['Avenir:Medium',sans-serif] text-[14px] text-[#404040]">Dry</p>
-            <div className="flex flex-col rounded-[8px] overflow-hidden border border-[#e5e5e5] bg-[#fafafa]">
-              <button
-                type="button"
-                disabled={drynessOptions.length === 0 || timedActive}
-                onClick={() =>
-                  drynessOptions.length > 0 &&
-                  !timedActive &&
-                  openPicker(
-                    'Dryness',
-                    drynessOptions.map(v => ({ value: v, label: drynessLabel(v) })),
-                    state.dryness,
-                    v => selectDryness(v as Dryness),
-                  )
-                }
-                className={`min-h-[48px] w-full px-3 py-2.5 text-left border-b border-[#e5e5e5] ${
-                  timedActive ? 'opacity-50' : ''
-                }`}
-              >
-                <p className="font-['Avenir:Medium',sans-serif] text-[11px] text-[#737373] uppercase tracking-wide">
-                  Moisture level
-                </p>
-                <p className="font-['Avenir:Medium',sans-serif] text-[15px] text-[#1a1a1a]">
-                  {drynessOptions.length === 0 ? '—' : timedActive ? '—' : drynessLabel(state.dryness)}
-                </p>
-              </button>
-              <button
-                type="button"
-                onClick={() => pickTimeWheel('Timed dry')}
-                className="min-h-[48px] w-full px-3 py-2.5 text-left"
-              >
-                <p className="font-['Avenir:Medium',sans-serif] text-[11px] text-[#737373] uppercase tracking-wide">
-                  {timedActive ? 'Timed dry' : 'Time'}
-                </p>
-                <p className="font-['Avenir:Medium',sans-serif] text-[15px] text-[#1a1a1a]">
-                  {timedActive
-                    ? `${state.time} min · fixed`
-                    : estFromSensor !== null
-                      ? `~${estFromSensor} min est. (sensor)`
-                      : '—'}
-                </p>
-              </button>
-            </div>
-            <p className="text-[11px] text-[#737373] leading-snug">
-              Picking a custom time switches to timed dry and turns off moisture sensing for this load.
-            </p>
-          </div>
         </div>
       </>
     );
@@ -334,27 +287,36 @@ export function DryControlsSection({
         <button
           type="button"
           onClick={() => setTimedRowVisible(true)}
-          className="w-full rounded-[8px] border border-dashed border-[#c4c4c4] bg-white py-3 font-['Avenir:Medium',sans-serif] text-[14px] text-[#404040]"
+          className="w-full rounded-[8px] bg-[#f2f2f2] h-[52px] flex items-center justify-center gap-2 font-['Avenir:Heavy',sans-serif] text-[14px] text-[#1a1a1a]"
         >
-          + Use timed dry (fixed minutes)
+          <span className="text-[18px] leading-none font-['Avenir:Heavy',sans-serif]">+</span>
+          Add timed dry
         </button>
       )}
       {timedRowVisible && !timedActive && (
-        <p className="text-[11px] text-[#737373] leading-snug">
-          Optional: set an exact dry time. This uses timed dry and turns off moisture sensing.
-        </p>
+        <div className="rounded-[10px] border border-[#e5e5e5] bg-[#fafafa] px-3 py-2.5">
+          <p className="font-['Avenir:Heavy',sans-serif] text-[13px] text-[#1a1a1a]">Timed dry</p>
+          <p className="font-['Avenir:Roman',sans-serif] text-[12px] text-[#525252] leading-snug mt-0.5">
+            Set a fixed dry time. Moisture sensing will be off for this load.
+          </p>
+        </div>
       )}
       {timedActive && (
-        <button
-          type="button"
-          onClick={() => {
-            clearTimedDry();
-            setTimedRowVisible(false);
-          }}
-          className="text-[13px] font-['Avenir:Medium',sans-serif] text-[#2563eb] text-center py-1"
-        >
-          Clear timed dry — use sensor dry
-        </button>
+        <div className="rounded-[10px] border border-amber-200/80 bg-amber-50 px-3 py-2.5">
+          <p className="font-['Avenir:Roman',sans-serif] text-[12px] text-amber-900/90 leading-snug">
+            Timed dry is active. You can switch back to moisture sensing anytime.
+          </p>
+          <button
+            type="button"
+            onClick={() => {
+              goSensorDry();
+              setTimedRowVisible(false);
+            }}
+            className="mt-2.5 w-full rounded-[8px] border border-amber-200/90 bg-white py-2.5 font-['Avenir:Heavy',sans-serif] text-[13px] text-amber-950 shadow-sm"
+          >
+            Use sensor dry instead
+          </button>
+        </div>
       )}
     </>
   );

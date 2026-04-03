@@ -27,8 +27,7 @@ const PROTOTYPE_CAPTIONS: Record<TimeUxVariant, string> = {
   baseline: '1 · Baseline',
   segmented: '2 · Sensor vs timed',
   timedBanner: '3 · Timed banner',
-  consolidated: '4 · Combined dry',
-  expandableTiming: '5 · Optional timed',
+  expandableTiming: '4 · Optional timed',
 };
 
 // === Cycle Picker Full Screen ===
@@ -417,12 +416,11 @@ export default function App() {
       {/* Explicit 3×360px grid so prototypes never shrink into one column; scroll horizontally on narrow viewports */}
       <div
         className="mx-auto grid h-full min-h-0 shrink-0 gap-6 sm:gap-8 p-4 sm:p-8 box-border"
-        style={{ gridTemplateColumns: 'repeat(5, 360px)' }}
+        style={{ gridTemplateColumns: 'repeat(4, 360px)' }}
       >
         <LaundryControlApp variant="baseline" />
         <LaundryControlApp variant="segmented" />
         <LaundryControlApp variant="timedBanner" />
-        <LaundryControlApp variant="consolidated" />
         <LaundryControlApp variant="expandableTiming" />
       </div>
     </div>
