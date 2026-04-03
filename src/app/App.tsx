@@ -409,8 +409,12 @@ function ModeCard({ label, active, onClick, icon }: { label: string; active: boo
 
 export default function App() {
   return (
-    <div className="flex-1 min-h-0 w-full bg-gray-100 overflow-x-auto overflow-y-hidden box-border">
-      <div className="flex h-full min-h-0 w-max max-w-none mx-auto items-stretch justify-center gap-6 sm:gap-8 p-4 sm:p-8 box-border">
+    <div className="flex-1 min-h-0 w-full min-w-0 overflow-x-auto overflow-y-hidden bg-gray-100 box-border">
+      {/* Explicit 3×360px grid so prototypes never shrink into one column; scroll horizontally on narrow viewports */}
+      <div
+        className="mx-auto grid h-full min-h-0 shrink-0 gap-6 sm:gap-8 p-4 sm:p-8 box-border"
+        style={{ gridTemplateColumns: 'repeat(3, 360px)' }}
+      >
         <LaundryControlApp />
         <LaundryControlApp />
         <LaundryControlApp />
@@ -494,7 +498,7 @@ function LaundryControlApp() {
   const imageOpacity = Math.max(0.3, 1 - scrollY / 200);
 
   return (
-    <div className="relative h-full min-h-0 w-[360px] shrink-0 bg-white flex flex-col overflow-hidden shadow-2xl rounded-[20px]">
+    <div className="relative h-full min-h-0 w-full min-w-0 bg-white flex flex-col overflow-hidden shadow-2xl rounded-[20px]">
       {/* Status Bar */}
       <div className="absolute top-0 left-0 right-0 z-40 bg-white">
         <div className="h-[44px] px-6 flex items-center justify-between">
