@@ -1,4 +1,4 @@
-import { ArrowLeft, Heart, Settings, Info, ChevronDown, ChevronUp, ChevronRight, X, Droplet, Sun, Shirt } from 'lucide-react';
+import { ArrowLeft, Heart, Settings, Info, ChevronDown, ChevronUp, ChevronLeft, ChevronRight, X, Droplet, Sun, Shirt } from 'lucide-react';
 import { useState, useCallback, useEffect } from 'react';
 import washerImage from '../imports/ComboCC/158356eed04099aa3d6c70763cd639a6f7aa97e9.png';
 import {
@@ -458,7 +458,7 @@ export default function App() {
 
   return (
     <div className="flex-1 min-h-0 w-full min-w-0 overflow-x-auto overflow-y-auto bg-gray-100 box-border">
-      <div className="mx-auto flex min-h-0 w-max flex-row flex-nowrap items-start gap-6 p-4 sm:p-8 sm:gap-8 box-border">
+      <div className="mx-auto flex min-h-0 w-max flex-row flex-nowrap items-stretch gap-6 p-4 sm:p-8 sm:gap-8 box-border">
         <div
           className="grid shrink-0 gap-6 sm:gap-8"
           style={{ gridTemplateColumns: 'repeat(2, 360px)' }}
@@ -468,37 +468,43 @@ export default function App() {
           ))}
         </div>
 
-        <div className="flex shrink-0 flex-col gap-6 sm:gap-8">
+        <div className="flex w-[72px] shrink-0 flex-col self-stretch sm:w-[88px]">
           <button
             type="button"
             onClick={() => setOtherOpen(o => !o)}
             aria-expanded={otherOpen}
-            className="flex w-full items-center justify-center gap-2 rounded-[12px] border border-[#d4d4d4] bg-white px-4 py-3 shadow-sm transition-colors hover:bg-[#fafafa]"
+            className="flex h-full min-h-0 flex-1 flex-col items-center justify-center gap-4 rounded-[12px] border border-[#d4d4d4] bg-white px-3 py-6 shadow-sm transition-colors hover:bg-[#fafafa]"
           >
-            <span className="font-['Avenir:Heavy',sans-serif] text-[13px] text-[#1a1a1a]">
+            <span className="font-['Avenir:Heavy',sans-serif] text-[12px] leading-tight text-[#1a1a1a] text-center [writing-mode:vertical-rl]">
               Other explorations
             </span>
             {otherOpen ? (
-              <ChevronUp size={18} className="text-[#404040]" aria-hidden />
+              <ChevronLeft size={18} className="text-[#404040]" aria-hidden />
             ) : (
-              <ChevronDown size={18} className="text-[#404040]" aria-hidden />
+              <ChevronRight size={18} className="text-[#404040]" aria-hidden />
             )}
-            <span className="font-['Avenir:Medium',sans-serif] text-[12px] text-[#737373]">
-              {otherOpen ? 'Hide' : 'Show'} 3 more
+            <span className="font-['Avenir:Medium',sans-serif] text-[10px] leading-tight text-[#737373] text-center">
+              {otherOpen ? 'Hide' : (
+                <>
+                  Show
+                  <br />
+                  3 more
+                </>
+              )}
             </span>
           </button>
-
-          {otherOpen && (
-            <div
-              className="grid shrink-0 gap-6 sm:gap-8"
-              style={{ gridTemplateColumns: 'repeat(3, 360px)' }}
-            >
-              {OTHER_PROTOTYPES.map(variant => (
-                <PrototypeColumn key={variant} variant={variant} />
-              ))}
-            </div>
-          )}
         </div>
+
+        {otherOpen && (
+          <div
+            className="grid shrink-0 gap-6 sm:gap-8"
+            style={{ gridTemplateColumns: 'repeat(3, 360px)' }}
+          >
+            {OTHER_PROTOTYPES.map(variant => (
+              <PrototypeColumn key={variant} variant={variant} />
+            ))}
+          </div>
+        )}
       </div>
     </div>
   );
