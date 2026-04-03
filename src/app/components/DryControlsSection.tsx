@@ -267,12 +267,48 @@ export function DryControlsSection({
     );
   }
 
-  /* expandableTiming: dryness OR time in the row, never both */
+  /* expandableTiming: choose path first, then one end control (dryness XOR time) */
   const timePath = timedRowVisible || timedActive;
+
+  const selectSensorPath = () => {
+    if (timedActive) goSensorDry();
+    setTimedRowVisible(false);
+  };
+
+  const selectTimedPath = () => {
+    setTimedRowVisible(true);
+  };
 
   return (
     <>
       {dryHeading}
+      {dryHeading && (
+        <p className="-mt-1 mb-2 font-['Avenir:Roman',sans-serif] text-[12px] leading-snug text-[#737373]">
+          Choose how the dry ends: moisture sensing or fixed minutes. Only one applies at a time.
+        </p>
+      )}
+
+      <div className="mb-3 rounded-[8px] bg-[#f2f2f2] p-1 flex gap-1">
+        <button
+          type="button"
+          onClick={selectSensorPath}
+          className={`flex-1 rounded-[6px] py-2.5 text-[13px] font-['Avenir:Heavy',sans-serif] transition-colors ${
+            !timePath ? 'bg-white text-[#1a1a1a] shadow-sm' : 'text-[#737373]'
+          }`}
+        >
+          Sensor dry
+        </button>
+        <button
+          type="button"
+          onClick={selectTimedPath}
+          className={`flex-1 rounded-[6px] py-2.5 text-[13px] font-['Avenir:Heavy',sans-serif] transition-colors ${
+            timePath ? 'bg-white text-[#1a1a1a] shadow-sm' : 'text-[#737373]'
+          }`}
+        >
+          Timed dry
+        </button>
+      </div>
+
       <div className="flex gap-[10px]">
         {tempCard}
         {!timePath && drynessCard()}
@@ -291,45 +327,14 @@ export function DryControlsSection({
           />
         )}
       </div>
-      {!timePath && (
-        <>
-          <div className="rounded-[10px] border border-[#e5e5e5] bg-[#fafafa] px-3 py-2.5">
-            <p className="font-['Avenir:Roman',sans-serif] text-[12px] text-[#525252] leading-snug">
-              Choose dryness for moisture sensing. Add timed dry to set minutes instead (dryness hides while time is shown).
-            </p>
-          </div>
-          <button
-            type="button"
-            onClick={() => setTimedRowVisible(true)}
-            className="w-full rounded-[8px] bg-[#f2f2f2] h-[52px] flex items-center justify-center gap-2 font-['Avenir:Heavy',sans-serif] text-[14px] text-[#1a1a1a]"
-          >
-            <span className="text-[18px] leading-none font-['Avenir:Heavy',sans-serif]">+</span>
-            Add timed dry
-          </button>
-        </>
-      )}
-      {timePath && (
-        <div className="flex flex-col gap-2">
-          <div className="rounded-[10px] border border-[#e5e5e5] bg-[#fafafa] px-3 py-2.5">
-            <p className="font-['Avenir:Heavy',sans-serif] text-[13px] text-[#1a1a1a]">Timed dry</p>
-            <p className="font-['Avenir:Roman',sans-serif] text-[12px] text-[#525252] leading-snug mt-0.5">
-              {timedActive
-                ? 'Fixed minutes only. Moisture sensing is off. Use sensor dry below to bring dryness back.'
-                : 'Pick a time below. Dryness stays hidden until you return to sensor dry.'}
-            </p>
-          </div>
-          <button
-            type="button"
-            onClick={() => {
-              if (timedActive) goSensorDry();
-              setTimedRowVisible(false);
-            }}
-            className="w-full rounded-[8px] border border-[#e5e5e5] bg-white py-2.5 font-['Avenir:Heavy',sans-serif] text-[13px] text-[#1a1a1a] shadow-sm"
-          >
-            Return to sensor dry
-          </button>
-        </div>
-      )}
+
+      <p className="mt-2 font-['Avenir:Roman',sans-serif] text-[11px] leading-relaxed text-[#737373]">
+        {!timePath
+          ? 'Dryness sets the target feel. Switch to Timed dry when you want a set number of minutes instead.'
+          : timedActive
+            ? 'Running on your minute value. Moisture sensing is off. Switch to Sensor dry above to use dryness again.'
+            : 'Tap Time to set minutes. Dryness is hidden while you stay on this path.'}
+      </p>
     </>
   );
 }
