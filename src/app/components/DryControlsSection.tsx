@@ -134,7 +134,7 @@ export function DryControlsSection({
   const drynessCard = (opts?: { disabled?: boolean; sublabel?: string }) => (
     <DrySelectorCard
       label="Dryness"
-      value={drynessOptions.length === 0 ? '' : state.dryness === 'OFF' ? 'Off' : drynessLabel(state.dryness)}
+      value={drynessOptions.length === 0 ? '' : state.dryness === 'OFF' ? '-' : drynessLabel(state.dryness)}
       disabled={drynessOptions.length === 0 || opts?.disabled}
       sublabel={opts?.sublabel}
       onClick={() =>
@@ -157,11 +157,11 @@ export function DryControlsSection({
           ? `${state.time} min`
           : estFromSensor !== null
             ? `${estFromSensor} min`
-            : 'None'
+            : '-'
       }
       sublabel={
         opts?.sublabel ??
-        (state.time !== null ? 'Timed dry' : estFromSensor !== null ? 'Sensor estimate' : undefined)
+        (state.time !== null ? 'Timed dry' : estFromSensor !== null ? 'Est. (sensor)' : undefined)
       }
       onClick={() => pickTimeWheel(opts?.wheelTitle ?? 'Timed dry')}
     />
@@ -204,26 +204,25 @@ export function DryControlsSection({
             Timed dry
           </button>
         </div>
-        {timedActive ? (
-          <div className="rounded-[10px] border border-[#e5e5e5] bg-[#f5f5f5] px-3 py-2.5">
+        {timedActive && (
+          <div className="rounded-[10px] border border-[#e5e5e5] bg-[#fafafa] px-3 py-2.5">
             <p className="font-['Avenir:Heavy',sans-serif] text-[13px] text-[#1a1a1a]">Timed dry</p>
             <p className="font-['Avenir:Roman',sans-serif] text-[12px] text-[#525252] leading-snug mt-0.5">
               Moisture sensing is off for this load. The dryer runs for the minutes you choose.
             </p>
           </div>
-        ) : (
-          <div className="rounded-[10px] border border-[#e5e5e5] bg-[#fafafa] px-3 py-2.5">
-            <p className="font-['Avenir:Heavy',sans-serif] text-[13px] text-[#1a1a1a]">Sensor dry</p>
-            <p className="font-['Avenir:Roman',sans-serif] text-[12px] text-[#525252] leading-snug mt-0.5">
-              The dryer uses moisture sensing and your dryness setting to decide when to stop.
-            </p>
-          </div>
         )}
+        <div className="rounded-[10px] border border-[#e5e5e5] bg-[#fafafa] px-3 py-2.5">
+          <p className="font-['Avenir:Heavy',sans-serif] text-[13px] text-[#1a1a1a]">Sensor dry</p>
+          <p className="font-['Avenir:Roman',sans-serif] text-[12px] text-[#525252] leading-snug mt-0.5">
+            The dryer uses moisture sensing and your dryness setting to decide when to stop.
+          </p>
+        </div>
         <div className="flex gap-[10px]">
           {tempCard}
           {drynessCard()}
           {timeCard({
-            sublabel: timedActive ? 'Timed dry' : estFromSensor !== null ? 'Sensor estimate' : undefined,
+            sublabel: timedActive ? 'Timed dry' : estFromSensor !== null ? 'Est. (sensor)' : undefined,
           })}
         </div>
       </>
@@ -240,7 +239,7 @@ export function DryControlsSection({
           {timeCard()}
         </div>
         {timedActive && (
-          <div className="rounded-[10px] border border-[#e5e5e5] bg-[#f5f5f5] px-3 py-2.5">
+          <div className="rounded-[10px] border border-[#e5e5e5] bg-[#fafafa] px-3 py-2.5">
             <p className="font-['Avenir:Heavy',sans-serif] text-[13px] text-[#1a1a1a]">Timed dry is on</p>
             <p className="font-['Avenir:Roman',sans-serif] text-[12px] text-[#525252] leading-snug mt-0.5">
               Sensor dry is not running for this load. The dryer uses your minute value. You can still change dryness or time in the row above.
@@ -266,9 +265,9 @@ export function DryControlsSection({
                 ? `${state.time} min`
                 : estFromSensor !== null
                   ? `${estFromSensor} min`
-                  : 'None'
+                  : '-'
             }
-            sublabel={state.time !== null ? 'Timed dry' : estFromSensor !== null ? 'Sensor estimate' : undefined}
+            sublabel={state.time !== null ? 'Timed dry' : estFromSensor !== null ? 'Est. (sensor)' : undefined}
             onClick={() => pickTimeWheel('Time')}
           />
         )}
@@ -292,7 +291,7 @@ export function DryControlsSection({
         </div>
       )}
       {timedActive && (
-        <div className="rounded-[10px] border border-[#e5e5e5] bg-[#f5f5f5] px-3 py-2.5">
+        <div className="rounded-[10px] border border-[#e5e5e5] bg-[#fafafa] px-3 py-2.5">
           <p className="font-['Avenir:Roman',sans-serif] text-[12px] text-[#525252] leading-snug">
             Timed dry is active. Use dryness and time in the row above, same as the first prototype.
           </p>
