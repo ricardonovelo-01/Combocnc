@@ -15,9 +15,9 @@ export const LAYOUT_META: Record<
   },
   moreControls: {
     title: 'Progressive disclosure',
-    blurb: 'Mode, cycle, and dry first; wash, toggles, and finishing inside “See more controls”.',
+    blurb: 'Mode and cycle first; wash, dry, toggles, and finishing inside “See more controls”.',
     rationale:
-      'Addresses cognitive load without new navigation: primary path stays on one screen, secondary options one tap away.',
+      'Cycle is the first decision; everything else expands in one place without changing navigation.',
   },
   sectionCards: {
     title: 'Grouped sections',

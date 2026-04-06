@@ -383,8 +383,8 @@ function SelectorCard({ label, value, onClick, disabled }: { label: string; valu
       <p className="font-['Avenir:Medium',sans-serif] text-[14px] text-[#404040]">{label}</p>
       <button onClick={disabled ? undefined : onClick}
         disabled={disabled}
-        className={`h-[48px] w-full flex items-center justify-center rounded-[8px] bg-[#f5f5f5] ${disabled ? 'cursor-not-allowed opacity-60' : ''}`}>
-        <span className="font-['Avenir:Medium',sans-serif] text-[15px] text-[#1a1a1a]">{value}</span>
+        className={`flex h-[48px] w-full items-center justify-center rounded-[8px] border border-[#d4d4d4] bg-white shadow-sm ${disabled ? 'cursor-not-allowed opacity-60' : ''}`}>
+        <span className="font-['Avenir:Medium',sans-serif] text-[15px] text-[#0a0a0a]">{value}</span>
       </button>
     </div>
   );
@@ -420,7 +420,7 @@ function LayoutSectionCard({
   children: ReactNode;
 }) {
   return (
-    <div className="overflow-hidden rounded-[12px] border border-[#e5e5e5] bg-white shadow-sm">
+      <div className="overflow-hidden rounded-[12px] border border-[#d4d4d4] bg-white shadow-sm">
       <button
         type="button"
         onClick={onToggle}
@@ -586,9 +586,9 @@ export function LaundryControlApp({
       <button
         type="button"
         onClick={() => setShowCyclePicker(true)}
-        className="flex h-[56px] w-full items-center justify-center rounded-[8px] bg-[#f2f2f2]"
+        className="flex h-[56px] w-full items-center justify-center rounded-[8px] border border-[#d4d4d4] bg-white shadow-sm"
       >
-        <span className="font-['Avenir:Medium',sans-serif] text-[16px] text-[#1a1a1a]">
+        <span className="font-['Avenir:Medium',sans-serif] text-[16px] text-[#0a0a0a]">
           {cycleLabel(state.cycle)}
         </span>
       </button>
@@ -708,6 +708,7 @@ export function LaundryControlApp({
       mode={state.mode}
       state={state}
       cycle={state.cycle}
+      hideDryHeading={layoutVariant === 'sectionCards'}
       update={update}
       openPicker={openPicker}
       openWheelPicker={openWheelPicker}
@@ -822,24 +823,22 @@ export function LaundryControlApp({
               <>
                 {modeSelectorBlock}
                 {cycleBlock}
-                {dryControlsBlock}
-                {(showWash || dryExtraToggles || wrinkleBlock) && (
-                  <details className="group overflow-hidden rounded-[12px] border border-[#e5e5e5] bg-white open:bg-[#fafafa]">
-                    <summary className="flex cursor-pointer list-none items-center justify-between gap-2 px-4 py-3 font-['Avenir:Heavy',sans-serif] text-[15px] text-[#1a1a1a] [&::-webkit-details-marker]:hidden">
-                      <span>See more controls</span>
-                      <ChevronDown
-                        size={18}
-                        className="shrink-0 text-[#525252] transition-transform group-open:rotate-180"
-                        aria-hidden
-                      />
-                    </summary>
-                    <div className="flex flex-col gap-4 border-t border-[#e5e5e5] bg-[#fafafa] px-4 py-4">
-                      {washBlock}
-                      {dryExtraToggles}
-                      {wrinkleBlock}
-                    </div>
-                  </details>
-                )}
+                <details className="group overflow-hidden rounded-[12px] border border-[#d4d4d4] bg-white shadow-sm open:bg-[#fafafa]">
+                  <summary className="flex cursor-pointer list-none items-center justify-between gap-2 px-4 py-3.5 font-['Avenir:Heavy',sans-serif] text-[15px] text-[#0a0a0a] [&::-webkit-details-marker]:hidden">
+                    <span>See more controls</span>
+                    <ChevronDown
+                      size={18}
+                      className="shrink-0 text-[#404040] transition-transform group-open:rotate-180"
+                      aria-hidden
+                    />
+                  </summary>
+                  <div className="flex flex-col gap-4 border-t border-[#e5e5e5] bg-[#f7f7f7] px-4 py-4">
+                    {washBlock}
+                    {dryControlsBlock}
+                    {dryExtraToggles}
+                    {wrinkleBlock}
+                  </div>
+                </details>
               </>
             )}
 

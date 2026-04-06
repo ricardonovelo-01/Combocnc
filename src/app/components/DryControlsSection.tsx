@@ -37,13 +37,13 @@ function DrySelectorCard({
         type="button"
         onClick={disabled ? undefined : onClick}
         disabled={disabled}
-        className={`min-h-[48px] w-full flex flex-col items-center justify-center rounded-[8px] bg-[#f5f5f5] px-1 py-1.5 ${disabled ? 'cursor-not-allowed opacity-60' : ''}`}
+        className={`min-h-[48px] w-full flex flex-col items-center justify-center rounded-[8px] border border-[#d4d4d4] bg-white px-1 py-1.5 shadow-sm ${disabled ? 'cursor-not-allowed opacity-60' : ''}`}
       >
-        <span className="font-['Avenir:Medium',sans-serif] text-[15px] text-[#1a1a1a] text-center leading-tight">
+        <span className="font-['Avenir:Medium',sans-serif] text-[15px] text-[#0a0a0a] text-center leading-tight">
           {value}
         </span>
         {sublabel && (
-          <span className="font-['Avenir:Roman',sans-serif] text-[11px] text-[#737373] text-center leading-tight mt-0.5">
+          <span className="font-['Avenir:Roman',sans-serif] text-[11px] text-[#525252] text-center leading-tight mt-0.5">
             {sublabel}
           </span>
         )}
@@ -57,6 +57,8 @@ type DryControlsProps = {
   mode: Mode;
   state: LaundryState;
   cycle: Cycle;
+  /** Hide the standalone “Dry” heading (e.g. grouped sections already use a card title). */
+  hideDryHeading?: boolean;
   update: (partial: Partial<LaundryState>) => void;
   openPicker: (
     title: string,
@@ -79,6 +81,7 @@ export function DryControlsSection({
   mode,
   state,
   cycle,
+  hideDryHeading = false,
   update,
   openPicker,
   openWheelPicker,
@@ -120,9 +123,11 @@ export function DryControlsSection({
     if (state.time !== null) setSegmentedMode('timed');
   }, [state.time]);
 
-  const dryHeading = mode === 'WASH_DRY' && (
-    <p className="capitalize font-['Avenir:Heavy',sans-serif] text-[16px] text-[#1a1a1a]">Dry</p>
-  );
+  const dryHeading =
+    !hideDryHeading &&
+    mode === 'WASH_DRY' && (
+      <p className="font-['Avenir:Heavy',sans-serif] text-[16px] capitalize text-[#1a1a1a]">Dry</p>
+    );
 
   const tempCard = (
     <DrySelectorCard
@@ -243,7 +248,7 @@ export function DryControlsSection({
     return (
       <>
         {dryHeading}
-        <div className="rounded-[8px] bg-[#f2f2f2] p-1 flex gap-1">
+        <div className="flex gap-1 rounded-[8px] border border-[#e5e5e5] bg-[#ebebeb] p-1">
           <button
             type="button"
             onClick={() => {
