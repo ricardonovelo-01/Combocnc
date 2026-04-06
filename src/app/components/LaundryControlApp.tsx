@@ -1,5 +1,5 @@
-import { ArrowLeft, Heart, Settings, Info, ChevronDown, ChevronUp, ChevronRight, X, Droplet, Sun, Shirt } from 'lucide-react';
-import { useState, useCallback, useEffect } from 'react';
+import { ArrowLeft, Heart, Settings, Info, ChevronDown, ChevronUp, ChevronLeft, ChevronRight, X, Droplet, Sun, Shirt } from 'lucide-react';
+import { useState, useCallback, useEffect, type ReactNode } from 'react';
 import washerImage from '../../imports/ComboCC/158356eed04099aa3d6c70763cd639a6f7aa97e9.png';
 import {
   type Mode,
@@ -18,13 +18,14 @@ import {
   getFilteredWashTempOptions,
   getFilteredSpinOptions,
   getFilteredSoilOptions,
+  getFilteredTimedDryOptions,
   showWashSection,
   showDrySection,
+  drynessLabel,
+  getTimeForDryness,
 } from './laundry-state';
 import { DryControlsSection, type TimeUxVariant } from './DryControlsSection';
-import type { LayoutVariant } from '../layout-variants';
-import { LaundryLayouts } from './LaundryLayouts';
-
+import type { LayoutVariant } from '../explorer-meta';
 // === Cycle Picker Full Screen ===
 function CyclePicker({ mode, currentCycle, onSelect, onClose }: {
   mode: Mode;
@@ -390,7 +391,7 @@ function SelectorCard({ label, value, onClick, disabled }: { label: string; valu
 }
 
 // === Mode Card ===
-function ModeCard({ label, active, onClick, icon }: { label: string; active: boolean; onClick: () => void; icon: React.ReactNode }) {
+function ModeCard({ label, active, onClick, icon }: { label: string; active: boolean; onClick: () => void; icon: ReactNode }) {
   return (
     <button onClick={onClick}
       className={`flex-1 h-[88px] flex flex-col items-center justify-center gap-2 rounded-[8px] transition-all
@@ -405,26 +406,59 @@ function ModeCard({ label, active, onClick, icon }: { label: string; active: boo
   );
 }
 
+function LayoutSectionCard({
+  title,
+  summary,
+  open,
+  onToggle,
+  children,
+}: {
+  title: string;
+  summary: string;
+  open: boolean;
+  onToggle: () => void;
+  children: ReactNode;
+}) {
+  return (
+    <div className="overflow-hidden rounded-[12px] border border-[#e5e5e5] bg-white shadow-sm">
+      <button
+        type="button"
+        onClick={onToggle}
+        className="flex w-full items-center justify-between gap-3 px-4 py-3 text-left transition-colors hover:bg-[#fafafa]"
+      >
+        <div className="min-w-0 flex-1">
+          <p className="font-['Avenir:Heavy',sans-serif] text-[14px] text-[#1a1a1a]">{title}</p>
+          <p className="mt-0.5 truncate font-['Avenir:Roman',sans-serif] text-[11px] text-[#737373]">{summary}</p>
+        </div>
+        <ChevronDown
+          size={20}
+          className={`shrink-0 text-[#525252] transition-transform ${open ? 'rotate-180' : ''}`}
+          aria-hidden
+        />
+      </button>
+      {open && (
+        <div className="flex flex-col gap-4 border-t border-[#f0f0f0] bg-[#fafafa] px-4 py-4">{children}</div>
+      )}
+    </div>
+  );
+}
+
 export function LaundryControlApp({
-  variant,
+  timeVariant,
   layoutVariant,
 }: {
-  variant: TimeUxVariant;
+  timeVariant: TimeUxVariant;
   layoutVariant: LayoutVariant;
 }) {
   const [state, setState] = useState<LaundryState>(initialState());
   const [picker, setPicker] = useState<{ title: string; options: { value: string; label: string }[]; current: string; onSelect: (v: string) => void } | null>(null);
   const [wheelPicker, setWheelPicker] = useState<{ title: string; options: number[]; current: number | null; onSelect: (v: number) => void } | null>(null);
-  const [scrollY, setScrollY] = useState(0);
   const [showCyclePicker, setShowCyclePicker] = useState(false);
+  const [openSection, setOpenSection] = useState<'wash' | 'dry' | 'finish' | null>('dry');
 
   const update = useCallback((partial: Partial<LaundryState>) => {
     setState(prev => normalizeState({ ...prev, ...partial }));
   }, []);
-
-  const handleScroll = (e: React.UIEvent<HTMLDivElement>) => {
-    setScrollY(e.currentTarget.scrollTop);
-  };
 
   // Cycle selection needs special handling for mode auto-correction
   const selectCycle = (cycle: Cycle) => {
@@ -480,10 +514,220 @@ export function LaundryControlApp({
   const showWash = showWashSection(state.mode);
   const showDry = showDrySection(state.mode);
 
-  // Calculate image height based on scroll - starts at 400px, collapses to 0
-  const maxImageHeight = 400;
-  const imageHeight = Math.max(0, maxImageHeight - scrollY);
-  const imageOpacity = Math.max(0.3, 1 - scrollY / 200);
+  useEffect(() => {
+    if (layoutVariant !== 'sectionCards') return;
+    if (showDry) setOpenSection('dry');
+    else if (showWash) setOpenSection('wash');
+    else setOpenSection('finish');
+  }, [state.mode, layoutVariant, showDry, showWash]);
+
+  const washSummaryLine =
+    `${state.washTemp} · ${state.spin} · ${state.soil}`;
+  const estMin = getTimeForDryness(state.cycle, state.dryness);
+  const drySummaryLine =
+    state.time !== null
+      ? `Timed ${state.time} min`
+      : state.dryness !== 'OFF'
+        ? drynessLabel(state.dryness)
+        : estMin !== null
+          ? `Est. ${estMin} min`
+          : 'Dry settings';
+
+  const finishSummaryLine = `Wrinkle ${state.wrinkleShield ? 'On' : 'Off'}`;
+
+  const modeSelectorBlock = (
+    <div className="flex gap-1 rounded-[8px] bg-[#f2f2f2] p-1">
+      <ModeCard
+        label="Wash Only"
+        active={state.mode === 'WASH_ONLY'}
+        onClick={() => selectMode('WASH_ONLY')}
+        icon={
+          <div className="relative size-[32px]">
+            <Shirt size={32} strokeWidth={1.5} />
+            <div className="absolute bottom-[-2px] right-[-2px] rounded-full bg-[#f2f2f2] p-[3px]">
+              <Droplet size={10} strokeWidth={2} fill="currentColor" />
+            </div>
+          </div>
+        }
+      />
+      <ModeCard
+        label="Wash & Dry"
+        active={state.mode === 'WASH_DRY'}
+        onClick={() => selectMode('WASH_DRY')}
+        icon={
+          <div className="relative size-[32px]">
+            <Shirt size={32} strokeWidth={1.5} />
+            <div className="absolute bottom-[-2px] right-[-2px] flex items-center gap-[1px] rounded-full bg-[#f2f2f2] p-[2px]">
+              <Droplet size={8} strokeWidth={2} fill="currentColor" />
+              <Sun size={8} strokeWidth={2} />
+            </div>
+          </div>
+        }
+      />
+      <ModeCard
+        label="Dry Only"
+        active={state.mode === 'DRY_ONLY'}
+        onClick={() => selectMode('DRY_ONLY')}
+        icon={
+          <div className="relative size-[32px]">
+            <Shirt size={32} strokeWidth={1.5} />
+            <div className="absolute bottom-[-2px] right-[-2px] rounded-full bg-[#f2f2f2] p-[3px]">
+              <Sun size={10} strokeWidth={2} />
+            </div>
+          </div>
+        }
+      />
+    </div>
+  );
+
+  const cycleBlock = (
+    <div className="flex flex-col gap-1">
+      <p className="font-['Avenir:Medium',sans-serif] text-[14px] capitalize text-[#1a1a1a]">Cycle</p>
+      <button
+        type="button"
+        onClick={() => setShowCyclePicker(true)}
+        className="flex h-[56px] w-full items-center justify-center rounded-[8px] bg-[#f2f2f2]"
+      >
+        <span className="font-['Avenir:Medium',sans-serif] text-[16px] text-[#1a1a1a]">
+          {cycleLabel(state.cycle)}
+        </span>
+      </button>
+    </div>
+  );
+
+  const washBlock = showWash && (
+    <>
+      {state.mode === 'WASH_DRY' && (
+        <p className="font-['Avenir:Heavy',sans-serif] text-[16px] capitalize text-[#1a1a1a]">Wash</p>
+      )}
+      <div className="flex gap-[10px]">
+        <SelectorCard
+          label="Temperature"
+          value={getFilteredWashTempOptions(state.cycle).length > 0 ? state.washTemp : '-'}
+          disabled={getFilteredWashTempOptions(state.cycle).length === 0}
+          onClick={() =>
+            getFilteredWashTempOptions(state.cycle).length > 0 &&
+            openPicker(
+              'Temperature',
+              getFilteredWashTempOptions(state.cycle).map(v => ({ value: v, label: v })),
+              state.washTemp,
+              v => update({ washTemp: v as WashTemp }),
+            )
+          }
+        />
+        <SelectorCard
+          label="Spin"
+          value={getFilteredSpinOptions(state.cycle).length > 0 ? state.spin : '-'}
+          disabled={getFilteredSpinOptions(state.cycle).length === 0}
+          onClick={() =>
+            getFilteredSpinOptions(state.cycle).length > 0 &&
+            openPicker(
+              'Spin',
+              getFilteredSpinOptions(state.cycle).map(v => ({ value: v, label: v })),
+              state.spin,
+              v => update({ spin: v as SpinLevel }),
+            )
+          }
+        />
+        <SelectorCard
+          label="Soil"
+          value={getFilteredSoilOptions(state.cycle).length > 0 ? state.soil : '-'}
+          disabled={getFilteredSoilOptions(state.cycle).length === 0}
+          onClick={() =>
+            getFilteredSoilOptions(state.cycle).length > 0 &&
+            openPicker(
+              'Soil',
+              getFilteredSoilOptions(state.cycle).map(v => ({ value: v, label: v })),
+              state.soil,
+              v => update({ soil: v as SoilLevel }),
+            )
+          }
+        />
+      </div>
+      <ToggleRow label="Pre Wash" on={state.preWash} onChange={v => update({ preWash: v })} />
+      <ToggleRow label="Pre Soak" on={state.preSoak} onChange={v => update({ preSoak: v })} />
+      <ToggleRow label="Extra Rinse" on={state.extraRinse} onChange={v => update({ extraRinse: v })} />
+    </>
+  );
+
+  const washControlsOnly = showWash && (
+    <>
+      <div className="flex gap-[10px]">
+        <SelectorCard
+          label="Temperature"
+          value={getFilteredWashTempOptions(state.cycle).length > 0 ? state.washTemp : '-'}
+          disabled={getFilteredWashTempOptions(state.cycle).length === 0}
+          onClick={() =>
+            getFilteredWashTempOptions(state.cycle).length > 0 &&
+            openPicker(
+              'Temperature',
+              getFilteredWashTempOptions(state.cycle).map(v => ({ value: v, label: v })),
+              state.washTemp,
+              v => update({ washTemp: v as WashTemp }),
+            )
+          }
+        />
+        <SelectorCard
+          label="Spin"
+          value={getFilteredSpinOptions(state.cycle).length > 0 ? state.spin : '-'}
+          disabled={getFilteredSpinOptions(state.cycle).length === 0}
+          onClick={() =>
+            getFilteredSpinOptions(state.cycle).length > 0 &&
+            openPicker(
+              'Spin',
+              getFilteredSpinOptions(state.cycle).map(v => ({ value: v, label: v })),
+              state.spin,
+              v => update({ spin: v as SpinLevel }),
+            )
+          }
+        />
+        <SelectorCard
+          label="Soil"
+          value={getFilteredSoilOptions(state.cycle).length > 0 ? state.soil : '-'}
+          disabled={getFilteredSoilOptions(state.cycle).length === 0}
+          onClick={() =>
+            getFilteredSoilOptions(state.cycle).length > 0 &&
+            openPicker(
+              'Soil',
+              getFilteredSoilOptions(state.cycle).map(v => ({ value: v, label: v })),
+              state.soil,
+              v => update({ soil: v as SoilLevel }),
+            )
+          }
+        />
+      </div>
+      <ToggleRow label="Pre Wash" on={state.preWash} onChange={v => update({ preWash: v })} />
+      <ToggleRow label="Pre Soak" on={state.preSoak} onChange={v => update({ preSoak: v })} />
+      <ToggleRow label="Extra Rinse" on={state.extraRinse} onChange={v => update({ extraRinse: v })} />
+    </>
+  );
+
+  const dryControlsBlock = showDry && (
+    <DryControlsSection
+      variant={timeVariant}
+      mode={state.mode}
+      state={state}
+      cycle={state.cycle}
+      update={update}
+      openPicker={openPicker}
+      openWheelPicker={openWheelPicker}
+      selectDryness={selectDryness}
+      selectTime={selectTime}
+    />
+  );
+
+  const dryExtraToggles = showDry && (
+    <>
+      <ToggleRow label="Damp Signal" on={state.dampSignal} onChange={v => update({ dampSignal: v })} />
+      {state.mode === 'WASH_DRY' && (
+        <ToggleRow label="Delay Dry" on={state.delayDry} onChange={v => update({ delayDry: v })} />
+      )}
+    </>
+  );
+
+  const wrinkleBlock = (
+    <ToggleRow label="Wrinkle Shield" on={state.wrinkleShield} onChange={v => update({ wrinkleShield: v })} info />
+  );
 
   return (
     <div className="relative h-full min-h-0 w-full min-w-0 bg-white flex flex-col overflow-hidden shadow-2xl rounded-[20px]">
@@ -550,7 +794,7 @@ export function LaundryControlApp({
       <div className="h-[200px]" />
 
       {/* Scrollable container - contains image and controls */}
-      <div className="flex-1 overflow-y-auto pb-[140px] scrollbar-hide" onScroll={handleScroll}>
+      <div className="flex-1 overflow-y-auto pb-[140px] scrollbar-hide">
         {/* Product Image */}
         <div className="w-full h-[320px] bg-white flex items-start justify-center">
           <img 
@@ -562,136 +806,78 @@ export function LaundryControlApp({
 
         {/* White Controls Section - overlaps image bottom */}
         <div className="bg-white rounded-t-[16px] shadow-[0px_-4px_12px_0px_rgba(0,0,0,0.08)] -mt-[200px] relative z-20">
-          <div className="px-4 pt-4 pb-4">
-            <LaundryLayouts
-              layout={layoutVariant}
-              slots={{
-                mode: (
-                  <div className="bg-[#f2f2f2] rounded-[8px] p-1 flex gap-1">
-                    <ModeCard label="Wash Only" active={state.mode === 'WASH_ONLY'} onClick={() => selectMode('WASH_ONLY')}
-                      icon={
-                        <div className="relative size-[32px]">
-                          <Shirt size={32} strokeWidth={1.5} />
-                          <div className="absolute bottom-[-2px] right-[-2px] bg-[#f2f2f2] rounded-full p-[3px]">
-                            <Droplet size={10} strokeWidth={2} fill="currentColor" />
-                          </div>
-                        </div>
-                      } />
-                    <ModeCard label="Wash & Dry" active={state.mode === 'WASH_DRY'} onClick={() => selectMode('WASH_DRY')}
-                      icon={
-                        <div className="relative size-[32px]">
-                          <Shirt size={32} strokeWidth={1.5} />
-                          <div className="absolute bottom-[-2px] right-[-2px] bg-[#f2f2f2] rounded-full p-[2px] flex items-center gap-[1px]">
-                            <Droplet size={8} strokeWidth={2} fill="currentColor" />
-                            <Sun size={8} strokeWidth={2} />
-                          </div>
-                        </div>
-                      } />
-                    <ModeCard label="Dry Only" active={state.mode === 'DRY_ONLY'} onClick={() => selectMode('DRY_ONLY')}
-                      icon={
-                        <div className="relative size-[32px]">
-                          <Shirt size={32} strokeWidth={1.5} />
-                          <div className="absolute bottom-[-2px] right-[-2px] bg-[#f2f2f2] rounded-full p-[3px]">
-                            <Sun size={10} strokeWidth={2} />
-                          </div>
-                        </div>
-                      } />
-                  </div>
-                ),
-                cycle: (
-                  <div className="flex flex-col gap-1">
-                    <p className="capitalize font-['Avenir:Medium',sans-serif] text-[14px] text-[#1a1a1a]">Cycle</p>
-                    <button
-                      type="button"
-                      onClick={() => setShowCyclePicker(true)}
-                      className="bg-[#f2f2f2] h-[56px] w-full flex items-center justify-center rounded-[8px]"
-                    >
-                      <span className="font-['Avenir:Medium',sans-serif] text-[16px] text-[#1a1a1a]">
-                        {cycleLabel(state.cycle)}
-                      </span>
-                    </button>
-                  </div>
-                ),
-                wash: showWash ? (
-                  <>
-                    {state.mode === 'WASH_DRY' && (
-                      <p className="capitalize font-['Avenir:Heavy',sans-serif] text-[16px] text-[#1a1a1a]">Wash</p>
-                    )}
-                    <div className="flex gap-[10px]">
-                      <SelectorCard
-                        label="Temperature"
-                        value={getFilteredWashTempOptions(state.cycle).length > 0 ? state.washTemp : '-'}
-                        disabled={getFilteredWashTempOptions(state.cycle).length === 0}
-                        onClick={() =>
-                          getFilteredWashTempOptions(state.cycle).length > 0 &&
-                          openPicker(
-                            'Temperature',
-                            getFilteredWashTempOptions(state.cycle).map(v => ({ value: v, label: v })),
-                            state.washTemp,
-                            v => update({ washTemp: v as WashTemp }),
-                          )
-                        }
+          <div className="flex flex-col gap-4 px-4 pt-4 pb-4">
+            {layoutVariant === 'fullControl' && (
+              <>
+                {modeSelectorBlock}
+                {cycleBlock}
+                {washBlock}
+                {dryControlsBlock}
+                {dryExtraToggles}
+                {wrinkleBlock}
+              </>
+            )}
+
+            {layoutVariant === 'moreControls' && (
+              <>
+                {modeSelectorBlock}
+                {cycleBlock}
+                {dryControlsBlock}
+                {(showWash || dryExtraToggles || wrinkleBlock) && (
+                  <details className="group overflow-hidden rounded-[12px] border border-[#e5e5e5] bg-white open:bg-[#fafafa]">
+                    <summary className="flex cursor-pointer list-none items-center justify-between gap-2 px-4 py-3 font-['Avenir:Heavy',sans-serif] text-[15px] text-[#1a1a1a] [&::-webkit-details-marker]:hidden">
+                      <span>See more controls</span>
+                      <ChevronDown
+                        size={18}
+                        className="shrink-0 text-[#525252] transition-transform group-open:rotate-180"
+                        aria-hidden
                       />
-                      <SelectorCard
-                        label="Spin"
-                        value={getFilteredSpinOptions(state.cycle).length > 0 ? state.spin : '-'}
-                        disabled={getFilteredSpinOptions(state.cycle).length === 0}
-                        onClick={() =>
-                          getFilteredSpinOptions(state.cycle).length > 0 &&
-                          openPicker(
-                            'Spin',
-                            getFilteredSpinOptions(state.cycle).map(v => ({ value: v, label: v })),
-                            state.spin,
-                            v => update({ spin: v as SpinLevel }),
-                          )
-                        }
-                      />
-                      <SelectorCard
-                        label="Soil"
-                        value={getFilteredSoilOptions(state.cycle).length > 0 ? state.soil : '-'}
-                        disabled={getFilteredSoilOptions(state.cycle).length === 0}
-                        onClick={() =>
-                          getFilteredSoilOptions(state.cycle).length > 0 &&
-                          openPicker(
-                            'Soil',
-                            getFilteredSoilOptions(state.cycle).map(v => ({ value: v, label: v })),
-                            state.soil,
-                            v => update({ soil: v as SoilLevel }),
-                          )
-                        }
-                      />
+                    </summary>
+                    <div className="flex flex-col gap-4 border-t border-[#e5e5e5] bg-[#fafafa] px-4 py-4">
+                      {washBlock}
+                      {dryExtraToggles}
+                      {wrinkleBlock}
                     </div>
-                    <ToggleRow label="Pre Wash" on={state.preWash} onChange={v => update({ preWash: v })} />
-                    <ToggleRow label="Pre Soak" on={state.preSoak} onChange={v => update({ preSoak: v })} />
-                    <ToggleRow label="Extra Rinse" on={state.extraRinse} onChange={v => update({ extraRinse: v })} />
-                  </>
-                ) : null,
-                dry: showDry ? (
-                  <DryControlsSection
-                    variant={variant}
-                    mode={state.mode}
-                    state={state}
-                    cycle={state.cycle}
-                    update={update}
-                    openPicker={openPicker}
-                    openWheelPicker={openWheelPicker}
-                    selectDryness={selectDryness}
-                    selectTime={selectTime}
-                  />
-                ) : null,
-                dryToggles: showDry ? (
-                  <>
-                    <ToggleRow label="Damp Signal" on={state.dampSignal} onChange={v => update({ dampSignal: v })} />
-                    {state.mode === 'WASH_DRY' && (
-                      <ToggleRow label="Delay Dry" on={state.delayDry} onChange={v => update({ delayDry: v })} />
-                    )}
-                  </>
-                ) : null,
-                wrinkle: (
-                  <ToggleRow label="Wrinkle Shield" on={state.wrinkleShield} onChange={v => update({ wrinkleShield: v })} info />
-                ),
-              }}
-            />
+                  </details>
+                )}
+              </>
+            )}
+
+            {layoutVariant === 'sectionCards' && (
+              <div className="flex flex-col gap-3">
+                {modeSelectorBlock}
+                {cycleBlock}
+                {showWash && (
+                  <LayoutSectionCard
+                    title="Wash"
+                    summary={washSummaryLine}
+                    open={openSection === 'wash'}
+                    onToggle={() => setOpenSection(openSection === 'wash' ? null : 'wash')}
+                  >
+                    {washControlsOnly}
+                  </LayoutSectionCard>
+                )}
+                {showDry && (
+                  <LayoutSectionCard
+                    title="Dry"
+                    summary={drySummaryLine}
+                    open={openSection === 'dry'}
+                    onToggle={() => setOpenSection(openSection === 'dry' ? null : 'dry')}
+                  >
+                    {dryControlsBlock}
+                    {dryExtraToggles}
+                  </LayoutSectionCard>
+                )}
+                <LayoutSectionCard
+                  title="Finishing"
+                  summary={finishSummaryLine}
+                  open={openSection === 'finish'}
+                  onToggle={() => setOpenSection(openSection === 'finish' ? null : 'finish')}
+                >
+                  {wrinkleBlock}
+                </LayoutSectionCard>
+              </div>
+            )}
           </div>
         </div>
       </div>
