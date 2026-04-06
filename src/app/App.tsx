@@ -24,8 +24,8 @@ export default function App() {
       />
       <main className="flex min-h-0 min-w-0 flex-1 flex-col items-center justify-center overflow-auto p-4 sm:p-8">
         <div className="flex w-full max-w-[400px] flex-col items-center gap-3">
-          <p className="max-w-[360px] text-center font-['Avenir:Roman',sans-serif] text-[11px] leading-snug text-[#525252]">
-            Live preview · Time UX + layout shell. Prototype 1 (segmented dry) is the base; layout options change how the rest of the controls are revealed.
+          <p className="max-w-[360px] text-center font-['Avenir:Roman',sans-serif] text-[11px] leading-snug text-[#737373]">
+            Live preview — use the explorer to switch time UX and layout.
           </p>
           <div className="h-[min(100vh-10rem,880px)] w-full max-w-[360px] shrink-0">
             <LaundryControlApp timeVariant={timeVariant} layoutVariant={layoutVariant} />

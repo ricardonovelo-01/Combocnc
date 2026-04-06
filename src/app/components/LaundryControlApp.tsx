@@ -377,14 +377,32 @@ function ToggleRow({ label, on, onChange, info }: { label: string; on: boolean; 
 }
 
 // === Selector Card ===
-function SelectorCard({ label, value, onClick, disabled }: { label: string; value: string; onClick: () => void; disabled?: boolean }) {
+function SelectorCard({
+  label,
+  value,
+  onClick,
+  disabled,
+  surface = 'legacy',
+}: {
+  label: string;
+  value: string;
+  onClick: () => void;
+  disabled?: boolean;
+  surface?: 'legacy' | 'panel';
+}) {
+  const tile =
+    surface === 'panel'
+      ? 'border border-[#d4d4d4] bg-white'
+      : 'bg-[#f5f5f5]';
+  const valueColor = surface === 'panel' ? 'text-[#0a0a0a]' : 'text-[#1a1a1a]';
+
   return (
     <div className="flex flex-col gap-2 flex-1 min-w-0">
       <p className="font-['Avenir:Medium',sans-serif] text-[14px] text-[#404040]">{label}</p>
       <button onClick={disabled ? undefined : onClick}
         disabled={disabled}
-        className={`flex h-[48px] w-full items-center justify-center rounded-[8px] border border-[#d4d4d4] bg-white shadow-sm ${disabled ? 'cursor-not-allowed opacity-60' : ''}`}>
-        <span className="font-['Avenir:Medium',sans-serif] text-[15px] text-[#0a0a0a]">{value}</span>
+        className={`flex h-[48px] w-full items-center justify-center rounded-[8px] ${tile} ${disabled ? 'cursor-not-allowed opacity-60' : ''}`}>
+        <span className={`font-['Avenir:Medium',sans-serif] text-[15px] ${valueColor}`}>{value}</span>
       </button>
     </div>
   );
@@ -420,7 +438,7 @@ function LayoutSectionCard({
   children: ReactNode;
 }) {
   return (
-      <div className="overflow-hidden rounded-[12px] border border-[#d4d4d4] bg-white shadow-sm">
+      <div className="overflow-hidden rounded-[12px] border border-[#d4d4d4] bg-white">
       <button
         type="button"
         onClick={onToggle}
@@ -535,6 +553,9 @@ export function LaundryControlApp({
 
   const finishSummaryLine = `Wrinkle ${state.wrinkleShield ? 'On' : 'Off'}`;
 
+  const usePanelTiles = layoutVariant === 'moreControls' || layoutVariant === 'sectionCards';
+  const tileSurface = usePanelTiles ? 'panel' : 'legacy';
+
   const modeSelectorBlock = (
     <div className="flex gap-1 rounded-[8px] bg-[#f2f2f2] p-1">
       <ModeCard
@@ -586,9 +607,15 @@ export function LaundryControlApp({
       <button
         type="button"
         onClick={() => setShowCyclePicker(true)}
-        className="flex h-[56px] w-full items-center justify-center rounded-[8px] border border-[#d4d4d4] bg-white shadow-sm"
+        className={`flex h-[56px] w-full items-center justify-center rounded-[8px] ${
+          usePanelTiles
+            ? 'border border-[#d4d4d4] bg-white'
+            : 'bg-[#f2f2f2]'
+        }`}
       >
-        <span className="font-['Avenir:Medium',sans-serif] text-[16px] text-[#0a0a0a]">
+        <span
+          className={`font-['Avenir:Medium',sans-serif] text-[16px] ${usePanelTiles ? 'text-[#0a0a0a]' : 'text-[#1a1a1a]'}`}
+        >
           {cycleLabel(state.cycle)}
         </span>
       </button>
@@ -602,6 +629,7 @@ export function LaundryControlApp({
       )}
       <div className="flex gap-[10px]">
         <SelectorCard
+          surface={tileSurface}
           label="Temperature"
           value={getFilteredWashTempOptions(state.cycle).length > 0 ? state.washTemp : '-'}
           disabled={getFilteredWashTempOptions(state.cycle).length === 0}
@@ -616,6 +644,7 @@ export function LaundryControlApp({
           }
         />
         <SelectorCard
+          surface={tileSurface}
           label="Spin"
           value={getFilteredSpinOptions(state.cycle).length > 0 ? state.spin : '-'}
           disabled={getFilteredSpinOptions(state.cycle).length === 0}
@@ -630,6 +659,7 @@ export function LaundryControlApp({
           }
         />
         <SelectorCard
+          surface={tileSurface}
           label="Soil"
           value={getFilteredSoilOptions(state.cycle).length > 0 ? state.soil : '-'}
           disabled={getFilteredSoilOptions(state.cycle).length === 0}
@@ -654,6 +684,7 @@ export function LaundryControlApp({
     <>
       <div className="flex gap-[10px]">
         <SelectorCard
+          surface={tileSurface}
           label="Temperature"
           value={getFilteredWashTempOptions(state.cycle).length > 0 ? state.washTemp : '-'}
           disabled={getFilteredWashTempOptions(state.cycle).length === 0}
@@ -668,6 +699,7 @@ export function LaundryControlApp({
           }
         />
         <SelectorCard
+          surface={tileSurface}
           label="Spin"
           value={getFilteredSpinOptions(state.cycle).length > 0 ? state.spin : '-'}
           disabled={getFilteredSpinOptions(state.cycle).length === 0}
@@ -682,6 +714,7 @@ export function LaundryControlApp({
           }
         />
         <SelectorCard
+          surface={tileSurface}
           label="Soil"
           value={getFilteredSoilOptions(state.cycle).length > 0 ? state.soil : '-'}
           disabled={getFilteredSoilOptions(state.cycle).length === 0}
@@ -709,6 +742,7 @@ export function LaundryControlApp({
       state={state}
       cycle={state.cycle}
       hideDryHeading={layoutVariant === 'sectionCards'}
+      tileSurface={tileSurface}
       update={update}
       openPicker={openPicker}
       openWheelPicker={openWheelPicker}
@@ -823,7 +857,7 @@ export function LaundryControlApp({
               <>
                 {modeSelectorBlock}
                 {cycleBlock}
-                <details className="group overflow-hidden rounded-[12px] border border-[#d4d4d4] bg-white shadow-sm open:bg-[#fafafa]">
+                <details className="group overflow-hidden rounded-[12px] border border-[#d4d4d4] bg-white open:bg-[#fafafa]">
                   <summary className="flex cursor-pointer list-none items-center justify-between gap-2 px-4 py-3.5 font-['Avenir:Heavy',sans-serif] text-[15px] text-[#0a0a0a] [&::-webkit-details-marker]:hidden">
                     <span>See more controls</span>
                     <ChevronDown

@@ -23,13 +23,23 @@ function DrySelectorCard({
   onClick,
   disabled,
   sublabel,
+  surface = 'legacy',
 }: {
   label: string;
   value: string;
   onClick: () => void;
   disabled?: boolean;
   sublabel?: string;
+  /** `panel` = bordered white (progressive disclosure + grouped sections). `legacy` = full-control baseline. */
+  surface?: 'legacy' | 'panel';
 }) {
+  const tile =
+    surface === 'panel'
+      ? 'border border-[#d4d4d4] bg-white'
+      : 'bg-[#f5f5f5]';
+  const valueColor = surface === 'panel' ? 'text-[#0a0a0a]' : 'text-[#1a1a1a]';
+  const subColor = surface === 'panel' ? 'text-[#525252]' : 'text-[#737373]';
+
   return (
     <div className="flex flex-col gap-2 flex-1 min-w-0">
       <p className="font-['Avenir:Medium',sans-serif] text-[14px] text-[#404040]">{label}</p>
@@ -37,13 +47,13 @@ function DrySelectorCard({
         type="button"
         onClick={disabled ? undefined : onClick}
         disabled={disabled}
-        className={`min-h-[48px] w-full flex flex-col items-center justify-center rounded-[8px] border border-[#d4d4d4] bg-white px-1 py-1.5 shadow-sm ${disabled ? 'cursor-not-allowed opacity-60' : ''}`}
+        className={`min-h-[48px] w-full flex flex-col items-center justify-center rounded-[8px] px-1 py-1.5 ${tile} ${disabled ? 'cursor-not-allowed opacity-60' : ''}`}
       >
-        <span className="font-['Avenir:Medium',sans-serif] text-[15px] text-[#0a0a0a] text-center leading-tight">
+        <span className={`font-['Avenir:Medium',sans-serif] text-[15px] text-center leading-tight ${valueColor}`}>
           {value}
         </span>
         {sublabel && (
-          <span className="font-['Avenir:Roman',sans-serif] text-[11px] text-[#525252] text-center leading-tight mt-0.5">
+          <span className={`font-['Avenir:Roman',sans-serif] text-[11px] text-center leading-tight mt-0.5 ${subColor}`}>
             {sublabel}
           </span>
         )}
@@ -59,6 +69,8 @@ type DryControlsProps = {
   cycle: Cycle;
   /** Hide the standalone “Dry” heading (e.g. grouped sections already use a card title). */
   hideDryHeading?: boolean;
+  /** Tile styling: `panel` for progressive disclosure / grouped sections; `legacy` for full control. */
+  tileSurface?: 'legacy' | 'panel';
   update: (partial: Partial<LaundryState>) => void;
   openPicker: (
     title: string,
@@ -82,6 +94,7 @@ export function DryControlsSection({
   state,
   cycle,
   hideDryHeading = false,
+  tileSurface = 'legacy',
   update,
   openPicker,
   openWheelPicker,
@@ -131,6 +144,7 @@ export function DryControlsSection({
 
   const tempCard = (
     <DrySelectorCard
+      surface={tileSurface}
       label="Temperature"
       value={dryTempOptions.length > 0 ? state.dryTemp : '-'}
       disabled={dryTempOptions.length === 0}
@@ -148,6 +162,7 @@ export function DryControlsSection({
 
   const drynessCard = (opts?: { disabled?: boolean; sublabel?: string }) => (
     <DrySelectorCard
+      surface={tileSurface}
       label="Dryness"
       value={drynessOptions.length === 0 ? '-' : state.dryness === 'OFF' ? '-' : drynessLabel(state.dryness)}
       disabled={drynessOptions.length === 0 || opts?.disabled}
@@ -166,6 +181,7 @@ export function DryControlsSection({
 
   const timeCard = (opts?: { sublabel?: string; wheelTitle?: string }) => (
     <DrySelectorCard
+      surface={tileSurface}
       label="Time"
       value={
         timedDryOptions.length === 0
@@ -192,6 +208,7 @@ export function DryControlsSection({
   /** Time tile when the product cannot show sensor-derived minutes (baseline no-estimate + timed banner). */
   const timeTileNoSensorEstimate = (
     <DrySelectorCard
+      surface={tileSurface}
       label="Time"
       value={
         timedDryOptions.length === 0
@@ -215,6 +232,11 @@ export function DryControlsSection({
       }
     />
   );
+
+  const segmentedBarClass =
+    tileSurface === 'panel'
+      ? 'flex gap-1 rounded-[8px] border border-[#e5e5e5] bg-[#ebebeb] p-1'
+      : 'flex gap-1 rounded-[8px] bg-[#f2f2f2] p-1';
 
   if (variant === 'baseline') {
     return (
@@ -248,7 +270,7 @@ export function DryControlsSection({
     return (
       <>
         {dryHeading}
-        <div className="flex gap-1 rounded-[8px] border border-[#e5e5e5] bg-[#ebebeb] p-1">
+        <div className={segmentedBarClass}>
           <button
             type="button"
             onClick={() => {
@@ -256,7 +278,7 @@ export function DryControlsSection({
               setSegmentedMode('sensor');
             }}
             className={`flex-1 rounded-[6px] py-2.5 text-[13px] font-['Avenir:Heavy',sans-serif] transition-colors ${
-              sensorSelected ? 'bg-white text-[#1a1a1a] shadow-sm' : 'text-[#737373]'
+              sensorSelected ? 'bg-white text-[#1a1a1a]' : 'text-[#737373]'
             }`}
           >
             Sensor Dry
@@ -268,7 +290,7 @@ export function DryControlsSection({
               if (timedDryOptions.length > 0) openTimedDryWheel();
             }}
             className={`flex-1 rounded-[6px] py-2.5 text-[13px] font-['Avenir:Heavy',sans-serif] transition-colors ${
-              !sensorSelected ? 'bg-white text-[#1a1a1a] shadow-sm' : 'text-[#737373]'
+              !sensorSelected ? 'bg-white text-[#1a1a1a]' : 'text-[#737373]'
             }`}
           >
             Timed Dry
@@ -279,6 +301,7 @@ export function DryControlsSection({
           {sensorSelected && drynessCard()}
           {!sensorSelected && (
             <DrySelectorCard
+              surface={tileSurface}
               label="Time"
               value={
                 timedDryOptions.length === 0
@@ -360,6 +383,7 @@ export function DryControlsSection({
         {!timePath && drynessCard()}
         {timePath && (
           <DrySelectorCard
+            surface={tileSurface}
             label="Time"
             value={
               timedDryOptions.length === 0

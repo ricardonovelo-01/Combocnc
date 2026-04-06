@@ -3,27 +3,18 @@ import type { TimeUxVariant } from './components/DryControlsSection';
 /** How the main control stack is organized (prototype 1 / segmented dry UX is the base). */
 export type LayoutVariant = 'fullControl' | 'moreControls' | 'sectionCards';
 
-export const LAYOUT_META: Record<
-  LayoutVariant,
-  { title: string; blurb: string; rationale: string }
-> = {
+export const LAYOUT_META: Record<LayoutVariant, { title: string; panelHint: string }> = {
   fullControl: {
     title: 'Full control',
-    blurb: 'Single scroll; every control visible—baseline reference.',
-    rationale:
-      'Keeps parity with today’s app density. Best when users expect to scan everything at once.',
+    panelHint: 'All controls in one scroll.',
   },
   moreControls: {
     title: 'Progressive disclosure',
-    blurb: 'Mode and cycle first; wash, dry, toggles, and finishing inside “See more controls”.',
-    rationale:
-      'Cycle is the first decision; everything else expands in one place without changing navigation.',
+    panelHint: 'Mode & cycle first; rest under See more.',
   },
   sectionCards: {
     title: 'Grouped sections',
-    blurb: 'Wash, Dry, and Finishing as separate collapsible cards with summary lines.',
-    rationale:
-      'Chunks the job into familiar phases; only one section expanded at a time to reduce vertical noise.',
+    panelHint: 'Wash / Dry / Finishing cards.',
   },
 };
 
