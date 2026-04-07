@@ -304,7 +304,7 @@ function WheelPicker({ title, options, value, onSelect, onClose }: {
           {/* Scrollable Wheel */}
           <div 
             ref={setWheelRef}
-            className="wheel-container h-full overflow-y-scroll snap-y snap-mandatory"
+            className="wheel-container scrollbar-hide h-full overflow-y-scroll snap-y snap-mandatory"
             onScroll={handleScroll}
             style={{ 
               scrollSnapType: 'y mandatory',

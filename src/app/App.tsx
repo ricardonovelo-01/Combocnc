@@ -14,7 +14,7 @@ export default function App() {
   return (
     <div className="relative flex h-full min-h-0 w-full min-w-0 bg-[#ebebeb]">
       <p
-        className="pointer-events-none fixed left-2 top-2 z-[200] select-none font-mono text-[9px] leading-none text-[#a3a3a3]"
+        className="pointer-events-none fixed bottom-2 right-2 z-[200] select-none font-mono text-[9px] leading-none text-[#a3a3a3]"
         title={`Build ${APP_VERSION}`}
         aria-hidden
       >
