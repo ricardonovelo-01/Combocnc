@@ -601,21 +601,16 @@ export function LaundryControlApp({
     </div>
   );
 
+  /** Same cycle treatment in every layout — matches full control so it stays the familiar anchor. */
   const cycleBlock = (
     <div className="flex flex-col gap-1">
       <p className="font-['Avenir:Medium',sans-serif] text-[14px] capitalize text-[#1a1a1a]">Cycle</p>
       <button
         type="button"
         onClick={() => setShowCyclePicker(true)}
-        className={`flex h-[56px] w-full items-center justify-center rounded-[8px] ${
-          usePanelTiles
-            ? 'border border-[#d4d4d4] bg-white'
-            : 'bg-[#f2f2f2]'
-        }`}
+        className="flex h-[56px] w-full items-center justify-center rounded-[8px] bg-[#f2f2f2]"
       >
-        <span
-          className={`font-['Avenir:Medium',sans-serif] text-[16px] ${usePanelTiles ? 'text-[#0a0a0a]' : 'text-[#1a1a1a]'}`}
-        >
+        <span className="font-['Avenir:Medium',sans-serif] text-[16px] text-[#1a1a1a]">
           {cycleLabel(state.cycle)}
         </span>
       </button>
