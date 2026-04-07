@@ -14,6 +14,6 @@ When you change **source, assets, or workflow/config** and the user has not aske
 
 Treat “done” as **committed and pushed**, not only edited locally. If there is nothing to commit, do not push. If push fails (auth, conflicts), say what failed and how to fix it.
 
-When you ship **user-visible** changes, bump `src/app/version.ts` (`APP_VERSION`) and state that string in your reply so the user can match it to the tiny top-left label after refresh.
+When you ship **any change that affects what the user sees or runs** (UI, copy, prototypes, explorer, version stamp, CI that changes deploy behavior), **always** bump `src/app/version.ts` (`APP_VERSION`) and state that exact string in your reply so the user can match it to the **bottom-right** build label after refresh. Do not skip versioning—if you forget, fix it before finishing.
 
 Do not assume the user will run git commands later unless they explicitly asked to keep changes local.

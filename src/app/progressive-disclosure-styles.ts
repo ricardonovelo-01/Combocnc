@@ -22,15 +22,15 @@ export const PROGRESSIVE_DISCLOSURE_META: Record<
   },
   pillSoft: {
     title: '3 Soft pill',
-    hint: 'Rounded track, soft fill, subtle depth.',
+    hint: 'Full pill when closed; opens into a stacked card.',
   },
   insetWell: {
     title: '4 Inset well',
-    hint: 'Recessed tray; white summary + content.',
+    hint: 'Recessed gray tray; two white surfaces inside.',
   },
   accentBar: {
     title: '5 Accent bar',
-    hint: 'Bold left stripe; editorial feel.',
+    hint: 'Thick left stripe; no border-width fights.',
   },
 };
 
@@ -68,26 +68,31 @@ export function getProgressiveDisclosureClasses(style: ProgressiveDisclosureStyl
         content: `${baseContentInner} border-t border-dashed border-[#ebebeb] bg-white px-1 pt-4 pb-1`,
         chevron: 'text-[#737373]',
       };
-    case 'pillSoft':
+    case 'pillSoft': {
+      // Native <details>: closed = summary only → full pill radius. Open = top cap + bottom sheet.
       return {
         details:
-          'group overflow-hidden rounded-[20px] border border-[#e8e8e8] bg-[#f4f4f4] shadow-[0_1px_3px_rgba(0,0,0,0.06)] open:bg-[#f7f7f7] open:shadow-[0_4px_14px_rgba(0,0,0,0.08)]',
-        summary: `${baseSummary} px-5 py-3.5`,
-        content: `${baseContentInner} border-t border-[#e0e0e0] bg-white px-4 py-4`,
+          'group overflow-hidden rounded-[22px] bg-[#e8e8e8] ring-1 ring-[#000000]/[0.06]',
+        summary: `${baseSummary} rounded-[22px] bg-white px-5 py-3.5 shadow-[0_1px_0_rgba(0,0,0,0.04)] transition-[border-radius,box-shadow] group-open:rounded-b-none group-open:rounded-t-[22px] group-open:shadow-none`,
+        content: `${baseContentInner} rounded-b-[22px] border-t border-[#e2e2e2] bg-white px-4 py-4`,
         chevron: 'text-[#525252]',
       };
+    }
     case 'insetWell':
       return {
-        details: 'group overflow-hidden rounded-[14px] bg-[#e5e5e5] p-[5px]',
-        summary: `${baseSummary} rounded-[10px] bg-white px-4 py-3 shadow-[inset_0_1px_2px_rgba(0,0,0,0.04)]`,
-        content: `${baseContentInner} mt-[5px] rounded-[10px] border border-[#ebebeb] bg-white px-3 py-4 shadow-sm`,
+        // Tray uses inset shadow; no overflow-hidden so margins + radii paint correctly.
+        details:
+          'group rounded-[18px] bg-[#cfcfcf] p-1.5 shadow-[inset_0_3px_10px_rgba(0,0,0,0.14)]',
+        summary: `${baseSummary} rounded-[13px] bg-white px-4 py-3.5 shadow-[0_1px_3px_rgba(0,0,0,0.08)]`,
+        content: `${baseContentInner} mt-1.5 rounded-[13px] border border-[#e0e0e0] bg-[#fafafa] px-3 py-4 shadow-[inset_0_1px_0_rgba(255,255,255,0.65)]`,
         chevron: 'text-[#404040]',
       };
     case 'accentBar':
       return {
+        // Avoid mixing `border` with `border-l-[npx]` (unreliable). Use explicit sides + thick left.
         details:
-          'group overflow-hidden rounded-[12px] border border-[#d4d4d4] border-l-[5px] border-l-[#1a1a1a] bg-white pl-3 open:bg-[#fafafa]',
-        summary: `${baseSummary} pr-4 py-3.5 pl-1`,
+          'group overflow-hidden rounded-[12px] border-y border-r border-[#d4d4d4] border-l-[6px] border-l-[#1a1a1a] bg-white',
+        summary: `${baseSummary} px-4 py-3.5`,
         content: `${baseContentInner} border-t border-[#e5e5e5] bg-[#f7f7f7] px-4 py-4`,
         chevron: 'text-[#1a1a1a]',
       };
