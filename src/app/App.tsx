@@ -3,6 +3,7 @@ import { ExplorePanel } from './components/ExplorePanel';
 import { LaundryControlApp } from './components/LaundryControlApp';
 import type { LayoutVariant } from './explorer-meta';
 import type { TimeUxVariant } from './components/DryControlsSection';
+import { APP_VERSION } from './version';
 
 export default function App() {
   const [panelOpen, setPanelOpen] = useState(true);
@@ -11,7 +12,14 @@ export default function App() {
   const [layoutVariant, setLayoutVariant] = useState<LayoutVariant>('fullControl');
 
   return (
-    <div className="flex h-full min-h-0 w-full min-w-0 bg-[#ebebeb]">
+    <div className="relative flex h-full min-h-0 w-full min-w-0 bg-[#ebebeb]">
+      <p
+        className="pointer-events-none fixed left-2 top-2 z-[200] select-none font-mono text-[9px] leading-none text-[#a3a3a3]"
+        title={`Build ${APP_VERSION}`}
+        aria-hidden
+      >
+        {APP_VERSION}
+      </p>
       <ExplorePanel
         open={panelOpen}
         onOpenChange={setPanelOpen}
