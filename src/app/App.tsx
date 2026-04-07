@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { ExplorePanel } from './components/ExplorePanel';
 import { LaundryControlApp } from './components/LaundryControlApp';
 import type { LayoutVariant } from './explorer-meta';
+import type { ProgressiveDisclosureStyle } from './progressive-disclosure-styles';
 import type { TimeUxVariant } from './components/DryControlsSection';
 import { APP_VERSION } from './version';
 
@@ -10,6 +11,8 @@ export default function App() {
   const [timeVariant, setTimeVariant] = useState<TimeUxVariant>('segmented');
   const [otherTimeOpen, setOtherTimeOpen] = useState(false);
   const [layoutVariant, setLayoutVariant] = useState<LayoutVariant>('fullControl');
+  const [progressiveDisclosureStyle, setProgressiveDisclosureStyle] =
+    useState<ProgressiveDisclosureStyle>('borderedCard');
 
   return (
     <div className="relative flex h-full min-h-0 w-full min-w-0 bg-[#ebebeb]">
@@ -29,6 +32,8 @@ export default function App() {
         onOtherTimeOpen={setOtherTimeOpen}
         layoutVariant={layoutVariant}
         onLayoutVariant={setLayoutVariant}
+        progressiveDisclosureStyle={progressiveDisclosureStyle}
+        onProgressiveDisclosureStyle={setProgressiveDisclosureStyle}
       />
       <main className="flex min-h-0 min-w-0 flex-1 flex-col items-center justify-center overflow-auto p-4 sm:p-8">
         <div className="flex w-full max-w-[400px] flex-col items-center gap-3">
@@ -36,7 +41,11 @@ export default function App() {
             Live preview — use the explorer to switch time UX and layout.
           </p>
           <div className="h-[min(100vh-10rem,880px)] w-full max-w-[360px] shrink-0">
-            <LaundryControlApp timeVariant={timeVariant} layoutVariant={layoutVariant} />
+            <LaundryControlApp
+              timeVariant={timeVariant}
+              layoutVariant={layoutVariant}
+              progressiveDisclosureStyle={progressiveDisclosureStyle}
+            />
           </div>
         </div>
       </main>

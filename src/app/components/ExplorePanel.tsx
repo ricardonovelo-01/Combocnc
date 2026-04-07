@@ -7,6 +7,11 @@ import {
   PRIMARY_TIME_VARIANTS,
   PROTOTYPE_META,
 } from '../explorer-meta';
+import {
+  PROGRESSIVE_DISCLOSURE_META,
+  PROGRESSIVE_DISCLOSURE_ORDER,
+  type ProgressiveDisclosureStyle,
+} from '../progressive-disclosure-styles';
 
 type ExplorePanelProps = {
   open: boolean;
@@ -17,6 +22,8 @@ type ExplorePanelProps = {
   onOtherTimeOpen: (open: boolean) => void;
   layoutVariant: LayoutVariant;
   onLayoutVariant: (v: LayoutVariant) => void;
+  progressiveDisclosureStyle: ProgressiveDisclosureStyle;
+  onProgressiveDisclosureStyle: (v: ProgressiveDisclosureStyle) => void;
 };
 
 export function ExplorePanel({
@@ -28,6 +35,8 @@ export function ExplorePanel({
   onOtherTimeOpen,
   layoutVariant,
   onLayoutVariant,
+  progressiveDisclosureStyle,
+  onProgressiveDisclosureStyle,
 }: ExplorePanelProps) {
   if (!open) {
     return (
@@ -159,6 +168,37 @@ export function ExplorePanel({
               );
             })}
           </div>
+
+          {layoutVariant === 'moreControls' && (
+            <div className="mt-5 border-t border-[#f0f0f0] pt-5">
+              <p className="mb-2 font-['Avenir:Heavy',sans-serif] text-[11px] uppercase tracking-wide text-[#737373]">
+                Progressive disclosure style
+              </p>
+              <div className="flex flex-col gap-1.5">
+                {PROGRESSIVE_DISCLOSURE_ORDER.map(key => {
+                  const meta = PROGRESSIVE_DISCLOSURE_META[key];
+                  const selected = progressiveDisclosureStyle === key;
+                  return (
+                    <button
+                      key={key}
+                      type="button"
+                      onClick={() => onProgressiveDisclosureStyle(key)}
+                      className={`rounded-[8px] border px-2.5 py-2 text-left transition-colors ${
+                        selected
+                          ? 'border-[#1a1a1a] bg-[#fafafa] ring-1 ring-[#1a1a1a]/10'
+                          : 'border-[#e5e5e5] bg-white hover:border-[#d4d4d4]'
+                      }`}
+                    >
+                      <p className="font-['Avenir:Heavy',sans-serif] text-[12px] text-[#1a1a1a]">{meta.title}</p>
+                      <p className="mt-0.5 font-['Avenir:Roman',sans-serif] text-[10px] leading-snug text-[#737373]">
+                        {meta.hint}
+                      </p>
+                    </button>
+                  );
+                })}
+              </div>
+            </div>
+          )}
         </div>
       </div>
     </aside>
