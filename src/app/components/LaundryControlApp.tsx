@@ -26,10 +26,8 @@ import {
 } from './laundry-state';
 import { DryControlsSection, type TimeUxVariant } from './DryControlsSection';
 import type { LayoutVariant } from '../explorer-meta';
-import {
-  getProgressiveDisclosureClasses,
-  type ProgressiveDisclosureStyle,
-} from '../progressive-disclosure-styles';
+import type { ProgressiveDisclosureStyle } from '../progressive-disclosure-styles';
+import { ProgressiveDisclosureMoreControls } from './ProgressiveDisclosureMoreControls';
 // === Cycle Picker Full Screen ===
 function CyclePicker({ mode, currentCycle, onSelect, onClose }: {
   mode: Mode;
@@ -562,11 +560,6 @@ export function LaundryControlApp({
   const usePanelTiles = layoutVariant === 'moreControls' || layoutVariant === 'sectionCards';
   const tileSurface = usePanelTiles ? 'panel' : 'legacy';
 
-  const progressiveClasses =
-    layoutVariant === 'moreControls'
-      ? getProgressiveDisclosureClasses(progressiveDisclosureStyle)
-      : null;
-
   const modeSelectorBlock = (
     <div className="flex gap-1 rounded-[8px] bg-[#f2f2f2] p-1">
       <ModeCard
@@ -859,26 +852,16 @@ export function LaundryControlApp({
               </>
             )}
 
-            {layoutVariant === 'moreControls' && progressiveClasses && (
+            {layoutVariant === 'moreControls' && (
               <>
                 {modeSelectorBlock}
                 {cycleBlock}
-                <details className={progressiveClasses.details}>
-                  <summary className={progressiveClasses.summary}>
-                    <span>See more controls</span>
-                    <ChevronDown
-                      size={18}
-                      className={`shrink-0 transition-transform group-open:rotate-180 ${progressiveClasses.chevron}`}
-                      aria-hidden
-                    />
-                  </summary>
-                  <div className={progressiveClasses.content}>
-                    {washBlock}
-                    {dryControlsBlock}
-                    {dryExtraToggles}
-                    {wrinkleBlock}
-                  </div>
-                </details>
+                <ProgressiveDisclosureMoreControls style={progressiveDisclosureStyle}>
+                  {washBlock}
+                  {dryControlsBlock}
+                  {dryExtraToggles}
+                  {wrinkleBlock}
+                </ProgressiveDisclosureMoreControls>
               </>
             )}
 

@@ -8,3 +8,5 @@ alwaysApply: true
 In **LaundryControlApp**, **ExplorePanel**, **progressive disclosure**, and other first-party prototype chrome, **do not use** `shadow-*`, arbitrary `shadow-[…]`, or `ring-*` used as elevation (rings are implemented with box-shadow in Tailwind).
 
 Prefer **borders** (`border`, `border-t`), **flat background steps** (neutrals), and **spacing** for hierarchy. Third-party `src/app/components/ui/*` primitives may still carry library defaults unless we explicitly restyle them for this prototype.
+
+Progressive disclosure styles **3–5** intentionally use **controlled** expand/collapse (`ProgressiveDisclosureMoreControls.tsx`) instead of only `<details>` so layout can morph (pill radius, nested trays, flex accent rail) without fighting native disclosure styling.

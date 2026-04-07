@@ -1,5 +1,9 @@
 /**
- * Visual treatments for the “See more controls” `<details>` block (progressive disclosure layout).
+ * Visual treatments for “See more controls” (progressive disclosure layout).
+ *
+ * Styles **1–2** use native `<details>` (see `getDetailsDisclosureClasses`).
+ * Styles **3–5** are implemented in `ProgressiveDisclosureMoreControls.tsx` with
+ * **controlled** open state so structure can differ (pill morph, trays, accent rail).
  */
 export type ProgressiveDisclosureStyle =
   | 'borderedCard'
@@ -8,29 +12,31 @@ export type ProgressiveDisclosureStyle =
   | 'insetWell'
   | 'accentBar';
 
+export type DetailsOnlyProgressiveStyle = 'borderedCard' | 'minimalRow';
+
 export const PROGRESSIVE_DISCLOSURE_META: Record<
   ProgressiveDisclosureStyle,
   { title: string; hint: string }
 > = {
   borderedCard: {
     title: '1 Bordered card',
-    hint: 'Outline, rounded corners; inner panel when open.',
+    hint: 'Native <details>: outline, inner panel when open.',
   },
   minimalRow: {
     title: '2 Minimal row',
-    hint: 'Light divider; no heavy frame.',
+    hint: 'Native <details>: light divider, no heavy frame.',
   },
   pillSoft: {
-    title: '3 Soft pill',
-    hint: 'Full pill when closed; opens into a stacked card.',
+    title: '3 Morphing pill',
+    hint: 'Closed = capsule; open = card. JS-driven radius (not <details>).',
   },
   insetWell: {
-    title: '4 Inset well',
-    hint: 'Recessed gray tray; two white surfaces inside.',
+    title: '4 Stacked tray',
+    hint: 'Gray frame; white header tile + nested content tile.',
   },
   accentBar: {
-    title: '5 Accent bar',
-    hint: 'Thick left stripe; no border-width fights.',
+    title: '5 Spine + panel',
+    hint: 'Fixed left rail runs full height with expanded content.',
   },
 };
 
@@ -42,7 +48,7 @@ export const PROGRESSIVE_DISCLOSURE_ORDER: ProgressiveDisclosureStyle[] = [
   'accentBar',
 ];
 
-export function getProgressiveDisclosureClasses(style: ProgressiveDisclosureStyle): {
+export function getDetailsDisclosureClasses(style: DetailsOnlyProgressiveStyle): {
   details: string;
   summary: string;
   content: string;
@@ -67,34 +73,6 @@ export function getProgressiveDisclosureClasses(style: ProgressiveDisclosureStyl
         summary: `${baseSummary} px-1 py-3.5`,
         content: `${baseContentInner} border-t border-dashed border-[#ebebeb] bg-white px-1 pt-4 pb-1`,
         chevron: 'text-[#737373]',
-      };
-    case 'pillSoft': {
-      // Native <details>: closed = summary only → full pill radius. Open = top cap + bottom sheet.
-      return {
-        details:
-          'group overflow-hidden rounded-[22px] border border-[#d0d0d0] bg-[#ebebeb]',
-        summary: `${baseSummary} rounded-[22px] border border-transparent bg-white px-5 py-3.5 transition-[border-radius] group-open:rounded-b-none group-open:rounded-t-[22px] group-open:border-b-0`,
-        content: `${baseContentInner} rounded-b-[22px] border border-[#e2e2e2] bg-white px-4 py-4`,
-        chevron: 'text-[#525252]',
-      };
-    }
-    case 'insetWell':
-      return {
-        // Recessed tray: darker flat fill + border (no inset shadow).
-        details:
-          'group rounded-[18px] border border-[#b0b0b0] bg-[#c8c8c8] p-1.5',
-        summary: `${baseSummary} rounded-[13px] border border-[#dedede] bg-white px-4 py-3.5`,
-        content: `${baseContentInner} mt-1.5 rounded-[13px] border border-[#d4d4d4] bg-[#fafafa] px-3 py-4`,
-        chevron: 'text-[#404040]',
-      };
-    case 'accentBar':
-      return {
-        // Avoid mixing `border` with `border-l-[npx]` (unreliable). Use explicit sides + thick left.
-        details:
-          'group overflow-hidden rounded-[12px] border-y border-r border-[#d4d4d4] border-l-[6px] border-l-[#1a1a1a] bg-white',
-        summary: `${baseSummary} px-4 py-3.5`,
-        content: `${baseContentInner} border-t border-[#e5e5e5] bg-[#f7f7f7] px-4 py-4`,
-        chevron: 'text-[#1a1a1a]',
       };
   }
 }
