@@ -1,4 +1,9 @@
 # Build and deploy the Vite app to GitHub Pages (Settings → Pages → Source: GitHub Actions).
+#
+# Latency notes:
+# - Runner queue + two jobs (build artifact → deploy) are fixed by GitHub Pages.
+# - After deploy, the github.io CDN can cache HTML/assets briefly; hard refresh if needed.
+# - `cache: npm` speeds up repeat runs by reusing the npm download cache for `npm ci`.
 name: Deploy to GitHub Pages
 
 on:
@@ -24,6 +29,8 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: '20'
+          cache: npm
+          cache-dependency-path: package-lock.json
 
       - name: Install dependencies
         run: npm ci
