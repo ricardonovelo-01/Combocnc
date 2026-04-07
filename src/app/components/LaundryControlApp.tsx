@@ -360,7 +360,7 @@ function Toggle({ on, onChange }: { on: boolean; onChange: (v: boolean) => void 
   return (
     <button onClick={() => onChange(!on)}
       className={`relative w-[41px] h-[24px] rounded-full p-[2px] transition-colors ${on ? 'bg-[#262626]' : 'bg-[#d4d4d4]'}`}>
-      <div className={`bg-white rounded-full size-[20px] shadow-[0px_2px_4px_0px_rgba(0,0,0,0.15)] transition-transform ${on ? 'translate-x-[17px]' : 'translate-x-0'}`} />
+      <div className={`rounded-full size-[20px] border border-[#d4d4d4] bg-white transition-transform ${on ? 'translate-x-[17px]' : 'translate-x-0'}`} />
     </button>
   );
 }
@@ -771,7 +771,7 @@ export function LaundryControlApp({
   );
 
   return (
-    <div className="relative h-full min-h-0 w-full min-w-0 bg-white flex flex-col overflow-hidden shadow-2xl rounded-[20px]">
+    <div className="relative h-full min-h-0 w-full min-w-0 flex flex-col overflow-hidden rounded-[20px] border border-[#d4d4d4] bg-white">
       {/* Status Bar */}
       <div className="absolute top-0 left-0 right-0 z-40 bg-white">
         <div className="h-[44px] px-6 flex items-center justify-between">
@@ -846,7 +846,7 @@ export function LaundryControlApp({
         </div>
 
         {/* White Controls Section - overlaps image bottom */}
-        <div className="bg-white rounded-t-[16px] shadow-[0px_-4px_12px_0px_rgba(0,0,0,0.08)] -mt-[200px] relative z-20">
+        <div className="relative z-20 -mt-[200px] rounded-t-[16px] border-t border-[#e8e8e8] bg-white">
           <div className="flex flex-col gap-4 px-4 pt-4 pb-4">
             {layoutVariant === 'fullControl' && (
               <>

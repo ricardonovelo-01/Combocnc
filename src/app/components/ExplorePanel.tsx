@@ -59,7 +59,7 @@ export function ExplorePanel({
   }
 
   return (
-    <aside className="flex h-full w-[min(100vw,280px)] shrink-0 flex-col border-r border-[#e5e5e5] bg-white shadow-[4px_0_24px_-8px_rgba(0,0,0,0.08)]">
+    <aside className="flex h-full w-[min(100vw,280px)] shrink-0 flex-col border-r border-[#e5e5e5] bg-white">
       <div className="flex items-center justify-between border-b border-[#f0f0f0] px-3 py-2.5">
         <p className="font-['Avenir:Heavy',sans-serif] text-[14px] text-[#1a1a1a]">Explorer</p>
         <button

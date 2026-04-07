@@ -59,7 +59,7 @@ export function PrototypeLeftPanel({
                   onClick={() => onTimeVariant(id)}
                   className={`rounded-[8px] border px-2.5 py-2 text-left transition-colors ${
                     selected
-                      ? 'border-[#1a1a1a] bg-white shadow-sm'
+                      ? 'border-[#1a1a1a] bg-white'
                       : 'border-transparent bg-transparent hover:bg-[#f0f0f0]'
                   }`}
                 >
@@ -89,7 +89,7 @@ export function PrototypeLeftPanel({
                   onClick={() => onLayoutVariant(id)}
                   className={`rounded-[8px] border px-2.5 py-2 text-left transition-colors ${
                     selected
-                      ? 'border-[#1a1a1a] bg-white shadow-sm'
+                      ? 'border-[#1a1a1a] bg-white'
                       : 'border-transparent bg-transparent hover:bg-[#f0f0f0]'
                   }`}
                 >

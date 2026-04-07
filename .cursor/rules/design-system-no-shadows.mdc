@@ -1,0 +1,10 @@
+---
+description: Prototype UI avoids drop shadows; use borders and flat fills instead.
+alwaysApply: true
+---
+
+# No box shadows (prototype)
+
+In **LaundryControlApp**, **ExplorePanel**, **progressive disclosure**, and other first-party prototype chrome, **do not use** `shadow-*`, arbitrary `shadow-[…]`, or `ring-*` used as elevation (rings are implemented with box-shadow in Tailwind).
+
+Prefer **borders** (`border`, `border-t`), **flat background steps** (neutrals), and **spacing** for hierarchy. Third-party `src/app/components/ui/*` primitives may still carry library defaults unless we explicitly restyle them for this prototype.

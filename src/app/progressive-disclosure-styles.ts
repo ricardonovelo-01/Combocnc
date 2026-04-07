@@ -72,19 +72,19 @@ export function getProgressiveDisclosureClasses(style: ProgressiveDisclosureStyl
       // Native <details>: closed = summary only → full pill radius. Open = top cap + bottom sheet.
       return {
         details:
-          'group overflow-hidden rounded-[22px] bg-[#e8e8e8] ring-1 ring-[#000000]/[0.06]',
-        summary: `${baseSummary} rounded-[22px] bg-white px-5 py-3.5 shadow-[0_1px_0_rgba(0,0,0,0.04)] transition-[border-radius,box-shadow] group-open:rounded-b-none group-open:rounded-t-[22px] group-open:shadow-none`,
-        content: `${baseContentInner} rounded-b-[22px] border-t border-[#e2e2e2] bg-white px-4 py-4`,
+          'group overflow-hidden rounded-[22px] border border-[#d0d0d0] bg-[#ebebeb]',
+        summary: `${baseSummary} rounded-[22px] border border-transparent bg-white px-5 py-3.5 transition-[border-radius] group-open:rounded-b-none group-open:rounded-t-[22px] group-open:border-b-0`,
+        content: `${baseContentInner} rounded-b-[22px] border border-[#e2e2e2] bg-white px-4 py-4`,
         chevron: 'text-[#525252]',
       };
     }
     case 'insetWell':
       return {
-        // Tray uses inset shadow; no overflow-hidden so margins + radii paint correctly.
+        // Recessed tray: darker flat fill + border (no inset shadow).
         details:
-          'group rounded-[18px] bg-[#cfcfcf] p-1.5 shadow-[inset_0_3px_10px_rgba(0,0,0,0.14)]',
-        summary: `${baseSummary} rounded-[13px] bg-white px-4 py-3.5 shadow-[0_1px_3px_rgba(0,0,0,0.08)]`,
-        content: `${baseContentInner} mt-1.5 rounded-[13px] border border-[#e0e0e0] bg-[#fafafa] px-3 py-4 shadow-[inset_0_1px_0_rgba(255,255,255,0.65)]`,
+          'group rounded-[18px] border border-[#b0b0b0] bg-[#c8c8c8] p-1.5',
+        summary: `${baseSummary} rounded-[13px] border border-[#dedede] bg-white px-4 py-3.5`,
+        content: `${baseContentInner} mt-1.5 rounded-[13px] border border-[#d4d4d4] bg-[#fafafa] px-3 py-4`,
         chevron: 'text-[#404040]',
       };
     case 'accentBar':
