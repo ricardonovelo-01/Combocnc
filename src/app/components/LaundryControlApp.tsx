@@ -826,11 +826,11 @@ export function LaundryControlApp({
       {/* Scrollable container - contains image and controls */}
       <div className="flex-1 overflow-y-auto pb-[140px] scrollbar-hide">
         {/* Product Image */}
-        <div className="w-full h-[320px] bg-white flex items-start justify-center">
+        <div className="w-full h-[320px] overflow-hidden bg-white flex items-start justify-center">
           <img 
             src={washerImage}
             alt="Combo Washer Dryer"
-            className="w-full h-full object-contain"
+            className="h-full w-full max-w-none origin-top object-contain scale-x-[1.045]"
           />
         </div>
 
