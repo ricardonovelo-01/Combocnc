@@ -59,7 +59,7 @@ export function FullControlWashDryChrome({ variant, showWash, showDry, wash, dry
                   Wash
                 </p>
                 <p className="mt-0.5 font-['Avenir:Roman',sans-serif] text-[11px] leading-snug text-[#737373]">
-                  Load cleaning
+                  Temp · spin · soil
                 </p>
               </div>
             </div>
@@ -77,7 +77,7 @@ export function FullControlWashDryChrome({ variant, showWash, showDry, wash, dry
                   Dry
                 </p>
                 <p className="mt-0.5 font-['Avenir:Roman',sans-serif] text-[11px] leading-snug text-[#737373]">
-                  Moisture & finish
+                  Heat · time · dryness
                 </p>
               </div>
             </div>
