@@ -580,14 +580,13 @@ export function LaundryControlApp({
 
   const usePanelTiles = layoutVariant === 'moreControls' || layoutVariant === 'sectionCards';
   const tileSurface = usePanelTiles ? 'panel' : 'legacy';
-  /** Simple containers + icon headers: match selector pills (filled gray), not white-bordered cards. */
-  const fullControlFilledTiles =
-    layoutVariant === 'fullControl' &&
-    (fullControlWashDryStyle === 'simpleContainer' || fullControlWashDryStyle === 'iconHeaders');
+  /** Simple containers only: filled gray tiles. Icon headers & labeled rules use white + border (panel). */
+  const fullControlLegacyGrayTiles =
+    layoutVariant === 'fullControl' && fullControlWashDryStyle === 'simpleContainer';
   const dryTileSurface =
-    layoutVariant === 'fullControl' ? (fullControlFilledTiles ? 'legacy' : 'panel') : tileSurface;
+    layoutVariant === 'fullControl' ? (fullControlLegacyGrayTiles ? 'legacy' : 'panel') : tileSurface;
   const wrinkleToggleSurface =
-    layoutVariant === 'fullControl' ? (fullControlFilledTiles ? 'legacy' : 'panel') : tileSurface;
+    layoutVariant === 'fullControl' ? (fullControlLegacyGrayTiles ? 'legacy' : 'panel') : tileSurface;
   const hideDrySectionHeading = layoutVariant === 'sectionCards' || layoutVariant === 'fullControl';
 
   const modeSelectorBlock = (
@@ -717,7 +716,7 @@ export function LaundryControlApp({
 
   const washControlsOnly = showWash && renderWashCore(tileSurface);
 
-  const washForFullControl = showWash && renderWashCore(fullControlFilledTiles ? 'legacy' : 'panel');
+  const washForFullControl = showWash && renderWashCore(fullControlLegacyGrayTiles ? 'legacy' : 'panel');
 
   const dryControlsBlock = showDry && (
     <DryControlsSection

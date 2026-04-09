@@ -44,11 +44,13 @@ export function FullControlWashDryChrome({ variant, showWash, showDry, wash, dry
   }
 
   if (variant === 'iconHeaders') {
+    const headerBand = 'flex items-start gap-3 border-b border-[#e5e5e5] bg-[#f0f0f0] px-4 py-3';
+    const bodyPanel = 'flex flex-col gap-3 bg-white px-4 py-3';
     return (
       <div className={`flex flex-col ${betweenGroups}`}>
         {showWash && (
           <section className="overflow-hidden rounded-[12px] border border-[#e5e5e5] bg-white" aria-labelledby="fc-wash-icon">
-            <div className="flex items-start gap-3 border-b border-[#f0f0f0] bg-[#fafafa] px-4 py-3">
+            <div className={headerBand}>
               <div className="flex size-10 shrink-0 items-center justify-center rounded-[10px] border border-[#d4d4d4] bg-white text-[#404040]">
                 <Droplet size={20} strokeWidth={2} aria-hidden />
               </div>
@@ -61,12 +63,12 @@ export function FullControlWashDryChrome({ variant, showWash, showDry, wash, dry
                 </p>
               </div>
             </div>
-            <div className={`${contentInset} flex flex-col gap-3`}>{wash}</div>
+            <div className={bodyPanel}>{wash}</div>
           </section>
         )}
         {showDry && (
           <section className="overflow-hidden rounded-[12px] border border-[#e5e5e5] bg-white" aria-labelledby="fc-dry-icon">
-            <div className="flex items-start gap-3 border-b border-[#f0f0f0] bg-[#fafafa] px-4 py-3">
+            <div className={headerBand}>
               <div className="flex size-10 shrink-0 items-center justify-center rounded-[10px] border border-[#d4d4d4] bg-white text-[#404040]">
                 <Sun size={20} strokeWidth={2} aria-hidden />
               </div>
@@ -79,7 +81,7 @@ export function FullControlWashDryChrome({ variant, showWash, showDry, wash, dry
                 </p>
               </div>
             </div>
-            <div className={`${contentInset} flex flex-col gap-3`}>{dry}</div>
+            <div className={bodyPanel}>{dry}</div>
           </section>
         )}
       </div>
