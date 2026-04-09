@@ -11,6 +11,7 @@ export default function App() {
   const [timeVariant, setTimeVariant] = useState<TimeUxVariant>('segmented');
   const [otherTimeOpen, setOtherTimeOpen] = useState(false);
   const [layoutVariant, setLayoutVariant] = useState<LayoutVariant>('fullControl');
+  const [moreLayoutsOpen, setMoreLayoutsOpen] = useState(false);
   const [fullControlWashDryStyle, setFullControlWashDryStyle] =
     useState<FullControlWashDryVariant>('simpleContainer');
   const [progressiveDisclosureStyle, setProgressiveDisclosureStyle] =
@@ -33,7 +34,13 @@ export default function App() {
         otherTimeOpen={otherTimeOpen}
         onOtherTimeOpen={setOtherTimeOpen}
         layoutVariant={layoutVariant}
-        onLayoutVariant={setLayoutVariant}
+        onLayoutVariant={v => {
+          setLayoutVariant(v);
+          if (v === 'fullControl') setMoreLayoutsOpen(false);
+          else setMoreLayoutsOpen(true);
+        }}
+        moreLayoutsOpen={moreLayoutsOpen}
+        onMoreLayoutsOpen={setMoreLayoutsOpen}
         fullControlWashDryStyle={fullControlWashDryStyle}
         onFullControlWashDryStyle={setFullControlWashDryStyle}
         progressiveDisclosureStyle={progressiveDisclosureStyle}

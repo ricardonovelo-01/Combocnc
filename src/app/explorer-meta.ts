@@ -45,6 +45,9 @@ export const LAYOUT_META: Record<LayoutVariant, { title: string; panelHint: stri
   },
 };
 
+/** Shown in the main Layout row; secondary layouts sit under “More”. */
+export const MORE_LAYOUT_VARIANTS: LayoutVariant[] = ['moreControls', 'sectionCards'];
+
 export const PROTOTYPE_META: Record<TimeUxVariant, { title: string; blurb: string }> = {
   segmented: {
     title: '1 Sensor Dry vs Timed Dry',

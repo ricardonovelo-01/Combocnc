@@ -1,14 +1,15 @@
 import { ChevronDown, LayoutGrid, PanelLeft, Timer } from 'lucide-react';
 import type { TimeUxVariant } from './DryControlsSection';
-import type { LayoutVariant } from '../explorer-meta';
 import {
   FULL_CONTROL_WASH_DRY_META,
   FULL_CONTROL_WASH_DRY_ORDER,
   LAYOUT_META,
+  MORE_LAYOUT_VARIANTS,
   OTHER_TIME_VARIANTS,
   PRIMARY_TIME_VARIANTS,
   PROTOTYPE_META,
   type FullControlWashDryVariant,
+  type LayoutVariant,
 } from '../explorer-meta';
 import {
   PROGRESSIVE_DISCLOSURE_META,
@@ -25,6 +26,8 @@ type ExplorePanelProps = {
   onOtherTimeOpen: (open: boolean) => void;
   layoutVariant: LayoutVariant;
   onLayoutVariant: (v: LayoutVariant) => void;
+  moreLayoutsOpen: boolean;
+  onMoreLayoutsOpen: (open: boolean) => void;
   fullControlWashDryStyle: FullControlWashDryVariant;
   onFullControlWashDryStyle: (v: FullControlWashDryVariant) => void;
   progressiveDisclosureStyle: ProgressiveDisclosureStyle;
@@ -40,6 +43,8 @@ export function ExplorePanel({
   onOtherTimeOpen,
   layoutVariant,
   onLayoutVariant,
+  moreLayoutsOpen,
+  onMoreLayoutsOpen,
   fullControlWashDryStyle,
   onFullControlWashDryStyle,
   progressiveDisclosureStyle,
@@ -153,7 +158,7 @@ export function ExplorePanel({
             </p>
           </div>
           <div className="flex flex-col gap-1.5">
-            {(Object.keys(LAYOUT_META) as LayoutVariant[]).map(key => {
+            {(['fullControl'] as const).map(key => {
               const meta = LAYOUT_META[key];
               const selected = layoutVariant === key;
               return (
@@ -163,11 +168,11 @@ export function ExplorePanel({
                   onClick={() => onLayoutVariant(key)}
                   className={`rounded-[8px] border px-2.5 py-2 text-left transition-colors ${
                     selected
-                      ? 'border-[#1a1a1a] bg-[#fafafa] ring-1 ring-[#1a1a1a]/10'
-                      : 'border-[#e5e5e5] bg-white hover:border-[#d4d4d4]'
+                      ? 'border-[#1a1a1a] bg-[#fafafa] text-[#1a1a1a]'
+                      : 'border-[#e5e5e5] bg-white text-[#525252] hover:border-[#d4d4d4]'
                   }`}
                 >
-                  <p className="font-['Avenir:Heavy',sans-serif] text-[12px] text-[#1a1a1a]">{meta.title}</p>
+                  <p className="font-['Avenir:Heavy',sans-serif] text-[12px]">{meta.title}</p>
                   <p className="mt-0.5 font-['Avenir:Roman',sans-serif] text-[10px] leading-snug text-[#737373]">
                     {meta.panelHint}
                   </p>
@@ -175,6 +180,83 @@ export function ExplorePanel({
               );
             })}
           </div>
+
+          <button
+            type="button"
+            onClick={() => onMoreLayoutsOpen(!moreLayoutsOpen)}
+            aria-expanded={moreLayoutsOpen}
+            className="mt-2 flex w-full items-center justify-between rounded-[8px] border border-dashed border-[#d4d4d4] bg-[#fafafa] px-2.5 py-2 text-left hover:bg-[#f5f5f5]"
+          >
+            <span className="min-w-0 font-['Avenir:Heavy',sans-serif] text-[11px] text-[#525252]">
+              More layouts
+              {layoutVariant !== 'fullControl' && !moreLayoutsOpen ? (
+                <span className="mt-0.5 block truncate font-['Avenir:Roman',sans-serif] text-[10px] font-normal text-[#737373]">
+                  {LAYOUT_META[layoutVariant].title}
+                </span>
+              ) : null}
+            </span>
+            <ChevronDown
+              size={16}
+              className={`shrink-0 text-[#737373] transition-transform ${moreLayoutsOpen ? 'rotate-180' : ''}`}
+            />
+          </button>
+
+          {moreLayoutsOpen && (
+            <div className="mt-2 flex flex-col gap-1.5 border-l-2 border-[#e5e5e5] pl-2">
+              {MORE_LAYOUT_VARIANTS.map(key => {
+                const meta = LAYOUT_META[key];
+                const selected = layoutVariant === key;
+                return (
+                  <button
+                    key={key}
+                    type="button"
+                    onClick={() => onLayoutVariant(key)}
+                    className={`rounded-[8px] border px-2.5 py-2 text-left transition-colors ${
+                      selected
+                        ? 'border-[#1a1a1a] bg-[#fafafa] text-[#1a1a1a]'
+                        : 'border-[#ebebeb] bg-white text-[#525252] hover:border-[#d4d4d4]'
+                    }`}
+                  >
+                    <p className="font-['Avenir:Heavy',sans-serif] text-[12px]">{meta.title}</p>
+                    <p className="mt-0.5 font-['Avenir:Roman',sans-serif] text-[10px] leading-snug text-[#737373]">
+                      {meta.panelHint}
+                    </p>
+                  </button>
+                );
+              })}
+
+              {layoutVariant === 'moreControls' && (
+                <div className="mt-3 border-t border-[#f0f0f0] pt-3">
+                  <p className="mb-2 font-['Avenir:Heavy',sans-serif] text-[11px] uppercase tracking-wide text-[#737373]">
+                    Disclosure style
+                  </p>
+                  <div className="flex flex-col gap-1.5">
+                    {PROGRESSIVE_DISCLOSURE_ORDER.map(key => {
+                      const meta = PROGRESSIVE_DISCLOSURE_META[key];
+                      const selected = progressiveDisclosureStyle === key;
+                      return (
+                        <button
+                          key={key}
+                          type="button"
+                          onClick={() => onProgressiveDisclosureStyle(key)}
+                          className={`rounded-[8px] border px-2.5 py-2 text-left transition-colors ${
+                            selected
+                              ? 'border-[#1a1a1a] bg-[#fafafa] text-[#1a1a1a]'
+                              : 'border-[#e5e5e5] bg-white hover:border-[#d4d4d4]'
+                          }`}
+                        >
+                          <p className="font-['Avenir:Heavy',sans-serif] text-[12px]">{meta.title}</p>
+                          <p className="mt-0.5 font-['Avenir:Roman',sans-serif] text-[10px] leading-snug text-[#737373]">
+                            {meta.hint}
+                          </p>
+                        </button>
+                      );
+                    })}
+                  </div>
+                </div>
+              )}
+            </div>
+          )}
 
           {layoutVariant === 'fullControl' && (
             <div className="mt-5 border-t border-[#f0f0f0] pt-5">
@@ -193,37 +275,6 @@ export function ExplorePanel({
                       className={`rounded-[8px] border px-2.5 py-2 text-left transition-colors ${
                         selected
                           ? 'border-[#1a1a1a] bg-[#fafafa]'
-                          : 'border-[#e5e5e5] bg-white hover:border-[#d4d4d4]'
-                      }`}
-                    >
-                      <p className="font-['Avenir:Heavy',sans-serif] text-[12px] text-[#1a1a1a]">{meta.title}</p>
-                      <p className="mt-0.5 font-['Avenir:Roman',sans-serif] text-[10px] leading-snug text-[#737373]">
-                        {meta.hint}
-                      </p>
-                    </button>
-                  );
-                })}
-              </div>
-            </div>
-          )}
-
-          {layoutVariant === 'moreControls' && (
-            <div className="mt-5 border-t border-[#f0f0f0] pt-5">
-              <p className="mb-2 font-['Avenir:Heavy',sans-serif] text-[11px] uppercase tracking-wide text-[#737373]">
-                Progressive disclosure style
-              </p>
-              <div className="flex flex-col gap-1.5">
-                {PROGRESSIVE_DISCLOSURE_ORDER.map(key => {
-                  const meta = PROGRESSIVE_DISCLOSURE_META[key];
-                  const selected = progressiveDisclosureStyle === key;
-                  return (
-                    <button
-                      key={key}
-                      type="button"
-                      onClick={() => onProgressiveDisclosureStyle(key)}
-                      className={`rounded-[8px] border px-2.5 py-2 text-left transition-colors ${
-                        selected
-                          ? 'border-[#1a1a1a] bg-[#fafafa] ring-1 ring-[#1a1a1a]/10'
                           : 'border-[#e5e5e5] bg-white hover:border-[#d4d4d4]'
                       }`}
                     >
