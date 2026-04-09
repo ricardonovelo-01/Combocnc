@@ -27,9 +27,6 @@ export function FullControlWashDryChrome({ variant, showWash, showDry, wash, dry
           <section className={`${box} ${contentInset}`} aria-labelledby="fc-wash-simple">
             <div className={headerToContent} id="fc-wash-simple">
               <p className="font-['Avenir:Heavy',sans-serif] text-[15px] capitalize text-[#1a1a1a]">Wash</p>
-              <p className="mt-1 font-['Avenir:Roman',sans-serif] text-[11px] leading-snug text-[#737373]">
-                Temperature, spin, soil
-              </p>
             </div>
             <div className="flex flex-col gap-3">{wash}</div>
           </section>
@@ -38,9 +35,6 @@ export function FullControlWashDryChrome({ variant, showWash, showDry, wash, dry
           <section className={`${box} ${contentInset}`} aria-labelledby="fc-dry-simple">
             <div className={headerToContent} id="fc-dry-simple">
               <p className="font-['Avenir:Heavy',sans-serif] text-[15px] capitalize text-[#1a1a1a]">Dry</p>
-              <p className="mt-1 font-['Avenir:Roman',sans-serif] text-[11px] leading-snug text-[#737373]">
-                Heat, sensor or timed minutes, dryness
-              </p>
             </div>
             <div className="flex flex-col gap-3">{dry}</div>
           </section>
