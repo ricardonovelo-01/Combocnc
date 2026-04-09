@@ -94,7 +94,7 @@ export function FullControlWashDryChrome({ variant, showWash, showDry, wash, dry
           <div className="mb-3 flex items-center gap-3">
             <div className="h-px flex-1 bg-[#d4d4d4]" />
             <span
-              className="shrink-0 bg-white px-2 font-['Avenir:Heavy',sans-serif] text-[11px] uppercase tracking-[0.18em] text-[#525252]"
+              className="shrink-0 bg-white px-2 font-['Avenir:Heavy',sans-serif] text-[14px] capitalize text-[#1a1a1a]"
               id="fc-wash-div"
             >
               Wash
@@ -111,7 +111,7 @@ export function FullControlWashDryChrome({ variant, showWash, showDry, wash, dry
           <div className="mb-3 flex items-center gap-3">
             <div className="h-px flex-1 bg-[#d4d4d4]" />
             <span
-              className="shrink-0 bg-white px-2 font-['Avenir:Heavy',sans-serif] text-[11px] uppercase tracking-[0.18em] text-[#525252]"
+              className="shrink-0 bg-white px-2 font-['Avenir:Heavy',sans-serif] text-[14px] capitalize text-[#1a1a1a]"
               id="fc-dry-div"
             >
               Dry
