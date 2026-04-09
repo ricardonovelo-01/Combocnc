@@ -365,10 +365,27 @@ function Toggle({ on, onChange }: { on: boolean; onChange: (v: boolean) => void 
 }
 
 // === Toggle Row ===
-function ToggleRow({ label, on, onChange, info }: { label: string; on: boolean; onChange: (v: boolean) => void; info?: boolean }) {
+function ToggleRow({
+  label,
+  on,
+  onChange,
+  info,
+  surface = 'panel',
+}: {
+  label: string;
+  on: boolean;
+  onChange: (v: boolean) => void;
+  info?: boolean;
+  /** `panel` = white + border (grouped / disclosure). `legacy` = filled gray like primary selectors. */
+  surface?: 'legacy' | 'panel';
+}) {
+  const shell =
+    surface === 'panel'
+      ? 'border border-[#d4d4d4] bg-white'
+      : 'bg-[#f5f5f5]';
   return (
-    <div className="bg-white h-[70px] min-h-[70px] relative rounded-[8px] w-full border border-[#d4d4d4]">
-      <div className="flex items-center h-full px-4">
+    <div className={`${shell} relative h-[70px] min-h-[70px] w-full rounded-[8px]`}>
+      <div className="flex h-full items-center px-4">
         <div className="flex-1 flex items-center gap-1">
           <p className="font-['Avenir:Medium',sans-serif] text-[16px] text-[#1a1a1a]">{label}</p>
           {info && <Info size={16} className="text-[#404040]" />}
@@ -563,7 +580,14 @@ export function LaundryControlApp({
 
   const usePanelTiles = layoutVariant === 'moreControls' || layoutVariant === 'sectionCards';
   const tileSurface = usePanelTiles ? 'panel' : 'legacy';
-  const dryTileSurface = layoutVariant === 'fullControl' ? 'panel' : tileSurface;
+  /** Simple containers + icon headers: match selector pills (filled gray), not white-bordered cards. */
+  const fullControlFilledTiles =
+    layoutVariant === 'fullControl' &&
+    (fullControlWashDryStyle === 'simpleContainer' || fullControlWashDryStyle === 'iconHeaders');
+  const dryTileSurface =
+    layoutVariant === 'fullControl' ? (fullControlFilledTiles ? 'legacy' : 'panel') : tileSurface;
+  const wrinkleToggleSurface =
+    layoutVariant === 'fullControl' ? (fullControlFilledTiles ? 'legacy' : 'panel') : tileSurface;
   const hideDrySectionHeading = layoutVariant === 'sectionCards' || layoutVariant === 'fullControl';
 
   const modeSelectorBlock = (
@@ -676,9 +700,9 @@ export function LaundryControlApp({
           }
         />
       </div>
-      <ToggleRow label="Pre Wash" on={state.preWash} onChange={v => update({ preWash: v })} />
-      <ToggleRow label="Pre Soak" on={state.preSoak} onChange={v => update({ preSoak: v })} />
-      <ToggleRow label="Extra Rinse" on={state.extraRinse} onChange={v => update({ extraRinse: v })} />
+      <ToggleRow surface={washSurface} label="Pre Wash" on={state.preWash} onChange={v => update({ preWash: v })} />
+      <ToggleRow surface={washSurface} label="Pre Soak" on={state.preSoak} onChange={v => update({ preSoak: v })} />
+      <ToggleRow surface={washSurface} label="Extra Rinse" on={state.extraRinse} onChange={v => update({ extraRinse: v })} />
     </>
   );
 
@@ -693,7 +717,7 @@ export function LaundryControlApp({
 
   const washControlsOnly = showWash && renderWashCore(tileSurface);
 
-  const washForFullControl = showWash && renderWashCore('panel');
+  const washForFullControl = showWash && renderWashCore(fullControlFilledTiles ? 'legacy' : 'panel');
 
   const dryControlsBlock = showDry && (
     <DryControlsSection
@@ -713,15 +737,21 @@ export function LaundryControlApp({
 
   const dryExtraToggles = showDry && (
     <>
-      <ToggleRow label="Damp Signal" on={state.dampSignal} onChange={v => update({ dampSignal: v })} />
+      <ToggleRow surface={dryTileSurface} label="Damp Signal" on={state.dampSignal} onChange={v => update({ dampSignal: v })} />
       {state.mode === 'WASH_DRY' && (
-        <ToggleRow label="Delay Dry" on={state.delayDry} onChange={v => update({ delayDry: v })} />
+        <ToggleRow surface={dryTileSurface} label="Delay Dry" on={state.delayDry} onChange={v => update({ delayDry: v })} />
       )}
     </>
   );
 
   const wrinkleBlock = (
-    <ToggleRow label="Wrinkle Shield" on={state.wrinkleShield} onChange={v => update({ wrinkleShield: v })} info />
+    <ToggleRow
+      surface={wrinkleToggleSurface}
+      label="Wrinkle Shield"
+      on={state.wrinkleShield}
+      onChange={v => update({ wrinkleShield: v })}
+      info
+    />
   );
 
   return (
