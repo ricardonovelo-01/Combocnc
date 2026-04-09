@@ -12,6 +12,7 @@ export default function App() {
   const [otherTimeOpen, setOtherTimeOpen] = useState(false);
   const [layoutVariant, setLayoutVariant] = useState<LayoutVariant>('fullControl');
   const [moreLayoutsOpen, setMoreLayoutsOpen] = useState(false);
+  const [washDryChromeOpen, setWashDryChromeOpen] = useState(false);
   const [fullControlWashDryStyle, setFullControlWashDryStyle] =
     useState<FullControlWashDryVariant>('simpleContainer');
   const [progressiveDisclosureStyle, setProgressiveDisclosureStyle] =
@@ -43,6 +44,8 @@ export default function App() {
         onMoreLayoutsOpen={setMoreLayoutsOpen}
         fullControlWashDryStyle={fullControlWashDryStyle}
         onFullControlWashDryStyle={setFullControlWashDryStyle}
+        washDryChromeOpen={washDryChromeOpen}
+        onWashDryChromeOpen={setWashDryChromeOpen}
         progressiveDisclosureStyle={progressiveDisclosureStyle}
         onProgressiveDisclosureStyle={setProgressiveDisclosureStyle}
       />

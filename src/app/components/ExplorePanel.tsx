@@ -30,6 +30,8 @@ type ExplorePanelProps = {
   onMoreLayoutsOpen: (open: boolean) => void;
   fullControlWashDryStyle: FullControlWashDryVariant;
   onFullControlWashDryStyle: (v: FullControlWashDryVariant) => void;
+  washDryChromeOpen: boolean;
+  onWashDryChromeOpen: (open: boolean) => void;
   progressiveDisclosureStyle: ProgressiveDisclosureStyle;
   onProgressiveDisclosureStyle: (v: ProgressiveDisclosureStyle) => void;
 };
@@ -47,6 +49,8 @@ export function ExplorePanel({
   onMoreLayoutsOpen,
   fullControlWashDryStyle,
   onFullControlWashDryStyle,
+  washDryChromeOpen,
+  onWashDryChromeOpen,
   progressiveDisclosureStyle,
   onProgressiveDisclosureStyle,
 }: ExplorePanelProps) {
@@ -260,32 +264,51 @@ export function ExplorePanel({
 
           {layoutVariant === 'fullControl' && (
             <div className="mt-5 border-t border-[#f0f0f0] pt-5">
-              <p className="mb-2 font-['Avenir:Heavy',sans-serif] text-[11px] uppercase tracking-wide text-[#737373]">
-                Wash vs dry (full control)
-              </p>
-              <div className="flex flex-col gap-1.5">
-                {FULL_CONTROL_WASH_DRY_ORDER.map(key => {
-                  const meta = FULL_CONTROL_WASH_DRY_META[key];
-                  const selected = fullControlWashDryStyle === key;
-                  return (
-                    <button
-                      key={key}
-                      type="button"
-                      onClick={() => onFullControlWashDryStyle(key)}
-                      className={`rounded-[8px] border px-2.5 py-2 text-left transition-colors ${
-                        selected
-                          ? 'border-[#1a1a1a] bg-[#fafafa]'
-                          : 'border-[#e5e5e5] bg-white hover:border-[#d4d4d4]'
-                      }`}
-                    >
-                      <p className="font-['Avenir:Heavy',sans-serif] text-[12px] text-[#1a1a1a]">{meta.title}</p>
-                      <p className="mt-0.5 font-['Avenir:Roman',sans-serif] text-[10px] leading-snug text-[#737373]">
-                        {meta.hint}
-                      </p>
-                    </button>
-                  );
-                })}
-              </div>
+              <button
+                type="button"
+                onClick={() => onWashDryChromeOpen(!washDryChromeOpen)}
+                aria-expanded={washDryChromeOpen}
+                className="flex w-full items-center justify-between rounded-[8px] border border-dashed border-[#d4d4d4] bg-[#fafafa] px-2.5 py-2 text-left hover:bg-[#f5f5f5]"
+              >
+                <span className="min-w-0 font-['Avenir:Heavy',sans-serif] text-[11px] text-[#525252]">
+                  Wash vs dry framing
+                  {!washDryChromeOpen ? (
+                    <span className="mt-0.5 block truncate font-['Avenir:Roman',sans-serif] text-[10px] font-normal text-[#737373]">
+                      {FULL_CONTROL_WASH_DRY_META[fullControlWashDryStyle].title}
+                    </span>
+                  ) : null}
+                </span>
+                <ChevronDown
+                  size={16}
+                  className={`shrink-0 text-[#737373] transition-transform ${washDryChromeOpen ? 'rotate-180' : ''}`}
+                />
+              </button>
+
+              {washDryChromeOpen && (
+                <div className="mt-2 flex flex-col gap-1.5 border-l-2 border-[#e5e5e5] pl-2">
+                  {FULL_CONTROL_WASH_DRY_ORDER.map(key => {
+                    const meta = FULL_CONTROL_WASH_DRY_META[key];
+                    const selected = fullControlWashDryStyle === key;
+                    return (
+                      <button
+                        key={key}
+                        type="button"
+                        onClick={() => onFullControlWashDryStyle(key)}
+                        className={`rounded-[8px] border px-2.5 py-2 text-left transition-colors ${
+                          selected
+                            ? 'border-[#1a1a1a] bg-[#fafafa] text-[#1a1a1a]'
+                            : 'border-[#ebebeb] bg-white text-[#525252] hover:border-[#d4d4d4]'
+                        }`}
+                      >
+                        <p className="font-['Avenir:Heavy',sans-serif] text-[12px]">{meta.title}</p>
+                        <p className="mt-0.5 font-['Avenir:Roman',sans-serif] text-[10px] leading-snug text-[#737373]">
+                          {meta.hint}
+                        </p>
+                      </button>
+                    );
+                  })}
+                </div>
+              )}
             </div>
           )}
         </div>
