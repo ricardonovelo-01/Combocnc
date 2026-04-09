@@ -71,10 +71,11 @@ export const PROTOTYPE_META: Record<TimeUxVariant, { title: string; blurb: strin
   },
 };
 
-export const PRIMARY_TIME_VARIANTS: TimeUxVariant[] = ['segmented', 'timedBanner'];
+export const PRIMARY_TIME_VARIANTS: TimeUxVariant[] = ['segmented'];
 
 export const OTHER_TIME_VARIANTS: TimeUxVariant[] = [
   'expandableTiming',
+  'timedBanner',
   'baseline',
   'baselineNoSensorEstimate',
 ];
