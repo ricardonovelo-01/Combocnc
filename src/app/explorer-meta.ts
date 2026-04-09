@@ -1,17 +1,10 @@
 import type { TimeUxVariant } from './components/DryControlsSection';
 
-/** Visual system for separating wash vs dry when layout is Full control (five reviewable options). */
-export type FullControlWashDryVariant =
-  | 'accentRails'
-  | 'tintedPanels'
-  | 'stepNumbers'
-  | 'iconHeaders'
-  | 'dividerLabels';
+/** Visual system for separating wash vs dry when layout is Full control. */
+export type FullControlWashDryVariant = 'simpleContainer' | 'iconHeaders' | 'dividerLabels';
 
 export const FULL_CONTROL_WASH_DRY_ORDER: FullControlWashDryVariant[] = [
-  'accentRails',
-  'tintedPanels',
-  'stepNumbers',
+  'simpleContainer',
   'iconHeaders',
   'dividerLabels',
 ];
@@ -20,17 +13,9 @@ export const FULL_CONTROL_WASH_DRY_META: Record<
   FullControlWashDryVariant,
   { title: string; hint: string }
 > = {
-  accentRails: {
-    title: 'Left rail weight',
-    hint: 'Dark vs light left edge—same neutral palette, different emphasis.',
-  },
-  tintedPanels: {
-    title: 'Framed + tags',
-    hint: 'Bordered blocks with small neutral tags; scan structure, not hue.',
-  },
-  stepNumbers: {
-    title: 'Numbered steps',
-    hint: '1 → 2 sequence with even padding inside each tray.',
+  simpleContainer: {
+    title: 'Simple containers',
+    hint: 'Matching bordered boxes, title + short line, then controls.',
   },
   iconHeaders: {
     title: 'Icon headers',
@@ -48,7 +33,7 @@ export type LayoutVariant = 'fullControl' | 'moreControls' | 'sectionCards';
 export const LAYOUT_META: Record<LayoutVariant, { title: string; panelHint: string }> = {
   fullControl: {
     title: 'Full control',
-    panelHint: 'All controls in one scroll; pick how wash vs dry are distinguished.',
+    panelHint: 'All controls in one scroll; three ways to frame wash vs dry.',
   },
   moreControls: {
     title: 'Progressive disclosure',

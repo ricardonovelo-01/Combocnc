@@ -12,7 +12,7 @@ export default function App() {
   const [otherTimeOpen, setOtherTimeOpen] = useState(false);
   const [layoutVariant, setLayoutVariant] = useState<LayoutVariant>('fullControl');
   const [fullControlWashDryStyle, setFullControlWashDryStyle] =
-    useState<FullControlWashDryVariant>('accentRails');
+    useState<FullControlWashDryVariant>('simpleContainer');
   const [progressiveDisclosureStyle, setProgressiveDisclosureStyle] =
     useState<ProgressiveDisclosureStyle>('borderedCard');
 

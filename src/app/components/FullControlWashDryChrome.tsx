@@ -16,19 +16,16 @@ const contentInset = 'px-4 py-3';
 const headerToContent = 'mb-3';
 
 /**
- * Five ways to separate wash vs dry in full control using only neutrals (value, borders,
- * type, structure)—no chromatic fills. Spacing is tuned so headers and controls align.
+ * Three ways to separate wash vs dry in full control (neutrals only).
  */
 export function FullControlWashDryChrome({ variant, showWash, showDry, wash, dry }: Props) {
-  if (variant === 'accentRails') {
+  if (variant === 'simpleContainer') {
+    const box = 'rounded-[10px] border border-[#e5e5e5] bg-white';
     return (
       <div className={`flex flex-col ${betweenGroups}`}>
         {showWash && (
-          <section
-            className={`rounded-[10px] border border-[#e5e5e5] border-l-[5px] border-l-[#404040] bg-white ${contentInset}`}
-            aria-labelledby="fc-wash-rails"
-          >
-            <div className={headerToContent} id="fc-wash-rails">
+          <section className={`${box} ${contentInset}`} aria-labelledby="fc-wash-simple">
+            <div className={headerToContent} id="fc-wash-simple">
               <p className="font-['Avenir:Heavy',sans-serif] text-[15px] capitalize text-[#1a1a1a]">Wash</p>
               <p className="mt-1 font-['Avenir:Roman',sans-serif] text-[11px] leading-snug text-[#737373]">
                 Temperature, spin, soil
@@ -38,99 +35,14 @@ export function FullControlWashDryChrome({ variant, showWash, showDry, wash, dry
           </section>
         )}
         {showDry && (
-          <section
-            className={`rounded-[10px] border border-[#e5e5e5] border-l-[5px] border-l-[#a3a3a3] bg-[#fafafa] ${contentInset}`}
-            aria-labelledby="fc-dry-rails"
-          >
-            <div className={headerToContent} id="fc-dry-rails">
+          <section className={`${box} ${contentInset}`} aria-labelledby="fc-dry-simple">
+            <div className={headerToContent} id="fc-dry-simple">
               <p className="font-['Avenir:Heavy',sans-serif] text-[15px] capitalize text-[#1a1a1a]">Dry</p>
               <p className="mt-1 font-['Avenir:Roman',sans-serif] text-[11px] leading-snug text-[#737373]">
                 Heat, sensor or timed minutes, dryness
               </p>
             </div>
             <div className="flex flex-col gap-3">{dry}</div>
-          </section>
-        )}
-      </div>
-    );
-  }
-
-  if (variant === 'tintedPanels') {
-    return (
-      <div className={`flex flex-col ${betweenGroups}`}>
-        {showWash && (
-          <section
-            className="rounded-[12px] border border-[#e5e5e5] bg-white p-4"
-            aria-labelledby="fc-wash-tint"
-          >
-            <div className={`mb-4 flex flex-wrap items-center justify-between gap-2`} id="fc-wash-tint">
-              <p className="font-['Avenir:Heavy',sans-serif] text-[13px] uppercase tracking-wide text-[#1a1a1a]">
-                Washing
-              </p>
-              <span className="rounded-full border border-[#d4d4d4] bg-[#fafafa] px-2.5 py-1 font-['Avenir:Roman',sans-serif] text-[10px] text-[#525252]">
-                Agitation & rinse
-              </span>
-            </div>
-            <div className="flex flex-col gap-3">{wash}</div>
-          </section>
-        )}
-        {showDry && (
-          <section
-            className="rounded-[12px] border border-[#e5e5e5] bg-[#fafafa] p-4"
-            aria-labelledby="fc-dry-tint"
-          >
-            <div className={`mb-4 flex flex-wrap items-center justify-between gap-2`} id="fc-dry-tint">
-              <p className="font-['Avenir:Heavy',sans-serif] text-[13px] uppercase tracking-wide text-[#1a1a1a]">
-                Drying
-              </p>
-              <span className="rounded-full border border-[#d4d4d4] bg-white px-2.5 py-1 font-['Avenir:Roman',sans-serif] text-[10px] text-[#525252]">
-                Heat & time
-              </span>
-            </div>
-            <div className="flex flex-col gap-3">{dry}</div>
-          </section>
-        )}
-      </div>
-    );
-  }
-
-  if (variant === 'stepNumbers') {
-    return (
-      <div className={`flex flex-col ${betweenGroups}`}>
-        {showWash && (
-          <section className="flex gap-3" aria-labelledby="fc-wash-step">
-            <div
-              className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full border-2 border-[#1a1a1a] bg-white"
-              aria-hidden
-            >
-              <span className="font-['Avenir:Heavy',sans-serif] text-[14px] leading-none text-[#1a1a1a]">1</span>
-            </div>
-            <div className="min-w-0 flex-1">
-              <p className={`${headerToContent} font-['Avenir:Heavy',sans-serif] text-[15px] text-[#1a1a1a]`} id="fc-wash-step">
-                Wash
-              </p>
-              <div className="rounded-[10px] border border-[#e5e5e5] bg-[#fafafa] p-4">
-                <div className="flex flex-col gap-3">{wash}</div>
-              </div>
-            </div>
-          </section>
-        )}
-        {showDry && (
-          <section className="flex gap-3" aria-labelledby="fc-dry-step">
-            <div
-              className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full border-2 border-[#525252] bg-white"
-              aria-hidden
-            >
-              <span className="font-['Avenir:Heavy',sans-serif] text-[14px] leading-none text-[#262626]">2</span>
-            </div>
-            <div className="min-w-0 flex-1">
-              <p className={`${headerToContent} font-['Avenir:Heavy',sans-serif] text-[15px] text-[#1a1a1a]`} id="fc-dry-step">
-                Dry
-              </p>
-              <div className="rounded-[10px] border border-[#e5e5e5] bg-white p-4">
-                <div className="flex flex-col gap-3">{dry}</div>
-              </div>
-            </div>
           </section>
         )}
       </div>

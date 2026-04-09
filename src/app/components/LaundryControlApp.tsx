@@ -468,7 +468,7 @@ export function LaundryControlApp({
   timeVariant,
   layoutVariant,
   progressiveDisclosureStyle = 'borderedCard',
-  fullControlWashDryStyle = 'accentRails',
+  fullControlWashDryStyle = 'simpleContainer',
 }: {
   timeVariant: TimeUxVariant;
   layoutVariant: LayoutVariant;
