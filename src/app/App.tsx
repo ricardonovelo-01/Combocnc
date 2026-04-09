@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { ExplorePanel } from './components/ExplorePanel';
 import { LaundryControlApp } from './components/LaundryControlApp';
-import type { LayoutVariant } from './explorer-meta';
+import type { FullControlWashDryVariant, LayoutVariant } from './explorer-meta';
 import type { ProgressiveDisclosureStyle } from './progressive-disclosure-styles';
 import type { TimeUxVariant } from './components/DryControlsSection';
 import { APP_VERSION } from './version';
@@ -11,6 +11,8 @@ export default function App() {
   const [timeVariant, setTimeVariant] = useState<TimeUxVariant>('segmented');
   const [otherTimeOpen, setOtherTimeOpen] = useState(false);
   const [layoutVariant, setLayoutVariant] = useState<LayoutVariant>('fullControl');
+  const [fullControlWashDryStyle, setFullControlWashDryStyle] =
+    useState<FullControlWashDryVariant>('accentRails');
   const [progressiveDisclosureStyle, setProgressiveDisclosureStyle] =
     useState<ProgressiveDisclosureStyle>('borderedCard');
 
@@ -32,6 +34,8 @@ export default function App() {
         onOtherTimeOpen={setOtherTimeOpen}
         layoutVariant={layoutVariant}
         onLayoutVariant={setLayoutVariant}
+        fullControlWashDryStyle={fullControlWashDryStyle}
+        onFullControlWashDryStyle={setFullControlWashDryStyle}
         progressiveDisclosureStyle={progressiveDisclosureStyle}
         onProgressiveDisclosureStyle={setProgressiveDisclosureStyle}
       />
@@ -45,6 +49,7 @@ export default function App() {
               timeVariant={timeVariant}
               layoutVariant={layoutVariant}
               progressiveDisclosureStyle={progressiveDisclosureStyle}
+              fullControlWashDryStyle={fullControlWashDryStyle}
             />
           </div>
         </div>

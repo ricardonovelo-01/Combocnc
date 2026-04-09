@@ -2,10 +2,13 @@ import { ChevronDown, LayoutGrid, PanelLeft, Timer } from 'lucide-react';
 import type { TimeUxVariant } from './DryControlsSection';
 import type { LayoutVariant } from '../explorer-meta';
 import {
+  FULL_CONTROL_WASH_DRY_META,
+  FULL_CONTROL_WASH_DRY_ORDER,
   LAYOUT_META,
   OTHER_TIME_VARIANTS,
   PRIMARY_TIME_VARIANTS,
   PROTOTYPE_META,
+  type FullControlWashDryVariant,
 } from '../explorer-meta';
 import {
   PROGRESSIVE_DISCLOSURE_META,
@@ -22,6 +25,8 @@ type ExplorePanelProps = {
   onOtherTimeOpen: (open: boolean) => void;
   layoutVariant: LayoutVariant;
   onLayoutVariant: (v: LayoutVariant) => void;
+  fullControlWashDryStyle: FullControlWashDryVariant;
+  onFullControlWashDryStyle: (v: FullControlWashDryVariant) => void;
   progressiveDisclosureStyle: ProgressiveDisclosureStyle;
   onProgressiveDisclosureStyle: (v: ProgressiveDisclosureStyle) => void;
 };
@@ -35,6 +40,8 @@ export function ExplorePanel({
   onOtherTimeOpen,
   layoutVariant,
   onLayoutVariant,
+  fullControlWashDryStyle,
+  onFullControlWashDryStyle,
   progressiveDisclosureStyle,
   onProgressiveDisclosureStyle,
 }: ExplorePanelProps) {
@@ -168,6 +175,37 @@ export function ExplorePanel({
               );
             })}
           </div>
+
+          {layoutVariant === 'fullControl' && (
+            <div className="mt-5 border-t border-[#f0f0f0] pt-5">
+              <p className="mb-2 font-['Avenir:Heavy',sans-serif] text-[11px] uppercase tracking-wide text-[#737373]">
+                Wash vs dry (full control)
+              </p>
+              <div className="flex flex-col gap-1.5">
+                {FULL_CONTROL_WASH_DRY_ORDER.map(key => {
+                  const meta = FULL_CONTROL_WASH_DRY_META[key];
+                  const selected = fullControlWashDryStyle === key;
+                  return (
+                    <button
+                      key={key}
+                      type="button"
+                      onClick={() => onFullControlWashDryStyle(key)}
+                      className={`rounded-[8px] border px-2.5 py-2 text-left transition-colors ${
+                        selected
+                          ? 'border-[#1a1a1a] bg-[#fafafa]'
+                          : 'border-[#e5e5e5] bg-white hover:border-[#d4d4d4]'
+                      }`}
+                    >
+                      <p className="font-['Avenir:Heavy',sans-serif] text-[12px] text-[#1a1a1a]">{meta.title}</p>
+                      <p className="mt-0.5 font-['Avenir:Roman',sans-serif] text-[10px] leading-snug text-[#737373]">
+                        {meta.hint}
+                      </p>
+                    </button>
+                  );
+                })}
+              </div>
+            </div>
+          )}
 
           {layoutVariant === 'moreControls' && (
             <div className="mt-5 border-t border-[#f0f0f0] pt-5">

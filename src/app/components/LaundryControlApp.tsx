@@ -25,7 +25,8 @@ import {
   getTimeForDryness,
 } from './laundry-state';
 import { DryControlsSection, type TimeUxVariant } from './DryControlsSection';
-import type { LayoutVariant } from '../explorer-meta';
+import type { FullControlWashDryVariant, LayoutVariant } from '../explorer-meta';
+import { FullControlWashDryChrome } from './FullControlWashDryChrome';
 import type { ProgressiveDisclosureStyle } from '../progressive-disclosure-styles';
 import { ProgressiveDisclosureMoreControls } from './ProgressiveDisclosureMoreControls';
 // === Cycle Picker Full Screen ===
@@ -467,10 +468,13 @@ export function LaundryControlApp({
   timeVariant,
   layoutVariant,
   progressiveDisclosureStyle = 'borderedCard',
+  fullControlWashDryStyle = 'accentRails',
 }: {
   timeVariant: TimeUxVariant;
   layoutVariant: LayoutVariant;
   progressiveDisclosureStyle?: ProgressiveDisclosureStyle;
+  /** When layout is Full control, how wash vs dry are visually distinguished. */
+  fullControlWashDryStyle?: FullControlWashDryVariant;
 }) {
   const [state, setState] = useState<LaundryState>(initialState());
   const [picker, setPicker] = useState<{ title: string; options: { value: string; label: string }[]; current: string; onSelect: (v: string) => void } | null>(null);
@@ -559,6 +563,8 @@ export function LaundryControlApp({
 
   const usePanelTiles = layoutVariant === 'moreControls' || layoutVariant === 'sectionCards';
   const tileSurface = usePanelTiles ? 'panel' : 'legacy';
+  const dryTileSurface = layoutVariant === 'fullControl' ? 'panel' : tileSurface;
+  const hideDrySectionHeading = layoutVariant === 'sectionCards' || layoutVariant === 'fullControl';
 
   const modeSelectorBlock = (
     <div className="flex gap-1 rounded-[8px] bg-[#f2f2f2] p-1">
@@ -621,14 +627,11 @@ export function LaundryControlApp({
     </div>
   );
 
-  const washBlock = showWash && (
+  const renderWashCore = (washSurface: 'legacy' | 'panel') => (
     <>
-      {state.mode === 'WASH_DRY' && (
-        <p className="font-['Avenir:Heavy',sans-serif] text-[16px] capitalize text-[#1a1a1a]">Wash</p>
-      )}
       <div className="flex gap-[10px]">
         <SelectorCard
-          surface={tileSurface}
+          surface={washSurface}
           label="Temperature"
           value={getFilteredWashTempOptions(state.cycle).length > 0 ? state.washTemp : '-'}
           disabled={getFilteredWashTempOptions(state.cycle).length === 0}
@@ -643,7 +646,7 @@ export function LaundryControlApp({
           }
         />
         <SelectorCard
-          surface={tileSurface}
+          surface={washSurface}
           label="Spin"
           value={getFilteredSpinOptions(state.cycle).length > 0 ? state.spin : '-'}
           disabled={getFilteredSpinOptions(state.cycle).length === 0}
@@ -658,7 +661,7 @@ export function LaundryControlApp({
           }
         />
         <SelectorCard
-          surface={tileSurface}
+          surface={washSurface}
           label="Soil"
           value={getFilteredSoilOptions(state.cycle).length > 0 ? state.soil : '-'}
           disabled={getFilteredSoilOptions(state.cycle).length === 0}
@@ -679,60 +682,18 @@ export function LaundryControlApp({
     </>
   );
 
-  const washControlsOnly = showWash && (
+  const washBlock = showWash && (
     <>
-      <div className="flex gap-[10px]">
-        <SelectorCard
-          surface={tileSurface}
-          label="Temperature"
-          value={getFilteredWashTempOptions(state.cycle).length > 0 ? state.washTemp : '-'}
-          disabled={getFilteredWashTempOptions(state.cycle).length === 0}
-          onClick={() =>
-            getFilteredWashTempOptions(state.cycle).length > 0 &&
-            openPicker(
-              'Temperature',
-              getFilteredWashTempOptions(state.cycle).map(v => ({ value: v, label: v })),
-              state.washTemp,
-              v => update({ washTemp: v as WashTemp }),
-            )
-          }
-        />
-        <SelectorCard
-          surface={tileSurface}
-          label="Spin"
-          value={getFilteredSpinOptions(state.cycle).length > 0 ? state.spin : '-'}
-          disabled={getFilteredSpinOptions(state.cycle).length === 0}
-          onClick={() =>
-            getFilteredSpinOptions(state.cycle).length > 0 &&
-            openPicker(
-              'Spin',
-              getFilteredSpinOptions(state.cycle).map(v => ({ value: v, label: v })),
-              state.spin,
-              v => update({ spin: v as SpinLevel }),
-            )
-          }
-        />
-        <SelectorCard
-          surface={tileSurface}
-          label="Soil"
-          value={getFilteredSoilOptions(state.cycle).length > 0 ? state.soil : '-'}
-          disabled={getFilteredSoilOptions(state.cycle).length === 0}
-          onClick={() =>
-            getFilteredSoilOptions(state.cycle).length > 0 &&
-            openPicker(
-              'Soil',
-              getFilteredSoilOptions(state.cycle).map(v => ({ value: v, label: v })),
-              state.soil,
-              v => update({ soil: v as SoilLevel }),
-            )
-          }
-        />
-      </div>
-      <ToggleRow label="Pre Wash" on={state.preWash} onChange={v => update({ preWash: v })} />
-      <ToggleRow label="Pre Soak" on={state.preSoak} onChange={v => update({ preSoak: v })} />
-      <ToggleRow label="Extra Rinse" on={state.extraRinse} onChange={v => update({ extraRinse: v })} />
+      {state.mode === 'WASH_DRY' && (
+        <p className="font-['Avenir:Heavy',sans-serif] text-[16px] capitalize text-[#1a1a1a]">Wash</p>
+      )}
+      {renderWashCore(tileSurface)}
     </>
   );
+
+  const washControlsOnly = showWash && renderWashCore(tileSurface);
+
+  const washForFullControl = showWash && renderWashCore('panel');
 
   const dryControlsBlock = showDry && (
     <DryControlsSection
@@ -740,8 +701,8 @@ export function LaundryControlApp({
       mode={state.mode}
       state={state}
       cycle={state.cycle}
-      hideDryHeading={layoutVariant === 'sectionCards'}
-      tileSurface={tileSurface}
+      hideDryHeading={hideDrySectionHeading}
+      tileSurface={dryTileSurface}
       update={update}
       openPicker={openPicker}
       openWheelPicker={openWheelPicker}
@@ -845,9 +806,18 @@ export function LaundryControlApp({
               <>
                 {modeSelectorBlock}
                 {cycleBlock}
-                {washBlock}
-                {dryControlsBlock}
-                {dryExtraToggles}
+                <FullControlWashDryChrome
+                  variant={fullControlWashDryStyle}
+                  showWash={showWash}
+                  showDry={showDry}
+                  wash={washForFullControl}
+                  dry={
+                    <>
+                      {dryControlsBlock}
+                      {dryExtraToggles}
+                    </>
+                  }
+                />
                 {wrinkleBlock}
               </>
             )}
