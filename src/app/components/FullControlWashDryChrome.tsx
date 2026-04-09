@@ -10,40 +10,45 @@ type Props = {
   dry: ReactNode;
 };
 
+/** Shared rhythm: space between wash/dry groups, and padding inside each group’s control area. */
+const betweenGroups = 'gap-4';
+const contentInset = 'px-4 py-3';
+const headerToContent = 'mb-3';
+
 /**
- * Five alternative ways to separate “wash” vs “dry” in full-control layout:
- * color temperature, structure, typography, and labeling — no elevation shadows.
+ * Five ways to separate wash vs dry in full control using only neutrals (value, borders,
+ * type, structure)—no chromatic fills. Spacing is tuned so headers and controls align.
  */
 export function FullControlWashDryChrome({ variant, showWash, showDry, wash, dry }: Props) {
   if (variant === 'accentRails') {
     return (
-      <div className="flex flex-col gap-3">
+      <div className={`flex flex-col ${betweenGroups}`}>
         {showWash && (
           <section
-            className="rounded-[10px] border border-[#bae6fd] border-l-[5px] border-l-[#0284c7] bg-[#f0f9ff] px-3 py-3"
+            className={`rounded-[10px] border border-[#e5e5e5] border-l-[5px] border-l-[#404040] bg-white ${contentInset}`}
             aria-labelledby="fc-wash-rails"
           >
-            <div className="mb-3" id="fc-wash-rails">
-              <p className="font-['Avenir:Heavy',sans-serif] text-[15px] capitalize text-[#0c4a6e]">Wash</p>
-              <p className="mt-0.5 font-['Avenir:Roman',sans-serif] text-[11px] text-[#0369a1]">
-                Water temperature, spin, soil
+            <div className={headerToContent} id="fc-wash-rails">
+              <p className="font-['Avenir:Heavy',sans-serif] text-[15px] capitalize text-[#1a1a1a]">Wash</p>
+              <p className="mt-1 font-['Avenir:Roman',sans-serif] text-[11px] leading-snug text-[#737373]">
+                Temperature, spin, soil
               </p>
             </div>
-            {wash}
+            <div className="flex flex-col gap-3">{wash}</div>
           </section>
         )}
         {showDry && (
           <section
-            className="rounded-[10px] border border-[#fed7aa] border-l-[5px] border-l-[#ea580c] bg-[#fff7ed] px-3 py-3"
+            className={`rounded-[10px] border border-[#e5e5e5] border-l-[5px] border-l-[#a3a3a3] bg-[#fafafa] ${contentInset}`}
             aria-labelledby="fc-dry-rails"
           >
-            <div className="mb-3" id="fc-dry-rails">
-              <p className="font-['Avenir:Heavy',sans-serif] text-[15px] capitalize text-[#9a3412]">Dry</p>
-              <p className="mt-0.5 font-['Avenir:Roman',sans-serif] text-[11px] text-[#c2410c]">
+            <div className={headerToContent} id="fc-dry-rails">
+              <p className="font-['Avenir:Heavy',sans-serif] text-[15px] capitalize text-[#1a1a1a]">Dry</p>
+              <p className="mt-1 font-['Avenir:Roman',sans-serif] text-[11px] leading-snug text-[#737373]">
                 Heat, sensor or timed minutes, dryness
               </p>
             </div>
-            {dry}
+            <div className="flex flex-col gap-3">{dry}</div>
           </section>
         )}
       </div>
@@ -52,37 +57,37 @@ export function FullControlWashDryChrome({ variant, showWash, showDry, wash, dry
 
   if (variant === 'tintedPanels') {
     return (
-      <div className="flex flex-col gap-3">
+      <div className={`flex flex-col ${betweenGroups}`}>
         {showWash && (
           <section
-            className="rounded-[14px] border border-[#99f6e4] bg-[#ecfeff] p-3"
+            className="rounded-[12px] border border-[#e5e5e5] bg-white p-4"
             aria-labelledby="fc-wash-tint"
           >
-            <div className="mb-3 flex items-center justify-between gap-2" id="fc-wash-tint">
-              <p className="font-['Avenir:Heavy',sans-serif] text-[14px] uppercase tracking-wide text-[#0f766e]">
+            <div className={`mb-4 flex flex-wrap items-center justify-between gap-2`} id="fc-wash-tint">
+              <p className="font-['Avenir:Heavy',sans-serif] text-[13px] uppercase tracking-wide text-[#1a1a1a]">
                 Washing
               </p>
-              <span className="rounded-full border border-[#5eead4] bg-white px-2 py-0.5 font-['Avenir:Roman',sans-serif] text-[10px] text-[#115e59]">
-                Cold / warm water
+              <span className="rounded-full border border-[#d4d4d4] bg-[#fafafa] px-2.5 py-1 font-['Avenir:Roman',sans-serif] text-[10px] text-[#525252]">
+                Agitation & rinse
               </span>
             </div>
-            {wash}
+            <div className="flex flex-col gap-3">{wash}</div>
           </section>
         )}
         {showDry && (
           <section
-            className="rounded-[14px] border border-[#fcd34d] bg-[#fffbeb] p-3"
+            className="rounded-[12px] border border-[#e5e5e5] bg-[#fafafa] p-4"
             aria-labelledby="fc-dry-tint"
           >
-            <div className="mb-3 flex items-center justify-between gap-2" id="fc-dry-tint">
-              <p className="font-['Avenir:Heavy',sans-serif] text-[14px] uppercase tracking-wide text-[#b45309]">
+            <div className={`mb-4 flex flex-wrap items-center justify-between gap-2`} id="fc-dry-tint">
+              <p className="font-['Avenir:Heavy',sans-serif] text-[13px] uppercase tracking-wide text-[#1a1a1a]">
                 Drying
               </p>
-              <span className="rounded-full border border-[#fbbf24] bg-white px-2 py-0.5 font-['Avenir:Roman',sans-serif] text-[10px] text-[#92400e]">
-                Air & heat
+              <span className="rounded-full border border-[#d4d4d4] bg-white px-2.5 py-1 font-['Avenir:Roman',sans-serif] text-[10px] text-[#525252]">
+                Heat & time
               </span>
             </div>
-            {dry}
+            <div className="flex flex-col gap-3">{dry}</div>
           </section>
         )}
       </div>
@@ -91,36 +96,40 @@ export function FullControlWashDryChrome({ variant, showWash, showDry, wash, dry
 
   if (variant === 'stepNumbers') {
     return (
-      <div className="flex flex-col gap-4">
+      <div className={`flex flex-col ${betweenGroups}`}>
         {showWash && (
           <section className="flex gap-3" aria-labelledby="fc-wash-step">
             <div
-              className="flex h-9 w-9 shrink-0 flex-col items-center justify-center rounded-full border-2 border-[#1a1a1a] bg-white"
+              className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full border-2 border-[#1a1a1a] bg-white"
               aria-hidden
             >
-              <span className="font-['Avenir:Heavy',sans-serif] text-[13px] leading-none text-[#1a1a1a]">1</span>
+              <span className="font-['Avenir:Heavy',sans-serif] text-[14px] leading-none text-[#1a1a1a]">1</span>
             </div>
             <div className="min-w-0 flex-1">
-              <p className="mb-2 font-['Avenir:Heavy',sans-serif] text-[15px] text-[#1a1a1a]" id="fc-wash-step">
+              <p className={`${headerToContent} font-['Avenir:Heavy',sans-serif] text-[15px] text-[#1a1a1a]`} id="fc-wash-step">
                 Wash
               </p>
-              <div className="rounded-[10px] border border-[#e5e5e5] bg-[#fafafa] p-3">{wash}</div>
+              <div className="rounded-[10px] border border-[#e5e5e5] bg-[#fafafa] p-4">
+                <div className="flex flex-col gap-3">{wash}</div>
+              </div>
             </div>
           </section>
         )}
         {showDry && (
           <section className="flex gap-3" aria-labelledby="fc-dry-step">
             <div
-              className="flex h-9 w-9 shrink-0 flex-col items-center justify-center rounded-full border-2 border-[#1a1a1a] bg-white"
+              className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full border-2 border-[#525252] bg-white"
               aria-hidden
             >
-              <span className="font-['Avenir:Heavy',sans-serif] text-[13px] leading-none text-[#1a1a1a]">2</span>
+              <span className="font-['Avenir:Heavy',sans-serif] text-[14px] leading-none text-[#262626]">2</span>
             </div>
             <div className="min-w-0 flex-1">
-              <p className="mb-2 font-['Avenir:Heavy',sans-serif] text-[15px] text-[#1a1a1a]" id="fc-dry-step">
+              <p className={`${headerToContent} font-['Avenir:Heavy',sans-serif] text-[15px] text-[#1a1a1a]`} id="fc-dry-step">
                 Dry
               </p>
-              <div className="rounded-[10px] border border-[#e5e5e5] bg-[#fafafa] p-3">{dry}</div>
+              <div className="rounded-[10px] border border-[#e5e5e5] bg-white p-4">
+                <div className="flex flex-col gap-3">{dry}</div>
+              </div>
             </div>
           </section>
         )}
@@ -130,37 +139,41 @@ export function FullControlWashDryChrome({ variant, showWash, showDry, wash, dry
 
   if (variant === 'iconHeaders') {
     return (
-      <div className="flex flex-col gap-4">
+      <div className={`flex flex-col ${betweenGroups}`}>
         {showWash && (
-          <section className="rounded-[12px] border border-[#e5e5e5] bg-white" aria-labelledby="fc-wash-icon">
-            <div className="flex items-start gap-3 border-b border-[#f0f0f0] bg-[#f8fafc] px-3 py-2.5">
-              <div className="flex size-10 shrink-0 items-center justify-center rounded-[10px] border border-[#bae6fd] bg-white text-[#0284c7]">
-                <Droplet size={22} strokeWidth={2} aria-hidden />
+          <section className="overflow-hidden rounded-[12px] border border-[#e5e5e5] bg-white" aria-labelledby="fc-wash-icon">
+            <div className="flex items-start gap-3 border-b border-[#f0f0f0] bg-[#fafafa] px-4 py-3">
+              <div className="flex size-10 shrink-0 items-center justify-center rounded-[10px] border border-[#d4d4d4] bg-white text-[#404040]">
+                <Droplet size={20} strokeWidth={2} aria-hidden />
               </div>
               <div className="min-w-0 pt-0.5">
                 <p className="font-['Avenir:Heavy',sans-serif] text-[15px] text-[#1a1a1a]" id="fc-wash-icon">
                   Wash
                 </p>
-                <p className="font-['Avenir:Roman',sans-serif] text-[11px] text-[#737373]">Load cleaning</p>
+                <p className="mt-0.5 font-['Avenir:Roman',sans-serif] text-[11px] leading-snug text-[#737373]">
+                  Load cleaning
+                </p>
               </div>
             </div>
-            <div className="p-3">{wash}</div>
+            <div className={`${contentInset} flex flex-col gap-3`}>{wash}</div>
           </section>
         )}
         {showDry && (
-          <section className="rounded-[12px] border border-[#e5e5e5] bg-white" aria-labelledby="fc-dry-icon">
-            <div className="flex items-start gap-3 border-b border-[#f0f0f0] bg-[#fffbeb] px-3 py-2.5">
-              <div className="flex size-10 shrink-0 items-center justify-center rounded-[10px] border border-[#fed7aa] bg-white text-[#ea580c]">
-                <Sun size={22} strokeWidth={2} aria-hidden />
+          <section className="overflow-hidden rounded-[12px] border border-[#e5e5e5] bg-white" aria-labelledby="fc-dry-icon">
+            <div className="flex items-start gap-3 border-b border-[#f0f0f0] bg-[#fafafa] px-4 py-3">
+              <div className="flex size-10 shrink-0 items-center justify-center rounded-[10px] border border-[#d4d4d4] bg-white text-[#404040]">
+                <Sun size={20} strokeWidth={2} aria-hidden />
               </div>
               <div className="min-w-0 pt-0.5">
                 <p className="font-['Avenir:Heavy',sans-serif] text-[15px] text-[#1a1a1a]" id="fc-dry-icon">
                   Dry
                 </p>
-                <p className="font-['Avenir:Roman',sans-serif] text-[11px] text-[#737373]">Moisture & finish</p>
+                <p className="mt-0.5 font-['Avenir:Roman',sans-serif] text-[11px] leading-snug text-[#737373]">
+                  Moisture & finish
+                </p>
               </div>
             </div>
-            <div className="p-3">{dry}</div>
+            <div className={`${contentInset} flex flex-col gap-3`}>{dry}</div>
           </section>
         )}
       </div>
@@ -169,35 +182,39 @@ export function FullControlWashDryChrome({ variant, showWash, showDry, wash, dry
 
   // dividerLabels
   return (
-    <div className="flex flex-col gap-6">
+    <div className="flex flex-col gap-5">
       {showWash && (
         <section aria-labelledby="fc-wash-div">
-          <div className="relative mb-3 flex items-center gap-2">
+          <div className="mb-3 flex items-center gap-3">
             <div className="h-px flex-1 bg-[#d4d4d4]" />
             <span
-              className="shrink-0 bg-white px-2 font-['Avenir:Heavy',sans-serif] text-[11px] uppercase tracking-[0.2em] text-[#525252]"
+              className="shrink-0 bg-white px-2 font-['Avenir:Heavy',sans-serif] text-[11px] uppercase tracking-[0.18em] text-[#525252]"
               id="fc-wash-div"
             >
               Wash
             </span>
             <div className="h-px flex-1 bg-[#d4d4d4]" />
           </div>
-          <div className="rounded-[10px] border border-[#e5e5e5] bg-[#fafafa] px-3 py-3">{wash}</div>
+          <div className="rounded-[10px] border border-[#e5e5e5] bg-[#fafafa] p-4">
+            <div className="flex flex-col gap-3">{wash}</div>
+          </div>
         </section>
       )}
       {showDry && (
         <section aria-labelledby="fc-dry-div">
-          <div className="relative mb-3 flex items-center gap-2">
+          <div className="mb-3 flex items-center gap-3">
             <div className="h-px flex-1 bg-[#d4d4d4]" />
             <span
-              className="shrink-0 bg-white px-2 font-['Avenir:Heavy',sans-serif] text-[11px] uppercase tracking-[0.2em] text-[#525252]"
+              className="shrink-0 bg-white px-2 font-['Avenir:Heavy',sans-serif] text-[11px] uppercase tracking-[0.18em] text-[#525252]"
               id="fc-dry-div"
             >
               Dry
             </span>
             <div className="h-px flex-1 bg-[#d4d4d4]" />
           </div>
-          <div className="rounded-[10px] border border-[#e5e5e5] bg-[#fafafa] px-3 py-3">{dry}</div>
+          <div className="rounded-[10px] border border-[#e5e5e5] bg-[#fafafa] p-4">
+            <div className="flex flex-col gap-3">{dry}</div>
+          </div>
         </section>
       )}
     </div>

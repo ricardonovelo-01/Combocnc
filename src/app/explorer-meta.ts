@@ -21,24 +21,24 @@ export const FULL_CONTROL_WASH_DRY_META: Record<
   { title: string; hint: string }
 > = {
   accentRails: {
-    title: 'Cool / warm rails',
-    hint: 'Strong left accent + cool vs warm tint so phases read as different “fields.”',
+    title: 'Left rail weight',
+    hint: 'Dark vs light left edge—same neutral palette, different emphasis.',
   },
   tintedPanels: {
-    title: 'Tinted panels + chips',
-    hint: 'Rounded regions with capsule tags (“cold water” vs “air & heat”) for quick scanning.',
+    title: 'Framed + tags',
+    hint: 'Bordered blocks with small neutral tags; scan structure, not hue.',
   },
   stepNumbers: {
     title: 'Numbered steps',
-    hint: 'Explicit 1 → 2 sequence; content sits in neutral trays under each label.',
+    hint: '1 → 2 sequence with even padding inside each tray.',
   },
   iconHeaders: {
     title: 'Icon headers',
-    hint: 'Droplet vs sun in bordered tiles; header strip + body split like small cards.',
+    hint: 'Monochrome icons in matching tiles; header band + body spacing aligned.',
   },
   dividerLabels: {
     title: 'Labeled rules',
-    hint: 'Minimal: rules with centered uppercase labels—high contrast without heavy chrome.',
+    hint: 'Rules with centered labels; comfortable padding inside each group.',
   },
 };
 
