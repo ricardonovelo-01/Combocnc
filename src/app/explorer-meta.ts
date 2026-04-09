@@ -1,12 +1,29 @@
 import type { TimeUxVariant } from './components/DryControlsSection';
 
 /** Visual system for separating wash vs dry when layout is Full control. */
-export type FullControlWashDryVariant = 'simpleContainer' | 'iconHeaders' | 'dividerLabels';
+export type FullControlWashDryVariant =
+  | 'simpleContainer'
+  | 'iconHeaders'
+  | 'dividerLabels'
+  | 'sideRail'
+  | 'phaseBadges'
+  | 'insetPanel'
+  | 'compactStrip'
+  | 'nestedTray'
+  | 'titleUnderline'
+  | 'splitMeta';
 
 export const FULL_CONTROL_WASH_DRY_ORDER: FullControlWashDryVariant[] = [
   'simpleContainer',
   'iconHeaders',
   'dividerLabels',
+  'sideRail',
+  'phaseBadges',
+  'insetPanel',
+  'compactStrip',
+  'nestedTray',
+  'titleUnderline',
+  'splitMeta',
 ];
 
 export const FULL_CONTROL_WASH_DRY_META: Record<
@@ -25,6 +42,34 @@ export const FULL_CONTROL_WASH_DRY_META: Record<
     title: 'Labeled rules',
     hint: 'Rules with centered labels; comfortable padding inside each group.',
   },
+  sideRail: {
+    title: 'Side rail label',
+    hint: 'Vertical Wash / Dry on a narrow strip; content reads left-to-right.',
+  },
+  phaseBadges: {
+    title: 'Phase badges',
+    hint: 'Numbered circles (1 · 2) before each title—sequence without extra chrome.',
+  },
+  insetPanel: {
+    title: 'Inset panel',
+    hint: 'Outer neutral field, inner white tray—clear figure/ground.',
+  },
+  compactStrip: {
+    title: 'Compact strip',
+    hint: 'Flat sections with a bottom rule only; lowest visual weight.',
+  },
+  nestedTray: {
+    title: 'Nested tray',
+    hint: 'Tinted block with a nested white bordered tray for controls.',
+  },
+  titleUnderline: {
+    title: 'Title underline',
+    hint: 'Heavy bar under the word Wash or Dry—typographic anchor.',
+  },
+  splitMeta: {
+    title: 'Split heading',
+    hint: 'Title left, tiny hint right (same lines as icon headers, no icons).',
+  },
 };
 
 /** How the main control stack is organized (prototype 1 / segmented dry UX is the base). */
@@ -33,7 +78,7 @@ export type LayoutVariant = 'fullControl' | 'moreControls' | 'sectionCards';
 export const LAYOUT_META: Record<LayoutVariant, { title: string; panelHint: string }> = {
   fullControl: {
     title: 'Full control',
-    panelHint: 'All controls in one scroll; three ways to frame wash vs dry.',
+    panelHint: 'All controls in one scroll; pick how wash vs dry are framed.',
   },
   moreControls: {
     title: 'Progressive disclosure',
