@@ -44,7 +44,7 @@ export function FullControlWashDryChrome({ variant, showWash, showDry, wash, dry
   }
 
   if (variant === 'iconHeaders') {
-    const headerBand = 'flex items-start gap-3 border-b border-[#e5e5e5] bg-[#f0f0f0] px-4 py-3';
+    const headerBand = 'flex items-start gap-3 border-b border-[#e5e5e5] bg-[#f5f5f5] px-4 py-3';
     const bodyPanel = 'flex flex-col gap-3 bg-white px-4 py-3';
     return (
       <div className={`flex flex-col ${betweenGroups}`}>
