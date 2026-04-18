@@ -63,7 +63,7 @@ export default function App() {
           <p className="max-w-[360px] text-center font-['Avenir:Roman',sans-serif] text-[11px] leading-snug text-[#737373]">
             {prototypeScene === 'laundry'
               ? 'Live preview — use the explorer to switch time UX and layout.'
-              : 'Cancel cycle — confirm, then ~10s stopping state. Switch variants in the explorer.'}
+              : 'Cancel cycle — confirm, then stopping feedback (duration varies; demo uses a short timer).'}
           </p>
           <div className="h-[min(100vh-10rem,880px)] w-full max-w-[360px] shrink-0">
             {prototypeScene === 'laundry' ? (

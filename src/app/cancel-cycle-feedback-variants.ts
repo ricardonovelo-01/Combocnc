@@ -4,16 +4,16 @@ export type PrototypeScene = 'laundry' | 'cancelFeedback';
 export type CancelCycleFeedbackVariant =
   | 'countdownInModal'
   | 'progressBarModal'
-  | 'ringCountdownModal'
-  | 'phaseStepsModal'
-  | 'bottomSheetStatus';
+  | 'spinnerModal'
+  | 'rotatingMessagesModal'
+  | 'rangeReassuranceModal';
 
 export const CANCEL_CYCLE_FEEDBACK_ORDER: CancelCycleFeedbackVariant[] = [
   'countdownInModal',
   'progressBarModal',
-  'ringCountdownModal',
-  'phaseStepsModal',
-  'bottomSheetStatus',
+  'spinnerModal',
+  'rotatingMessagesModal',
+  'rangeReassuranceModal',
 ];
 
 export const CANCEL_CYCLE_FEEDBACK_META: Record<
@@ -21,23 +21,23 @@ export const CANCEL_CYCLE_FEEDBACK_META: Record<
   { title: string; blurb: string }
 > = {
   countdownInModal: {
-    title: '1 · Modal + live countdown',
-    blurb: 'Same dialog; title and body update, primary shows “Stopping…”, Close disabled.',
+    title: '1 · Modal + elapsed time',
+    blurb: 'Same dialog shell; shows time counting up so the machine feels active—no fake “seconds left.”',
   },
   progressBarModal: {
-    title: '2 · Modal + determinate bar',
-    blurb: 'Linear progress for the ~10s stop; no numeric timer, copy explains the wait.',
+    title: '2 · Modal + indeterminate bar',
+    blurb: 'Activity bar that loops; copy says duration varies (not a percent complete).',
   },
-  ringCountdownModal: {
-    title: '3 · Modal + ring timer',
-    blurb: 'Large circular progress with seconds in the center—glanceable remaining time.',
+  spinnerModal: {
+    title: '3 · Modal + spinner',
+    blurb: 'Minimal: spinner and plain language that we cannot predict exactly how long.',
   },
-  phaseStepsModal: {
-    title: '4 · Modal + phase checklist',
-    blurb: 'Three bounded steps advance over the stop so it feels like real machine work.',
+  rotatingMessagesModal: {
+    title: '4 · Modal + rotating status',
+    blurb: 'Status line cycles for reassurance—illustrative, not a promise of real phases.',
   },
-  bottomSheetStatus: {
-    title: '5 · Sheet + persistent status',
-    blurb: 'Confirm dismisses the alert; a bottom sheet carries stopping state and a safety line.',
+  rangeReassuranceModal: {
+    title: '5 · Modal + activity ticks',
+    blurb: 'Qualitative copy plus a small activity indicator (not a progress bar).',
   },
 };

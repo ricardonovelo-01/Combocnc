@@ -118,7 +118,7 @@ export function ExplorePanel({
               const hint =
                 key === 'laundry'
                   ? 'Main appliance UI, time + layout variants.'
-                  : 'After confirm, ~10s feedback while the machine stops.';
+                  : 'After confirm, stopping feedback while the machine finishes (duration varies).';
               return (
                 <button
                   key={key}
@@ -146,7 +146,7 @@ export function ExplorePanel({
               Stopping feedback
             </p>
             <p className="mt-1 font-['Avenir:Roman',sans-serif] text-[11px] leading-snug text-[#8e8e8e]">
-              Five ways to show the ~10s cancel-in-progress state.
+              Five patterns for cancel-in-progress feedback without promising an exact duration.
             </p>
             <div className="mt-2 flex flex-col gap-1.5">
               {CANCEL_CYCLE_FEEDBACK_ORDER.map(id => {
