@@ -1,4 +1,4 @@
-import { ChevronDown, LayoutGrid, PanelLeft, Timer } from 'lucide-react';
+import { ChevronDown, Layers, LayoutGrid, PanelLeft, Timer } from 'lucide-react';
 import type { TimeUxVariant } from './DryControlsSection';
 import {
   FULL_CONTROL_WASH_DRY_META,
@@ -16,10 +16,20 @@ import {
   PROGRESSIVE_DISCLOSURE_ORDER,
   type ProgressiveDisclosureStyle,
 } from '../progressive-disclosure-styles';
+import {
+  CANCEL_CYCLE_FEEDBACK_META,
+  CANCEL_CYCLE_FEEDBACK_ORDER,
+  type CancelCycleFeedbackVariant,
+  type PrototypeScene,
+} from '../cancel-cycle-feedback-variants';
 
 type ExplorePanelProps = {
   open: boolean;
   onOpenChange: (open: boolean) => void;
+  prototypeScene: PrototypeScene;
+  onPrototypeScene: (v: PrototypeScene) => void;
+  cancelFeedbackVariant: CancelCycleFeedbackVariant;
+  onCancelFeedbackVariant: (v: CancelCycleFeedbackVariant) => void;
   timeVariant: TimeUxVariant;
   onTimeVariant: (v: TimeUxVariant) => void;
   otherTimeOpen: boolean;
@@ -39,6 +49,10 @@ type ExplorePanelProps = {
 export function ExplorePanel({
   open,
   onOpenChange,
+  prototypeScene,
+  onPrototypeScene,
+  cancelFeedbackVariant,
+  onCancelFeedbackVariant,
   timeVariant,
   onTimeVariant,
   otherTimeOpen,
@@ -89,6 +103,78 @@ export function ExplorePanel({
       </div>
 
       <div className="min-h-0 flex-1 overflow-y-auto px-3 py-3">
+        <div className="mb-5">
+          <div className="mb-2 flex items-center gap-2">
+            <Layers size={15} className="text-[#404040]" strokeWidth={2} />
+            <p className="font-['Avenir:Heavy',sans-serif] text-[11px] uppercase tracking-wide text-[#737373]">
+              Prototype
+            </p>
+          </div>
+          <div className="flex flex-col gap-1.5">
+            {(['laundry', 'cancelFeedback'] as const).map(key => {
+              const selected = prototypeScene === key;
+              const label =
+                key === 'laundry' ? 'Laundry control' : 'Cancel cycle (stopping)';
+              const hint =
+                key === 'laundry'
+                  ? 'Main appliance UI, time + layout variants.'
+                  : 'After confirm, ~10s feedback while the machine stops.';
+              return (
+                <button
+                  key={key}
+                  type="button"
+                  onClick={() => onPrototypeScene(key)}
+                  className={`rounded-[8px] border px-2.5 py-2 text-left transition-colors ${
+                    selected
+                      ? 'border-[#1a1a1a] bg-[#fafafa] text-[#1a1a1a]'
+                      : 'border-[#e5e5e5] bg-white text-[#525252] hover:border-[#d4d4d4]'
+                  }`}
+                >
+                  <p className="font-['Avenir:Heavy',sans-serif] text-[12px]">{label}</p>
+                  <p className="mt-0.5 font-['Avenir:Roman',sans-serif] text-[10px] leading-snug text-[#737373]">
+                    {hint}
+                  </p>
+                </button>
+              );
+            })}
+          </div>
+        </div>
+
+        {prototypeScene === 'cancelFeedback' && (
+          <div className="mb-5 border-b border-[#f0f0f0] pb-5">
+            <p className="font-['Avenir:Heavy',sans-serif] text-[11px] uppercase tracking-wide text-[#737373]">
+              Stopping feedback
+            </p>
+            <p className="mt-1 font-['Avenir:Roman',sans-serif] text-[11px] leading-snug text-[#8e8e8e]">
+              Five ways to show the ~10s cancel-in-progress state.
+            </p>
+            <div className="mt-2 flex flex-col gap-1.5">
+              {CANCEL_CYCLE_FEEDBACK_ORDER.map(id => {
+                const meta = CANCEL_CYCLE_FEEDBACK_META[id];
+                const selected = cancelFeedbackVariant === id;
+                return (
+                  <button
+                    key={id}
+                    type="button"
+                    onClick={() => onCancelFeedbackVariant(id)}
+                    className={`rounded-[8px] border px-2.5 py-2 text-left transition-colors ${
+                      selected
+                        ? 'border-[#1a1a1a] bg-[#fafafa] text-[#1a1a1a]'
+                        : 'border-[#e5e5e5] bg-white text-[#525252] hover:border-[#d4d4d4]'
+                    }`}
+                  >
+                    <p className="font-['Avenir:Heavy',sans-serif] text-[12px]">{meta.title}</p>
+                    <p className="mt-0.5 font-['Avenir:Roman',sans-serif] text-[10px] leading-snug text-[#737373]">
+                      {meta.blurb}
+                    </p>
+                  </button>
+                );
+              })}
+            </div>
+          </div>
+        )}
+
+        {prototypeScene === 'laundry' && (
         <div className="mb-5">
           <div className="mb-2 flex items-center gap-2">
             <Timer size={15} className="text-[#404040]" strokeWidth={2} />
@@ -153,7 +239,9 @@ export function ExplorePanel({
             </div>
           )}
         </div>
+        )}
 
+        {prototypeScene === 'laundry' && (
         <div>
           <div className="mb-2 flex items-center gap-2">
             <LayoutGrid size={15} className="text-[#404040]" strokeWidth={2} />
@@ -312,6 +400,7 @@ export function ExplorePanel({
             </div>
           )}
         </div>
+        )}
       </div>
     </aside>
   );

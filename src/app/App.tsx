@@ -1,6 +1,8 @@
 import { useState } from 'react';
 import { ExplorePanel } from './components/ExplorePanel';
 import { LaundryControlApp } from './components/LaundryControlApp';
+import { CancelCycleFeedbackPrototype } from './components/CancelCycleFeedbackPrototype';
+import type { CancelCycleFeedbackVariant, PrototypeScene } from './cancel-cycle-feedback-variants';
 import type { FullControlWashDryVariant, LayoutVariant } from './explorer-meta';
 import type { ProgressiveDisclosureStyle } from './progressive-disclosure-styles';
 import type { TimeUxVariant } from './components/DryControlsSection';
@@ -8,6 +10,9 @@ import { APP_VERSION } from './version';
 
 export default function App() {
   const [panelOpen, setPanelOpen] = useState(true);
+  const [prototypeScene, setPrototypeScene] = useState<PrototypeScene>('laundry');
+  const [cancelFeedbackVariant, setCancelFeedbackVariant] =
+    useState<CancelCycleFeedbackVariant>('countdownInModal');
   const [timeVariant, setTimeVariant] = useState<TimeUxVariant>('segmented');
   const [otherTimeOpen, setOtherTimeOpen] = useState(false);
   const [layoutVariant, setLayoutVariant] = useState<LayoutVariant>('fullControl');
@@ -30,6 +35,10 @@ export default function App() {
       <ExplorePanel
         open={panelOpen}
         onOpenChange={setPanelOpen}
+        prototypeScene={prototypeScene}
+        onPrototypeScene={setPrototypeScene}
+        cancelFeedbackVariant={cancelFeedbackVariant}
+        onCancelFeedbackVariant={setCancelFeedbackVariant}
         timeVariant={timeVariant}
         onTimeVariant={setTimeVariant}
         otherTimeOpen={otherTimeOpen}
@@ -52,15 +61,21 @@ export default function App() {
       <main className="flex min-h-0 min-w-0 flex-1 flex-col items-center justify-center overflow-auto p-4 sm:p-8">
         <div className="flex w-full max-w-[400px] flex-col items-center gap-3">
           <p className="max-w-[360px] text-center font-['Avenir:Roman',sans-serif] text-[11px] leading-snug text-[#737373]">
-            Live preview — use the explorer to switch time UX and layout.
+            {prototypeScene === 'laundry'
+              ? 'Live preview — use the explorer to switch time UX and layout.'
+              : 'Cancel cycle — confirm, then ~10s stopping state. Switch variants in the explorer.'}
           </p>
           <div className="h-[min(100vh-10rem,880px)] w-full max-w-[360px] shrink-0">
-            <LaundryControlApp
-              timeVariant={timeVariant}
-              layoutVariant={layoutVariant}
-              progressiveDisclosureStyle={progressiveDisclosureStyle}
-              fullControlWashDryStyle={fullControlWashDryStyle}
-            />
+            {prototypeScene === 'laundry' ? (
+              <LaundryControlApp
+                timeVariant={timeVariant}
+                layoutVariant={layoutVariant}
+                progressiveDisclosureStyle={progressiveDisclosureStyle}
+                fullControlWashDryStyle={fullControlWashDryStyle}
+              />
+            ) : (
+              <CancelCycleFeedbackPrototype variant={cancelFeedbackVariant} />
+            )}
           </div>
         </div>
       </main>
