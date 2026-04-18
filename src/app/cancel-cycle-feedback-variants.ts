@@ -6,14 +6,14 @@ export type CancelCycleFeedbackVariant =
   | 'progressBarModal'
   | 'spinnerModal'
   | 'rotatingMessagesModal'
-  | 'rangeReassuranceModal';
+  | 'bottomSheetStatus';
 
 export const CANCEL_CYCLE_FEEDBACK_ORDER: CancelCycleFeedbackVariant[] = [
   'countdownInModal',
   'progressBarModal',
   'spinnerModal',
   'rotatingMessagesModal',
-  'rangeReassuranceModal',
+  'bottomSheetStatus',
 ];
 
 export const CANCEL_CYCLE_FEEDBACK_META: Record<
@@ -21,23 +21,23 @@ export const CANCEL_CYCLE_FEEDBACK_META: Record<
   { title: string; blurb: string }
 > = {
   countdownInModal: {
-    title: '1 · Modal + elapsed time',
-    blurb: 'Same dialog shell; shows time counting up so the machine feels active—no fake “seconds left.”',
+    title: '1 · Modal + live countdown',
+    blurb: 'Same dialog updates; primary “Stopping…”, Close disabled. Demo timer is a stand-in for remaining time.',
   },
   progressBarModal: {
     title: '2 · Modal + indeterminate bar',
-    blurb: 'Activity bar that loops; copy says duration varies (not a percent complete).',
+    blurb: 'Looping activity bar; copy says duration varies (not percent complete).',
   },
   spinnerModal: {
     title: '3 · Modal + spinner',
-    blurb: 'Minimal: spinner and plain language that we cannot predict exactly how long.',
+    blurb: 'Compact spinner with plain language about unpredictable duration.',
   },
   rotatingMessagesModal: {
     title: '4 · Modal + rotating status',
-    blurb: 'Status line cycles for reassurance—illustrative, not a promise of real phases.',
+    blurb: 'Status lines cycle for reassurance—illustrative, not guaranteed phases.',
   },
-  rangeReassuranceModal: {
-    title: '5 · Modal + activity ticks',
-    blurb: 'Qualitative copy plus a small activity indicator (not a progress bar).',
+  bottomSheetStatus: {
+    title: '5 · Sheet + persistent status',
+    blurb: 'After confirm, a bottom sheet carries stopping state, estimate, and a safety line.',
   },
 };

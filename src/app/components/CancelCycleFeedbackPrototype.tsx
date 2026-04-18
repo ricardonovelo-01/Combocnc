@@ -29,13 +29,6 @@ const primaryBlue = 'bg-[#0057d9] hover:enabled:bg-[#004bb8]';
 const linkBtn =
   'mt-4 w-full font-[\'Avenir:Heavy\',sans-serif] text-[12px] uppercase tracking-wide text-[#0057d9] disabled:cursor-not-allowed disabled:opacity-40';
 
-function formatElapsedMmSs(elapsedMs: number) {
-  const totalSec = Math.floor(elapsedMs / 1000);
-  const mm = Math.floor(totalSec / 60);
-  const ss = totalSec % 60;
-  return `${mm}:${ss.toString().padStart(2, '0')}`;
-}
-
 const ROTATING_LINES = [
   'Ending the cycle…',
   'Draining water…',
@@ -75,14 +68,13 @@ export function CancelCycleFeedbackPrototype({ variant }: Props) {
   }, [stopping]);
 
   const elapsedMs = DEMO_STOP_MS - remainingMs;
+  const secondsLeft = Math.ceil(remainingMs / 1000);
 
   const rotatingLine = useMemo(() => {
     if (!stopping) return ROTATING_LINES[0];
     const i = Math.floor(elapsedMs / 2200) % ROTATING_LINES.length;
     return ROTATING_LINES[i];
   }, [elapsedMs, stopping]);
-
-  const activityTick = useMemo(() => Math.floor(elapsedMs / 450) % 3, [elapsedMs]);
 
   const reset = () => setPhase('confirm');
 
@@ -121,7 +113,7 @@ export function CancelCycleFeedbackPrototype({ variant }: Props) {
     </ModalShell>
   );
 
-  const elapsedStopping = (
+  const countdownStopping = (
     <ModalShell>
       <p
         className="font-[\'Avenir:Heavy\',sans-serif] text-[11px] uppercase tracking-wide text-[#737373]"
@@ -133,12 +125,11 @@ export function CancelCycleFeedbackPrototype({ variant }: Props) {
         Canceling cycle
       </h2>
       <p className="mt-3 font-[\'Avenir:Roman\',sans-serif] text-[14px] leading-snug text-[#525252]">
-        How long this takes depends on load and water left in the drum—we do not show a countdown.
+        Stopping in {secondsLeft} second{secondsLeft === 1 ? '' : 's'}. Please wait.
       </p>
-      <p className="mt-4 border border-[#e5e5e5] bg-[#fafafa] px-3 py-2.5 text-center font-[\'Avenir:Heavy\',sans-serif] text-[22px] tabular-nums text-[#1a1a1a]">
-        {formatElapsedMmSs(elapsedMs)}
+      <p className="mt-2 font-[\'Avenir:Roman\',sans-serif] text-[12px] leading-snug text-[#737373]">
+        Remaining time is an estimate—real stops depend on load and water.
       </p>
-      <p className="mt-1 text-center font-[\'Avenir:Roman\',sans-serif] text-[11px] text-[#737373]">Time elapsed</p>
       <button type="button" className={`${primaryBtn} ${primaryBlue} mt-6`} disabled>
         Stopping…
       </button>
@@ -222,36 +213,38 @@ export function CancelCycleFeedbackPrototype({ variant }: Props) {
     </ModalShell>
   );
 
-  const rangeStopping = (
-    <ModalShell>
-      <h2 id="cancel-feedback-title" className="font-[\'Avenir:Heavy\',sans-serif] text-[15px] uppercase leading-tight text-[#1a1a1a]">
-        Stopping cycle
-      </h2>
-      <p className="mt-3 font-[\'Avenir:Roman\',sans-serif] text-[14px] leading-snug text-[#525252]">
-        Sometimes it is a few seconds, sometimes longer—water level and cycle step both matter.
-      </p>
-      <div className="mt-5 flex justify-center gap-1.5" aria-hidden>
-        {[0, 1, 2].map(i => (
-          <div
-            key={i}
-            className={`h-2 w-9 border border-[#d4d4d4] ${i === activityTick ? 'bg-[#0057d9]' : 'bg-[#f5f5f5]'}`}
-          />
-        ))}
+  const sheetStopping = (
+    <>
+      <div className="pointer-events-none flex min-h-[120px] w-full max-w-[320px] items-end justify-center border border-[#2a2a2a] bg-[#1a1a1a] px-4 pb-6 pt-10">
+        <p className="text-center font-[\'Avenir:Roman\',sans-serif] text-[12px] text-[#a3a3a3]">Background screen (dimmed)</p>
       </div>
-      <p className="mt-2 text-center font-[\'Avenir:Roman\',sans-serif] text-[11px] text-[#737373]">Activity (not progress)</p>
-      <button type="button" className={`${primaryBtn} ${primaryBlue} mt-6`} disabled>
-        Stopping…
-      </button>
-      <button type="button" className={linkBtn} disabled>
-        Close
-      </button>
-    </ModalShell>
+      <div className="w-full max-w-[320px] border border-t-2 border-[#d4d4d4] bg-white px-5 py-5">
+        <div className="flex items-start gap-3">
+          <div
+            className="mt-0.5 size-9 shrink-0 rounded-full border-2 border-[#e5e5e5] border-t-[#0057d9] animate-spin"
+            aria-hidden
+          />
+          <div>
+            <p className="font-[\'Avenir:Heavy\',sans-serif] text-[13px] uppercase leading-tight text-[#1a1a1a]">Stopping cycle</p>
+            <p className="mt-1 font-[\'Avenir:Roman\',sans-serif] text-[13px] leading-snug text-[#525252]">
+              About {secondsLeft} second{secondsLeft === 1 ? '' : 's'} left (estimate). The door stays locked until complete.
+            </p>
+            <p className="mt-2 font-[\'Avenir:Heavy\',sans-serif] text-[11px] uppercase tracking-wide text-[#b45309]">
+              Do not open the door
+            </p>
+          </div>
+        </div>
+        <button type="button" className={`${primaryBtn} ${primaryBlue} mt-5`} disabled>
+          Stopping…
+        </button>
+      </div>
+    </>
   );
 
   let stoppingBody: ReactNode;
   switch (variant) {
     case 'countdownInModal':
-      stoppingBody = elapsedStopping;
+      stoppingBody = countdownStopping;
       break;
     case 'progressBarModal':
       stoppingBody = indeterminateBarStopping;
@@ -262,8 +255,8 @@ export function CancelCycleFeedbackPrototype({ variant }: Props) {
     case 'rotatingMessagesModal':
       stoppingBody = rotatingStopping;
       break;
-    case 'rangeReassuranceModal':
-      stoppingBody = rangeStopping;
+    case 'bottomSheetStatus':
+      stoppingBody = sheetStopping;
       break;
   }
 
