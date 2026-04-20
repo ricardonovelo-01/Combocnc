@@ -47,6 +47,8 @@ export function useRunningCycleTimer(mode: RunningCycleMode): RunningCycleTimer 
   const [speed, setSpeed] = useState<number>(60);
   const [paused, setPaused] = useState(false);
   const lastTs = useRef<number | null>(null);
+  /** RAF id for the active tick loop — cancel synchronously on reset so no tick overwrites setElapsed(0). */
+  const rafIdRef = useRef<number | null>(null);
 
   useEffect(() => {
     setElapsedMin(0);
@@ -54,14 +56,15 @@ export function useRunningCycleTimer(mode: RunningCycleMode): RunningCycleTimer 
     setResetVersion(v => v + 1);
   }, [mode]);
 
-  // Include resetVersion so Reset / mode change tears down RAF and starts fresh. Otherwise
-  // in-flight frames can still run after setElapsedMin(0) and re-apply elapsed time.
   useEffect(() => {
     if (paused) {
+      if (rafIdRef.current != null) {
+        cancelAnimationFrame(rafIdRef.current);
+        rafIdRef.current = null;
+      }
       lastTs.current = null;
       return;
     }
-    let frame = 0;
     const tick = (now: number) => {
       if (lastTs.current == null) lastTs.current = now;
       const deltaSec = (now - lastTs.current) / 1000;
@@ -70,27 +73,30 @@ export function useRunningCycleTimer(mode: RunningCycleMode): RunningCycleTimer 
         const next = prev + (deltaSec * speed) / 60;
         return next >= totalMin ? totalMin : next;
       });
-      frame = requestAnimationFrame(tick);
+      rafIdRef.current = requestAnimationFrame(tick);
     };
-    frame = requestAnimationFrame(tick);
+    rafIdRef.current = requestAnimationFrame(tick);
     return () => {
-      cancelAnimationFrame(frame);
+      if (rafIdRef.current != null) {
+        cancelAnimationFrame(rafIdRef.current);
+        rafIdRef.current = null;
+      }
       lastTs.current = null;
     };
   }, [paused, speed, totalMin, resetVersion]);
 
   const reset = () => {
-    setElapsedMin(0);
+    if (rafIdRef.current != null) {
+      cancelAnimationFrame(rafIdRef.current);
+      rafIdRef.current = null;
+    }
     lastTs.current = null;
+    setElapsedMin(0);
     setResetVersion(v => v + 1);
   };
 
   const jump = (deltaMin: number) => {
-    setElapsedMin(prev => {
-      const next = Math.max(0, Math.min(totalMin, prev + deltaMin));
-      if (next === 0 && prev > 0) setResetVersion(v => v + 1);
-      return next;
-    });
+    setElapsedMin(prev => Math.max(0, Math.min(totalMin, prev + deltaMin)));
     lastTs.current = null;
   };
 
