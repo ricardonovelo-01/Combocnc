@@ -7,6 +7,7 @@ import {
   WASH_MIN,
   type RunningCycleTimer,
 } from '../use-running-cycle-timer';
+import { CycleProgressTrack } from './CycleProgressTrack';
 
 function formatLeft(minLeft: number): string {
   const m = Math.max(0, Math.round(minLeft));
@@ -154,14 +155,8 @@ export function RunningCyclePrototype({ variant, mode, timer }: Props) {
           )}
 
           {variant === 'unifiedBar' && (
-            <div
-              key={resetVersion}
-              className="h-[4px] w-full overflow-hidden rounded-full bg-[#ebebeb]"
-            >
-              <div
-                className="h-full bg-[#1a1a1a] transition-[width] duration-150"
-                style={{ width: `${unifiedFrac * 100}%` }}
-              />
+            <div key={resetVersion}>
+              <CycleProgressTrack fraction={unifiedFrac} />
             </div>
           )}
         </div>
@@ -221,12 +216,7 @@ function SegmentedBar({
   if (mode === 'washerOnly') {
     return (
       <div key={resetVersion}>
-        <div className="h-[4px] w-full overflow-hidden rounded-full bg-[#ebebeb]">
-          <div
-            className="h-full bg-[#1a1a1a] transition-[width] duration-150"
-            style={{ width: `${washFrac * 100}%` }}
-          />
-        </div>
+        <CycleProgressTrack fraction={washFrac} />
         {children}
       </div>
     );
@@ -234,17 +224,11 @@ function SegmentedBar({
   return (
     <div key={resetVersion}>
       <div className="flex gap-[6px]">
-        <div className="h-[4px] flex-1 overflow-hidden rounded-full bg-[#ebebeb]">
-          <div
-            className="h-full bg-[#1a1a1a] transition-[width] duration-150"
-            style={{ width: `${washFrac * 100}%` }}
-          />
+        <div className="min-w-0 flex-1">
+          <CycleProgressTrack fraction={washFrac} />
         </div>
-        <div className="h-[4px] flex-1 overflow-hidden rounded-full bg-[#ebebeb]">
-          <div
-            className="h-full bg-[#1a1a1a] transition-[width] duration-150"
-            style={{ width: `${dryFrac * 100}%` }}
-          />
+        <div className="min-w-0 flex-1">
+          <CycleProgressTrack fraction={dryFrac} />
         </div>
       </div>
       {children}

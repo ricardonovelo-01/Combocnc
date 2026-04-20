@@ -1,5 +1,6 @@
 import { RotateCcw, PanelRight } from 'lucide-react';
 import type { RunningCycleTimer } from '../use-running-cycle-timer';
+import { CycleProgressTrack } from './CycleProgressTrack';
 
 type Props = {
   open: boolean;
@@ -68,11 +69,8 @@ export function RunningCycleDevPanel({ open, onOpenChange, timer }: Props) {
             {elapsedLabel}
             <span className="font-['Avenir:Roman',sans-serif] text-[12px] text-[#737373]"> of {totalLabel}</span>
           </p>
-          <div
-            key={resetVersion}
-            className="mt-2 h-[4px] w-full overflow-hidden rounded-full bg-[#ebebeb]"
-          >
-            <div className="h-full bg-[#1a1a1a] transition-[width] duration-150" style={{ width: `${pct}%` }} />
+          <div key={resetVersion} className="mt-2">
+            <CycleProgressTrack fraction={totalMin <= 0 ? 0 : elapsedMin / totalMin} />
           </div>
         </div>
 
