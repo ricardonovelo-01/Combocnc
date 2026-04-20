@@ -3,6 +3,8 @@ import { ExplorePanel } from './components/ExplorePanel';
 import { LaundryControlApp } from './components/LaundryControlApp';
 import { CancelCycleFeedbackPrototype } from './components/CancelCycleFeedbackPrototype';
 import { RunningCyclePrototype } from './components/RunningCyclePrototype';
+import { RunningCycleDevPanel } from './components/RunningCycleDevPanel';
+import { useRunningCycleTimer } from './use-running-cycle-timer';
 import type { CancelCycleFeedbackVariant, PrototypeScene } from './cancel-cycle-feedback-variants';
 import type { RunningCycleVariant, RunningCycleMode } from './running-cycle-variants';
 import type { FullControlWashDryVariant, LayoutVariant } from './explorer-meta';
@@ -28,6 +30,8 @@ export default function App() {
     useState<RunningCycleVariant>('segmentedSimple');
   const [runningCycleMode, setRunningCycleMode] =
     useState<RunningCycleMode>('combo');
+  const [devPanelOpen, setDevPanelOpen] = useState(true);
+  const runningCycleTimer = useRunningCycleTimer(runningCycleMode);
 
   return (
     <div className="relative flex h-full min-h-0 w-full min-w-0 bg-[#ebebeb]">
@@ -88,11 +92,22 @@ export default function App() {
             ) : prototypeScene === 'cancelFeedback' ? (
               <CancelCycleFeedbackPrototype variant={cancelFeedbackVariant} />
             ) : (
-              <RunningCyclePrototype variant={runningCycleVariant} mode={runningCycleMode} />
+              <RunningCyclePrototype
+                variant={runningCycleVariant}
+                mode={runningCycleMode}
+                timer={runningCycleTimer}
+              />
             )}
           </div>
         </div>
       </main>
+      {prototypeScene === 'runningCycle' && (
+        <RunningCycleDevPanel
+          open={devPanelOpen}
+          onOpenChange={setDevPanelOpen}
+          timer={runningCycleTimer}
+        />
+      )}
     </div>
   );
 }
