@@ -22,6 +22,12 @@ import {
   type CancelCycleFeedbackVariant,
   type PrototypeScene,
 } from '../cancel-cycle-feedback-variants';
+import {
+  RUNNING_CYCLE_META,
+  RUNNING_CYCLE_ORDER,
+  type RunningCycleMode,
+  type RunningCycleVariant,
+} from '../running-cycle-variants';
 
 type ExplorePanelProps = {
   open: boolean;
@@ -30,6 +36,10 @@ type ExplorePanelProps = {
   onPrototypeScene: (v: PrototypeScene) => void;
   cancelFeedbackVariant: CancelCycleFeedbackVariant;
   onCancelFeedbackVariant: (v: CancelCycleFeedbackVariant) => void;
+  runningCycleVariant: RunningCycleVariant;
+  onRunningCycleVariant: (v: RunningCycleVariant) => void;
+  runningCycleMode: RunningCycleMode;
+  onRunningCycleMode: (v: RunningCycleMode) => void;
   timeVariant: TimeUxVariant;
   onTimeVariant: (v: TimeUxVariant) => void;
   otherTimeOpen: boolean;
@@ -53,6 +63,10 @@ export function ExplorePanel({
   onPrototypeScene,
   cancelFeedbackVariant,
   onCancelFeedbackVariant,
+  runningCycleVariant,
+  onRunningCycleVariant,
+  runningCycleMode,
+  onRunningCycleMode,
   timeVariant,
   onTimeVariant,
   otherTimeOpen,
@@ -111,14 +125,20 @@ export function ExplorePanel({
             </p>
           </div>
           <div className="flex flex-col gap-1.5">
-            {(['laundry', 'cancelFeedback'] as const).map(key => {
+            {(['laundry', 'runningCycle', 'cancelFeedback'] as const).map(key => {
               const selected = prototypeScene === key;
               const label =
-                key === 'laundry' ? 'Laundry control' : 'Cancel cycle (stopping)';
+                key === 'laundry'
+                  ? 'Laundry control'
+                  : key === 'runningCycle'
+                    ? 'Running cycle'
+                    : 'Cancel cycle (stopping)';
               const hint =
                 key === 'laundry'
                   ? 'Main appliance UI, time + layout variants.'
-                  : 'After confirm, stopping feedback while the machine finishes (duration varies).';
+                  : key === 'runningCycle'
+                    ? 'In-cycle progress: wash vs dry bar and phase copy.'
+                    : 'After confirm, stopping feedback while the machine finishes (duration varies).';
               return (
                 <button
                   key={key}
@@ -139,6 +159,67 @@ export function ExplorePanel({
             })}
           </div>
         </div>
+
+        {prototypeScene === 'runningCycle' && (
+          <div className="mb-5 border-b border-[#f0f0f0] pb-5">
+            <p className="font-['Avenir:Heavy',sans-serif] text-[11px] uppercase tracking-wide text-[#737373]">
+              Progress bar
+            </p>
+            <p className="mt-1 font-['Avenir:Roman',sans-serif] text-[11px] leading-snug text-[#8e8e8e]">
+              Segmented vs unified progress on the running screen.
+            </p>
+            <div className="mt-2 flex flex-col gap-1.5">
+              {RUNNING_CYCLE_ORDER.map(id => {
+                const meta = RUNNING_CYCLE_META[id];
+                const selected = runningCycleVariant === id;
+                return (
+                  <button
+                    key={id}
+                    type="button"
+                    onClick={() => onRunningCycleVariant(id)}
+                    className={`rounded-[8px] border px-2.5 py-2 text-left transition-colors ${
+                      selected
+                        ? 'border-[#1a1a1a] bg-[#fafafa] text-[#1a1a1a]'
+                        : 'border-[#e5e5e5] bg-white text-[#525252] hover:border-[#d4d4d4]'
+                    }`}
+                  >
+                    <p className="font-['Avenir:Heavy',sans-serif] text-[12px]">{meta.title}</p>
+                    <p className="mt-0.5 font-['Avenir:Roman',sans-serif] text-[10px] leading-snug text-[#737373]">
+                      {meta.blurb}
+                    </p>
+                  </button>
+                );
+              })}
+            </div>
+            <p className="mb-2 mt-4 font-['Avenir:Heavy',sans-serif] text-[11px] uppercase tracking-wide text-[#737373]">
+              Machine mode
+            </p>
+            <div className="flex flex-col gap-1.5">
+              {(['combo', 'washerOnly'] as const).map(m => {
+                const selected = runningCycleMode === m;
+                return (
+                  <button
+                    key={m}
+                    type="button"
+                    onClick={() => onRunningCycleMode(m)}
+                    className={`rounded-[8px] border px-2.5 py-2 text-left transition-colors ${
+                      selected
+                        ? 'border-[#1a1a1a] bg-[#fafafa] text-[#1a1a1a]'
+                        : 'border-[#e5e5e5] bg-white text-[#525252] hover:border-[#d4d4d4]'
+                    }`}
+                  >
+                    <p className="font-['Avenir:Heavy',sans-serif] text-[12px]">
+                      {m === 'combo' ? 'Wash & dry' : 'Wash only'}
+                    </p>
+                    <p className="mt-0.5 font-['Avenir:Roman',sans-serif] text-[10px] leading-snug text-[#737373]">
+                      {m === 'combo' ? 'Two phases on the bar when applicable.' : 'Single wash phase only.'}
+                    </p>
+                  </button>
+                );
+              })}
+            </div>
+          </div>
+        )}
 
         {prototypeScene === 'cancelFeedback' && (
           <div className="mb-5 border-b border-[#f0f0f0] pb-5">

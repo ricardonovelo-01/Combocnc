@@ -1,5 +1,5 @@
 /** Which high-level prototype fills the main preview. */
-export type PrototypeScene = 'laundry' | 'cancelFeedback';
+export type PrototypeScene = 'laundry' | 'cancelFeedback' | 'runningCycle';
 
 export type CancelCycleFeedbackVariant =
   | 'countdownInModal'

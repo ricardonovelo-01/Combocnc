@@ -2,7 +2,9 @@ import { useState } from 'react';
 import { ExplorePanel } from './components/ExplorePanel';
 import { LaundryControlApp } from './components/LaundryControlApp';
 import { CancelCycleFeedbackPrototype } from './components/CancelCycleFeedbackPrototype';
+import { RunningCyclePrototype } from './components/RunningCyclePrototype';
 import type { CancelCycleFeedbackVariant, PrototypeScene } from './cancel-cycle-feedback-variants';
+import type { RunningCycleVariant, RunningCycleMode } from './running-cycle-variants';
 import type { FullControlWashDryVariant, LayoutVariant } from './explorer-meta';
 import type { ProgressiveDisclosureStyle } from './progressive-disclosure-styles';
 import type { TimeUxVariant } from './components/DryControlsSection';
@@ -22,6 +24,10 @@ export default function App() {
     useState<FullControlWashDryVariant>('simpleContainer');
   const [progressiveDisclosureStyle, setProgressiveDisclosureStyle] =
     useState<ProgressiveDisclosureStyle>('borderedCard');
+  const [runningCycleVariant, setRunningCycleVariant] =
+    useState<RunningCycleVariant>('segmentedSimple');
+  const [runningCycleMode, setRunningCycleMode] =
+    useState<RunningCycleMode>('combo');
 
   return (
     <div className="relative flex h-full min-h-0 w-full min-w-0 bg-[#ebebeb]">
@@ -39,6 +45,10 @@ export default function App() {
         onPrototypeScene={setPrototypeScene}
         cancelFeedbackVariant={cancelFeedbackVariant}
         onCancelFeedbackVariant={setCancelFeedbackVariant}
+        runningCycleVariant={runningCycleVariant}
+        onRunningCycleVariant={setRunningCycleVariant}
+        runningCycleMode={runningCycleMode}
+        onRunningCycleMode={setRunningCycleMode}
         timeVariant={timeVariant}
         onTimeVariant={setTimeVariant}
         otherTimeOpen={otherTimeOpen}
@@ -63,7 +73,9 @@ export default function App() {
           <p className="max-w-[360px] text-center font-['Avenir:Roman',sans-serif] text-[11px] leading-snug text-[#737373]">
             {prototypeScene === 'laundry'
               ? 'Live preview — use the explorer to switch time UX and layout.'
-              : 'Cancel cycle — confirm, then stopping feedback (duration varies; demo uses a short timer).'}
+              : prototypeScene === 'cancelFeedback'
+                ? 'Cancel cycle — confirm, then stopping feedback (duration varies; demo uses a short timer).'
+                : 'Running cycle — 4 progress variants. Use dev controls to jump time or reset.'}
           </p>
           <div className="h-[min(100vh-10rem,880px)] w-full max-w-[360px] shrink-0">
             {prototypeScene === 'laundry' ? (
@@ -73,8 +85,10 @@ export default function App() {
                 progressiveDisclosureStyle={progressiveDisclosureStyle}
                 fullControlWashDryStyle={fullControlWashDryStyle}
               />
-            ) : (
+            ) : prototypeScene === 'cancelFeedback' ? (
               <CancelCycleFeedbackPrototype variant={cancelFeedbackVariant} />
+            ) : (
+              <RunningCyclePrototype variant={runningCycleVariant} mode={runningCycleMode} />
             )}
           </div>
         </div>
