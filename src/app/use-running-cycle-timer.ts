@@ -9,6 +9,8 @@ export type RunningCycleTimer = {
   mode: RunningCycleMode;
   totalMin: number;
   elapsedMin: number;
+  /** Bumps on reset and mode change so progress UI can remount and avoid stuck width transitions. */
+  resetVersion: number;
   speed: number;
   paused: boolean;
   setSpeed: (v: number) => void;
@@ -17,10 +19,31 @@ export type RunningCycleTimer = {
   jump: (deltaMin: number) => void;
 };
 
+/** Single source for bar widths vs elapsed time (matches dev panel % and main “time left” model). */
+export function getRunningCycleProgressFractions(
+  mode: RunningCycleMode,
+  elapsedMin: number,
+  totalMin: number,
+): { washFrac: number; dryFrac: number; unifiedFrac: number } {
+  const elapsed = Math.max(0, Math.min(totalMin, elapsedMin));
+  if (mode === 'washerOnly') {
+    const u = totalMin <= 0 ? 0 : Math.min(1, elapsed / totalMin);
+    return { washFrac: u, dryFrac: 0, unifiedFrac: u };
+  }
+  const washDur = WASH_MIN;
+  const dryDur = Math.max(0, totalMin - washDur);
+  const washFrac = washDur <= 0 ? 0 : Math.min(1, elapsed / washDur);
+  const dryFrac =
+    dryDur <= 0 ? 0 : Math.min(1, Math.max(0, elapsed - washDur) / dryDur);
+  const unifiedFrac = totalMin <= 0 ? 0 : Math.min(1, elapsed / totalMin);
+  return { washFrac, dryFrac, unifiedFrac };
+}
+
 export function useRunningCycleTimer(mode: RunningCycleMode): RunningCycleTimer {
   const totalMin = mode === 'combo' ? WASH_MIN + DRY_MIN : WASHER_ONLY_TOTAL_MIN;
 
   const [elapsedMin, setElapsedMin] = useState(0);
+  const [resetVersion, setResetVersion] = useState(0);
   const [speed, setSpeed] = useState<number>(60);
   const [paused, setPaused] = useState(false);
   const lastTs = useRef<number | null>(null);
@@ -28,6 +51,7 @@ export function useRunningCycleTimer(mode: RunningCycleMode): RunningCycleTimer 
   useEffect(() => {
     setElapsedMin(0);
     lastTs.current = null;
+    setResetVersion(v => v + 1);
   }, [mode]);
 
   useEffect(() => {
@@ -56,6 +80,7 @@ export function useRunningCycleTimer(mode: RunningCycleMode): RunningCycleTimer 
   const reset = () => {
     setElapsedMin(0);
     lastTs.current = null;
+    setResetVersion(v => v + 1);
   };
 
   const jump = (deltaMin: number) => {
@@ -63,5 +88,16 @@ export function useRunningCycleTimer(mode: RunningCycleMode): RunningCycleTimer 
     lastTs.current = null;
   };
 
-  return { mode, totalMin, elapsedMin, speed, paused, setSpeed, setPaused, reset, jump };
+  return {
+    mode,
+    totalMin,
+    elapsedMin,
+    resetVersion,
+    speed,
+    paused,
+    setSpeed,
+    setPaused,
+    reset,
+    jump,
+  };
 }

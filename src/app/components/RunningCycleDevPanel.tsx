@@ -10,8 +10,9 @@ type Props = {
 const SPEEDS = [1, 60, 600, 3600];
 
 export function RunningCycleDevPanel({ open, onOpenChange, timer }: Props) {
-  const { elapsedMin, totalMin, speed, paused, setSpeed, setPaused, reset, jump } = timer;
-  const pct = Math.min(100, Math.round((elapsedMin / totalMin) * 100));
+  const { elapsedMin, totalMin, resetVersion, speed, paused, setSpeed, setPaused, reset, jump } = timer;
+  const pct =
+    totalMin <= 0 ? 0 : Math.min(100, Math.round((elapsedMin / totalMin) * 100));
   const minFloor = Math.floor(elapsedMin);
   const elapsedHours = Math.floor(minFloor / 60);
   const elapsedMm = minFloor - elapsedHours * 60;
@@ -67,8 +68,11 @@ export function RunningCycleDevPanel({ open, onOpenChange, timer }: Props) {
             {elapsedLabel}
             <span className="font-['Avenir:Roman',sans-serif] text-[12px] text-[#737373]"> of {totalLabel}</span>
           </p>
-          <div className="mt-2 h-[4px] w-full overflow-hidden rounded-full bg-[#ebebeb]">
-            <div className="h-full bg-[#1a1a1a] transition-[width]" style={{ width: `${pct}%` }} />
+          <div
+            key={resetVersion}
+            className="mt-2 h-[4px] w-full overflow-hidden rounded-full bg-[#ebebeb]"
+          >
+            <div className="h-full bg-[#1a1a1a] transition-[width] duration-150" style={{ width: `${pct}%` }} />
           </div>
         </div>
 

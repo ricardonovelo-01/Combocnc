@@ -2,10 +2,14 @@ import { useState } from 'react';
 import { ArrowLeft, Heart, Settings, Droplet, Wind } from 'lucide-react';
 import washerImage from '../../imports/ComboCC/158356eed04099aa3d6c70763cd639a6f7aa97e9.png';
 import type { RunningCycleVariant, RunningCycleMode } from '../running-cycle-variants';
-import { WASH_MIN, type RunningCycleTimer } from '../use-running-cycle-timer';
+import {
+  getRunningCycleProgressFractions,
+  WASH_MIN,
+  type RunningCycleTimer,
+} from '../use-running-cycle-timer';
 
 function formatLeft(minLeft: number): string {
-  const m = Math.max(0, Math.ceil(minLeft));
+  const m = Math.max(0, Math.round(minLeft));
   const h = Math.floor(m / 60);
   const mm = m - h * 60;
   if (h > 0 && mm > 0) return `${h}h ${mm}m left`;
@@ -14,7 +18,7 @@ function formatLeft(minLeft: number): string {
 }
 
 function formatPhaseLeft(minLeft: number): string {
-  return `${Math.max(0, Math.ceil(minLeft))}m left`;
+  return `${Math.max(0, Math.round(minLeft))}m left`;
 }
 
 type Props = {
@@ -24,14 +28,11 @@ type Props = {
 };
 
 export function RunningCyclePrototype({ variant, mode, timer }: Props) {
-  const { elapsedMin, totalMin } = timer;
+  const { elapsedMin, totalMin, resetVersion } = timer;
   const [wrinkleShield, setWrinkleShield] = useState(true);
 
   const minLeft = Math.max(0, totalMin - elapsedMin);
-  const washFrac = mode === 'combo' ? Math.min(1, elapsedMin / WASH_MIN) : 0;
-  const dryFrac =
-    mode === 'combo' ? Math.min(1, Math.max(0, elapsedMin - WASH_MIN) / (totalMin - WASH_MIN)) : 0;
-  const unifiedFrac = Math.min(1, elapsedMin / totalMin);
+  const { washFrac, dryFrac, unifiedFrac } = getRunningCycleProgressFractions(mode, elapsedMin, totalMin);
   const inDry = mode === 'combo' && elapsedMin >= WASH_MIN;
   const washMinLeft = mode === 'combo' ? Math.max(0, WASH_MIN - elapsedMin) : 0;
   const dryMinLeft =
@@ -100,7 +101,7 @@ export function RunningCyclePrototype({ variant, mode, timer }: Props) {
 
         <div className="mt-1">
           {variant === 'segmentedSimple' && (
-            <SegmentedBar washFrac={washFrac} dryFrac={dryFrac} mode={mode}>
+            <SegmentedBar resetVersion={resetVersion} washFrac={washFrac} dryFrac={dryFrac} mode={mode}>
               <div className="mt-2 flex">
                 <div className="flex-1">
                   <p className="font-['Avenir:Medium',sans-serif] text-[13px] text-[#1a1a1a]">Washing</p>
@@ -115,7 +116,7 @@ export function RunningCyclePrototype({ variant, mode, timer }: Props) {
           )}
 
           {variant === 'segmentedDetailed' && (
-            <SegmentedBar washFrac={washFrac} dryFrac={dryFrac} mode={mode}>
+            <SegmentedBar resetVersion={resetVersion} washFrac={washFrac} dryFrac={dryFrac} mode={mode}>
               <div className="mt-2 flex">
                 <div className="flex-1">
                   <p className="font-['Avenir:Medium',sans-serif] text-[13px] text-[#1a1a1a]">
@@ -136,7 +137,7 @@ export function RunningCyclePrototype({ variant, mode, timer }: Props) {
           )}
 
           {variant === 'segmentedIcons' && (
-            <SegmentedBar washFrac={washFrac} dryFrac={dryFrac} mode={mode}>
+            <SegmentedBar resetVersion={resetVersion} washFrac={washFrac} dryFrac={dryFrac} mode={mode}>
               <div className="mt-2 flex">
                 <div className="flex-1 flex items-center gap-1.5">
                   <Droplet size={13} className="text-[#737373]" />
@@ -153,7 +154,10 @@ export function RunningCyclePrototype({ variant, mode, timer }: Props) {
           )}
 
           {variant === 'unifiedBar' && (
-            <div className="h-[4px] w-full overflow-hidden rounded-full bg-[#ebebeb]">
+            <div
+              key={resetVersion}
+              className="h-[4px] w-full overflow-hidden rounded-full bg-[#ebebeb]"
+            >
               <div
                 className="h-full bg-[#1a1a1a] transition-[width] duration-150"
                 style={{ width: `${unifiedFrac * 100}%` }}
@@ -202,11 +206,13 @@ export function RunningCyclePrototype({ variant, mode, timer }: Props) {
 }
 
 function SegmentedBar({
+  resetVersion,
   washFrac,
   dryFrac,
   mode,
   children,
 }: {
+  resetVersion: number;
   washFrac: number;
   dryFrac: number;
   mode: RunningCycleMode;
@@ -214,7 +220,7 @@ function SegmentedBar({
 }) {
   if (mode === 'washerOnly') {
     return (
-      <div>
+      <div key={resetVersion}>
         <div className="h-[4px] w-full overflow-hidden rounded-full bg-[#ebebeb]">
           <div
             className="h-full bg-[#1a1a1a] transition-[width] duration-150"
@@ -226,7 +232,7 @@ function SegmentedBar({
     );
   }
   return (
-    <div>
+    <div key={resetVersion}>
       <div className="flex gap-[6px]">
         <div className="h-[4px] flex-1 overflow-hidden rounded-full bg-[#ebebeb]">
           <div
