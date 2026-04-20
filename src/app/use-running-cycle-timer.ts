@@ -54,6 +54,8 @@ export function useRunningCycleTimer(mode: RunningCycleMode): RunningCycleTimer 
     setResetVersion(v => v + 1);
   }, [mode]);
 
+  // Include resetVersion so Reset / mode change tears down RAF and starts fresh. Otherwise
+  // in-flight frames can still run after setElapsedMin(0) and re-apply elapsed time.
   useEffect(() => {
     if (paused) {
       lastTs.current = null;
@@ -75,7 +77,7 @@ export function useRunningCycleTimer(mode: RunningCycleMode): RunningCycleTimer 
       cancelAnimationFrame(frame);
       lastTs.current = null;
     };
-  }, [paused, speed, totalMin]);
+  }, [paused, speed, totalMin, resetVersion]);
 
   const reset = () => {
     setElapsedMin(0);
@@ -84,7 +86,11 @@ export function useRunningCycleTimer(mode: RunningCycleMode): RunningCycleTimer 
   };
 
   const jump = (deltaMin: number) => {
-    setElapsedMin(prev => Math.max(0, Math.min(totalMin, prev + deltaMin)));
+    setElapsedMin(prev => {
+      const next = Math.max(0, Math.min(totalMin, prev + deltaMin));
+      if (next === 0 && prev > 0) setResetVersion(v => v + 1);
+      return next;
+    });
     lastTs.current = null;
   };
 
